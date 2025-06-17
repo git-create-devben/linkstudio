@@ -1,6 +1,7 @@
 "use client"
 import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from 'react';
+import { prisma } from "../prismaClient";
 
 // export const getUser = async () => {
 //     const supabase = createClient()
@@ -15,7 +16,7 @@ import { useEffect, useState } from 'react';
 // }
 
 
-export function getUserId() {
+export function getSupabaseId() {
   const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const supabase = createClient()
@@ -33,3 +34,5 @@ export function getUserId() {
 
   return { userId, loading };
 }
+
+

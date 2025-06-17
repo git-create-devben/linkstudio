@@ -9,7 +9,7 @@ const OnboardingComplete = ({completeOnboarding}:{completeOnboarding:() => Promi
     const router = useRouter();
 
 
-    const [user, setUser] = useState<ProfileProps | null>(null)
+    const [user, setUser] = useState<UserProps | null>(null)
 
     useEffect(() => {
         const fetchUser = async () => {

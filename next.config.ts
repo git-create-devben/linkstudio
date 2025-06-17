@@ -6,9 +6,16 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**", // Allow images from all domains
+        hostname: "chgctcbxfxhezwxfwhxv.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/public/profilePicture/**",
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
 };
 

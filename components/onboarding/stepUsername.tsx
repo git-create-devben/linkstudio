@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { getUserId } from "@/lib/user/getUser";
+import { getSupabaseId } from '@/lib/user/getUser';
 
 const StepUsername = ({
   nextStep,
@@ -14,7 +14,7 @@ const StepUsername = ({
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [error, setError] = useState('');
-  const { userId, loading } = getUserId();
+  const { userId, loading } = getSupabaseId();
 
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
 

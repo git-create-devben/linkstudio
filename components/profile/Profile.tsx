@@ -14,15 +14,13 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { getUser, logout } from '@/actions/authActions'
 
-
-
 const Profile = () => {
     const router = useRouter()
     const link = "linkstudio"
     const language = "english"
 
-    const [user, setUser] = useState<ProfileProps | null>(null)
-
+    const [user, setUser] = useState<UserProps | null>(null)
+    console.log("user", user)
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -43,9 +41,9 @@ const Profile = () => {
             <Popover>
                 <PopoverTrigger className='flex gap-2 items-center'>
                     <div className='rounded-full bg-black w-10 h-10 overflow-hidden'>
-                        {user?.profileImageUrl && (
+                        {user.profile?.profileImageUrl && (
                             <Image
-                                src={user.profileImageUrl}
+                                src={user.profile?.profileImageUrl}
                                 alt="profile picture"
                                 width={40}
                                 height={40}
@@ -55,7 +53,7 @@ const Profile = () => {
                     </div>
                     <div className="flex items-center gap-1">
                         <span className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                            {user?.username || 'Guest'}
+                            {user.profile?.displayName || 'Guest'}
                         </span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600"><path d="m6 9 6 6 6-6" /></svg>
                     </div>
@@ -64,18 +62,19 @@ const Profile = () => {
                     <div>
                         <div className='flex gap-2 p-2 text-black items-center'>
                             <div className='rounded-full bg-black w-12 h-12 overflow-hidden'>
-                                {user?.profileImageUrl && (
+                                {user.profile?.profileImageUrl && (
                                     <Image
-                                        src={user.profileImageUrl}
+                                        src={user.profile.profileImageUrl}
                                         alt="profile picture"
                                         width={48}
                                         height={48}
                                         className="object-cover"
+                                        unoptimized
                                     />
                                 )}
                             </div>
                             <div className='flex flex-col'>
-                                <h2>{user?.username}</h2>
+                                <h2>{user.profile?.displayName}</h2>
                                 <Link href={`${window.origin}/${user.username}`} className="text-blue-600 hover:underline">{link}/{user.username}</Link>
                             </div>
                         </div>

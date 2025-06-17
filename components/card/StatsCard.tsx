@@ -1,27 +1,67 @@
+"use client";
+
 import { Eye, Link, Percent, UserPlus } from "lucide-react";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
+import { getAnalyticsData } from "@/actions/analyticsActions"; // Adjust the import path
 
-const stats = [
-  { icon: Eye, label: "Views", value: 0 },
-  { icon: Link, label: "Clicks", value: 0 },
-  { icon: Percent, label: "Click rate", value: "0%" },
-  { icon: UserPlus, label: "Subscribers", value: 0 },
-];
+// Define a type for our fetched data for type safety
+type AnalyticsData = {
+  pageViews: number;
+  totalLinkClicks: number;
+  // We don't need the individual links array for this card
+};
 
 export default function StatsCard() {
+  const [data, setData] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // 1. Fetch data when the component first loads
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const analyticsData = await getAnalyticsData();
+        setData(analyticsData);
+      } catch (error) {
+        console.error("Failed to load lifetime stats:", error);
+        // Set default zero values on error
+        setData({ pageViews: 0, totalLinkClicks: 0 });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []); // The empty dependency array means this runs once on mount
+
+  // 2. Calculate derived metrics and prepare the stats array dynamically
+  const clickRate = data?.pageViews ? ((data.totalLinkClicks / data.pageViews) * 100).toFixed(1) + "%" : "0%";
+  
+  const stats = [
+    { icon: Eye, label: "Views", value: data?.pageViews?.toLocaleString() ?? 0 },
+    { icon: Link, label: "Clicks", value: data?.totalLinkClicks?.toLocaleString() ?? 0 },
+    { icon: Percent, label: "Click rate", value: clickRate },
+    { icon: UserPlus, label: "Subscribers", value: "N/A" }, // Placeholder for now
+  ];
+  
+  // A simple skeleton loader for a better user experience
+  if (loading) {
+    return <StatsCardSkeleton />;
+  }
+
   return (
     <div className="bg-white text-black rounded-lg shadow-sm p-4 md:p-6 flex flex-col gap-4 md:gap-6 w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div className="flex items-center gap-2">
-          <h2 className="text-base md:text-lg font-semibold">Lifetime</h2>
+          <h2 className="text-base md:text-lg font-semibold">Lifetime Stats</h2>
           <span className="text-muted-foreground text-sm cursor-pointer">?</span>
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto">
-          <Button className="flex-1 sm:flex-none rounded-4xl border-blue-600 border-1 hover:border-blue-700 text-blue-600 cursor-pointer text-xs md:text-sm font-medium px-4 md:px-7 py-2 md:py-2.5 transition-colors">
-            Create
+          <Button variant="outline" className="flex-1 sm:flex-none">
+            Export
           </Button>
-          <Button className="flex-1 sm:flex-none rounded-4xl bg-blue-600 hover:bg-blue-700 cursor-pointer text-white text-xs md:text-sm font-medium px-4 md:px-7 py-2 md:py-2.5 transition-colors">
-            Manage
+          <Button className="flex-1 sm:flex-none">
+            View Details
           </Button>
         </div>
       </div>
@@ -33,7 +73,7 @@ export default function StatsCard() {
               <Icon className="h-4 w-4 md:h-5 md:w-5 text-black" />
             </div>
             <div className="text-sm">
-              <p className="font-medium">{value}</p>
+              <p className="font-medium text-base">{value}</p>
               <p className="text-muted-foreground text-xs">{label}</p>
             </div>
           </div>
@@ -42,3 +82,27 @@ export default function StatsCard() {
     </div>
   );
 }
+
+// A helper component for the loading state to avoid cluttering the main component
+const StatsCardSkeleton = () => (
+  <div className="bg-white text-black rounded-lg shadow-sm p-4 md:p-6 flex flex-col gap-4 md:gap-6 w-full animate-pulse">
+    <div className="flex justify-between items-center">
+        <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+        <div className="flex gap-4">
+            <div className="h-10 bg-gray-200 rounded w-24"></div>
+            <div className="h-10 bg-gray-200 rounded w-24"></div>
+        </div>
+    </div>
+    <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="flex items-center gap-3 p-2 md:p-3 bg-gray-100 rounded-lg md:rounded-xl">
+                <div className="bg-gray-200 p-2 rounded-lg md:rounded-xl h-9 w-9"></div>
+                <div className="text-sm space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-12"></div>
+                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                </div>
+            </div>
+        ))}
+    </div>
+  </div>
+);

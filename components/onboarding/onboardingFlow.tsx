@@ -11,19 +11,19 @@ import StepPlatform from './stepPlatforms';
 import StepProfile from './stepProfile';
 import OnboardingComplete from './onboardingComplete';
 import { fetchOnboardingStatus, updateOnboardingStatus } from '@/actions/onboardingActions';
-import { getUserId } from '@/lib/user/getUser';
+import { getSupabaseId } from '@/lib/user/getUser';
 import { useRouter } from 'next/navigation';
 
 const steps = [
   'Welcome',
   'Username',
-  'Goal',
+  'Profile',
   'Template',
+  'Goal',
   'Platforms',
   // 'Links',
-  'Profile',
   'Complete'
-] as const;
+] 
 
 const OnboardingFlow = () => {
   const [currentStep, setCurrentStep] = useState<number | any>(0);
@@ -39,7 +39,7 @@ const OnboardingFlow = () => {
   });
 
   const router = useRouter();
-  const { userId, loading } = getUserId();
+  const { userId, loading } = getSupabaseId();
 
   // const checkIfOnboardingComplete = useCallback(async () => {
   //   if (!userId) return;
@@ -94,10 +94,10 @@ const OnboardingFlow = () => {
   const stepComponents = useMemo(() => [
     <StepWelcome key="welcome" nextStep={nextStep} />,
     <StepUsername key="username" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
-    <StepGoal key="goal" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
-    <StepTemplate key="template" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
-    <StepPlatform key="platform" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
     <StepProfile key="profile" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
+    <StepTemplate key="template" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
+    <StepGoal key="goal" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
+    <StepPlatform key="platform" nextStep={nextStep} formData={formData} updateFormData={updateFormData} />,
     <OnboardingComplete key="complete" completeOnboarding={completeOnboarding} />
   ], [nextStep, formData, updateFormData, completeOnboarding]);
 

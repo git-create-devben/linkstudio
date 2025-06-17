@@ -16,7 +16,6 @@ import {
   LayoutGrid,
   SparklesIcon,
 } from "lucide-react"
-import { useProtected } from "@/lib/useProtected"
 import { toast } from "sonner"
 
 // Section Component for consistent padding

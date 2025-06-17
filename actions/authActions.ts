@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prismaClient'
+import  prisma  from '@/lib/prismaClient'
 
 
 export async function signup(formData: FormData) {
@@ -21,7 +21,7 @@ export async function signup(formData: FormData) {
 
   try {
     // Sign up with Supabase Auth
-    const { error, data:{user} } = await supabase.auth.signUp({
+    const { error, data: { user } } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
@@ -31,15 +31,22 @@ export async function signup(formData: FormData) {
       }
     })
 
-    if(user){
-      await prisma.user.create({
+    if (user) {
+      const createdUser = await prisma.user.create({
         data: {
           email: data.email,
           supabaseId: user.id,
         }
-      })
+      });
+
+      // create profile immediately
+      await prisma.profile.create({
+        data: {
+         userId: createdUser.id,
+        },
+      });
     }
-   console.log("user data", user)
+    console.log("user data", user)
     if (error) {
       console.error('Supabase signup error:', JSON.stringify(error))
       return { error: error.message }
@@ -102,8 +109,8 @@ export async function getUser() {
       select: {
         id: true,
         email: true,
-        username:true,
-        profileImageUrl:true,
+        username: true,
+        profile:true,
         createdAt: true,
       }
     })
@@ -114,3 +121,4 @@ export async function getUser() {
     return null
   }
 }
+

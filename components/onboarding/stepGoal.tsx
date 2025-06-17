@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 // import useGoalSelection from '../hooks/useGoalSelection';
 import { saveUserGoal } from '@/actions/onboardingActions';
-import { getUserId } from '@/lib/user/getUser';
+import { getSupabaseId } from '@/lib/user/getUser';
 import useGoalSelection from '@/hooks/useGoalSelection';
 
 const GoalStep = ({
@@ -19,7 +19,7 @@ const GoalStep = ({
   const { goals, selectedGoal, selectGoal } = useGoalSelection(formData.goal);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
-  const { userId, loading } = getUserId();
+  const { userId, loading } = getSupabaseId();
 
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
   const handleGoalSelect = (goalId: string) => {

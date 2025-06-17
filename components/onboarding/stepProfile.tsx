@@ -4,7 +4,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Camera, Plus, X } from 'lucide-react';
 import { saveUserProfile } from '@/actions/onboardingActions';
-import { getUserId } from '@/lib/user/getUser';
+import { getSupabaseId } from '@/lib/user/getUser';
 
 const StepProfile = ({
   nextStep,
@@ -19,7 +19,7 @@ const StepProfile = ({
   const [error, setError] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { userId, loading } = getUserId();
+  const { userId, loading } = getSupabaseId();
 
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
 

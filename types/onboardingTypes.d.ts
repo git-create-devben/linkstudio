@@ -10,10 +10,16 @@ interface FormDataType {
   
   }
 
-  interface ProfileProps {
+  interface UserProps {
     id: string
     username: string 
     email: string
+    profile: ProfileProps
     profileImageUrl: string
     createdAt: string
 } 
+
+interface ProfileProps {
+  displayName: string;
+  profileImageUrl: string;
+}

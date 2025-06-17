@@ -1,7 +1,7 @@
 // pages/components/TemplateStep.tsx or wherever you're using it
 import { saveUserTemplate } from '@/actions/onboardingActions';
-import TemplateSelector from '@/components/templates/templateSelector';
-import { getUserId } from '@/lib/user/getUser';
+import TemplateSelector from '@/components/template/templateSelector';
+import { getSupabaseId } from '@/lib/user/getUser';
 import { useState } from 'react';
 
 const TemplateStep = ({
@@ -15,7 +15,7 @@ const TemplateStep = ({
 }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
-  const { userId, loading } = getUserId();
+  const { userId, loading } = getSupabaseId();
 
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
 

@@ -16,7 +16,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
 
   const toggleSidebar = () => {
     setIsVisible(!isVisible)

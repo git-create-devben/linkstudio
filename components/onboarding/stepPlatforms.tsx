@@ -1,5 +1,5 @@
 import { saveUserPlatform} from "@/actions/onboardingActions";
-import { getUserId } from "@/lib/user/getUser";
+import { getSupabaseId } from '@/lib/user/getUser';
 import { Instagram, Youtube, Music, MessageSquare, Globe } from "lucide-react";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ const StepPlatform = ({
   }) => {
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState('');
-    const { userId, loading } = getUserId();
+    const { userId, loading } = getSupabaseId();
     const platforms = [
       { id: 'instagram', name: 'Instagram', icon: <Instagram className="w-6 h-6" />, color: 'from-pink-500 to-orange-500' },
       { id: 'youtube', name: 'YouTube', icon: <Youtube className="w-6 h-6" />, color: 'from-red-500 to-red-600' },

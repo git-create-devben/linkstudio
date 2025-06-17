@@ -1,4 +1,4 @@
-const ProgressBar = ({ steps, currentStep }) => (
+const ProgressBar = ({ steps, currentStep }: { steps: any[]; currentStep: number }) => (
     <div className="w-full max-w-md mx-auto mb-8">
       <div className="flex justify-between">
         {steps.map((_, index) => (

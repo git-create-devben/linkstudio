@@ -2,7 +2,7 @@ import AuthSwitcher from "@/components/auth/auth-switcher"
 import AnimatedWrapper from "@/components/animated-wrapper"
 import LogoApple from "@/components/logo-apple"
 import Link from "next/link"
-import { useProtected } from "@/lib/useProtected"
+// import { useProtected } from "@/lib/useProtected"
 import { toast } from "sonner"
 
 

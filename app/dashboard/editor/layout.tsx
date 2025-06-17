@@ -1,7 +1,9 @@
-import EditorHeader from "@/components/dashboard/Editor/EditorSidebar"
+import EditorSidebar from "@/components/dashboard/Editor/EditorSidebar"
 import UserContext from "@/context/userContext";
 import { getUser } from "@/actions/authActions";
 import { Metadata } from "next"
+import { useIsMobile } from "@/hooks/use-mobile";
+import EditorSidebarMobile from "@/components/dashboard/Editor/EditorSidebarMobile";
 
 export const metadata: Metadata = {
     title: "LinkStudio | Link In bio Editor",
@@ -18,14 +20,21 @@ export default async function EditorLayout({
     const user = await getUser();
     return (
         <div>
-            <div className="flex justify-center gap-12 p-5 relative">
-                <div className="hidd">
-                    <EditorHeader />
+            <div className="flex justify-center gap-12 ">
+                <div className="hidden md:block">
+                    <EditorSidebar />
                 </div>
 
-                <main className="top-20">
-                    {children}
+
+                <main className="flex flex-col">
+                    <section className="relative">
+                        {children}
+                    </section>
+                    <div className=" block md:hidden">
+                        <EditorSidebarMobile />
+                    </div>
                 </main>
+
             </div>
         </div>
     )

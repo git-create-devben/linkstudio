@@ -1,13 +1,35 @@
 import { MenuIcon } from 'lucide-react'
-import React from 'react'
-import Logo from '../logo'
-import { Button } from '../ui/button'
-import Image from 'next/image'
+import React, { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import LogoApple from '../logo-apple'
 import UpgradeButton from '../payment/UpgradeButton'
 import Profile from '../profile/Profile'
+import MultiButton from './multiButton'
+import { getUser } from '@/actions/authActions'
+import { toast } from 'sonner'
 
 const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle: () => void }) => {
+    const pathname = usePathname()
+    const isEditorPage = pathname === '/dashboard/editor'
+    const isDashboardPage = pathname === '/dashboard'
+
+    const [user, setUser] = useState<UserProps | null>(null)
+    console.log("user", user)
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await getUser()
+                setUser(userData as any)
+            } catch (error) {
+                toast.error('Failed to load user profile')
+            }
+        }
+
+        fetchUser()
+    }, [])
+
+    if (!user) return null
+
     return (
         <header className='sticky top-0 shadow-sm bg-white/40 z-10'>
             <nav className='flex justify-between items-center py-2.5 px-5'>
@@ -20,12 +42,34 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                     <LogoApple />
                 </div>
                 <div className='flex gap-6'>
-                    <UpgradeButton />
-                    <Profile />
+                    {isEditorPage && (
+                        <>
+                            <MultiButton username={user.username} />
+                            <div className='hidden md:flex'>
+                                <UpgradeButton />
+                            </div>
+                        </>
+                    )}
+                    {!isDashboardPage && !isEditorPage && (
+                        <>
+                            <MultiButton username={user.username} />
+                            <div className='hidden md:flex'>
+                                <UpgradeButton />
+                            </div>
+
+                            <Profile />
+                        </>
+                    )}
+                    {isDashboardPage && (
+                        <>
+                            <UpgradeButton />
+                            <Profile />
+                        </>
+                    )}
                 </div>
             </nav>
         </header>
     )
 }
 
-export default Header
+export default Header;

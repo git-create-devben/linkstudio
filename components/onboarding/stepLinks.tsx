@@ -1,5 +1,5 @@
 import { saveUserLinks } from "@/actions/onboardingActions";
-import { getUserId } from "@/lib/user/getUser";
+import { getSupabaseId } from '@/lib/user/getUser';
 import { Globe } from "lucide-react";
 import { useState } from "react";
 
@@ -15,7 +15,7 @@ const StepLinks = ({
 
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
-  const { userId, loading } = getUserId();
+  const { userId, loading } = getSupabaseId ();
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
 
 

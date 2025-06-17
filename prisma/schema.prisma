@@ -9,21 +9,117 @@ datasource db {
 }
 
 model User {
-  id                  String   @id @default(uuid())
-  email               String   @unique
-  supabaseId          String   @unique @map("supabase_id")
-  onboardingCompleted Boolean  @default(false)
-  onboardingStep      Int      @default(0)
-  username            String?  @unique
-  displayName         String?
-  bio                 String?
-  profileImageUrl     String?
-  goal                String?
-  template            String?
+  id                  String        @id @default(uuid())
+  email               String        @unique
+  supabaseId          String        @unique @map("supabase_id")
+  onboardingCompleted Boolean       @default(false)
+  onboardingStep      Int           @default(0)
   platforms           String[]
-  web                 String[]
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  
+  username            String?       @unique
+  goal                String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  profile             Profile?      @relation("ProfileToUser")
+  socialLinks         SocialLinks[]
+  webLinks            WebLink[]
+
   @@map("users")
+}
+
+model Profile {
+  id              String       @id @default(uuid())
+  userId          String       @unique
+  profileImageUrl String?
+  displayName     String?
+  bio             String?
+  templateId      String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  pageViews       Int          @default(0)
+  template        Template?    @relation(fields: [templateId], references: [id])
+  user            User         @relation("ProfileToUser", fields: [userId], references: [id], onDelete: Cascade)
+  actionItems     ActionItem[]
+  Actions         Actions?
+  content         Content?
+  design          Design?
+}
+
+model Template {
+  id          String    @id @default(uuid())
+  name        String?
+  description String?
+  profiles    Profile[]
+
+  @@map("templates")
+}
+
+model ActionItem {
+  id        String   @id @default(uuid())
+  profileId String
+  type      String
+  config    Json
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clicks    Int      @default(0)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("action_items")
+}
+
+model Content {
+  id              String  @id @default(uuid())
+  profileId       String  @unique
+  profilePicture  String?
+  profileName     String?
+  profileBio      String?
+  coverImage      String?
+  profileVerified Boolean @default(false)
+  profile         Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("contents")
+}
+
+model Design {
+  id           String  @id @default(uuid())
+  profileId    String  @unique
+  layout       String?
+  background   String?
+  color        String?
+  buttonColor  String?
+  font         String?
+  bottomStyles Json?
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("designs")
+}
+
+model Actions {
+  id         String  @id @default(uuid())
+  profileId  String  @unique
+  layoutType String?
+  config     Json?
+  profile    Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("actions")
+}
+
+model SocialLinks {
+  id     String @id @default(uuid())
+  userId String
+  name   String
+  url    String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("socialLinks")
+}
+
+model WebLink {
+  id     String @id @default(uuid())
+  userId String
+  title  String
+  url    String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("web_links")
 }
