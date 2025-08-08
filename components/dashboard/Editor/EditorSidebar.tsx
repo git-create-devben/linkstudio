@@ -51,7 +51,7 @@ const EditorSidebar = () => {
         return (
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Search</h2>
+              <h2 className="text-lg font-semibold text-black">Search</h2>
               <button
                 onClick={() => setActivePanel(null)}
                 className="p-1 hover:bg-gray-100 rounded"
@@ -59,8 +59,12 @@ const EditorSidebar = () => {
                 <X size={20} />
               </button>
             </div>
-            <div className="flex-1 p-4">
-              <p className="text-gray-600">Search functionality goes here...</p>
+            <div className="flex flex-col justify-center items-center p-4">
+              <p className="text-gray-600 text-font-medium">Search is comming soon stay tune...</p>
+              <div className="w-full max-w-md mt-8 space-y-4 text-black">
+                <h1 className='text-font-bold'>What does search do?</h1>
+                <p className='text-font-medium'>Search lets you find content on your page. You can search for a specific keyword, phrase, or link. You can also search for content by date, category, or tag.</p>
+              </div>
             </div>
           </div>
         );
@@ -103,8 +107,8 @@ const EditorSidebar = () => {
               className={`flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
                 }`}
             >
-              <Icon size={20} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
-              <span className={`text-xs text-center leading-tight ${isActive ? 'text-blue-500 font-medium' : 'text-gray-600'
+              <Icon size={18} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
+              <span className={`text-xs text-center leading-tight font-medium ${isActive ? 'text-blue-500 font-medium' : 'text-gray-600'
                 }`}>
                 {item.label}
               </span>

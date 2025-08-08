@@ -1,5 +1,5 @@
 "use server"
-import  prisma  from "@/lib/prismaClient";
+import prisma from "@/lib/prismaClient";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "./authActions";
 console.log("userActions")
@@ -39,7 +39,7 @@ export async function getUserProfile() {
         createdAt: true,
       }
     })
-    console.log("dbuser", dbUser)
+    // console.log("dbuser", dbUser)
     return dbUser
   } catch (error) {
     console.error('Get user error:', error)
@@ -49,27 +49,28 @@ export async function getUserProfile() {
 
 
 export async function getUserByUsername(username: string) {
-  const user = await prisma.user.findUnique({ where: { username }, select:{
-    id: true,
-    username: true,
-    profile: {
-      select: {
-        id:true,
-        profileImageUrl: true,
-        bio: true,
-        displayName: true,
-        templateId: true,
-        template: {
-          select: {
-            id: true,
-            name: true,
-            description: true,
+  const user = await prisma.user.findUnique({
+    where: { username }, select: {
+      id: true,
+      username: true,
+      profile: {
+        select: {
+          id: true,
+          profileImageUrl: true,
+          bio: true,
+          displayName: true,
+          templateId: true,
+          template: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+            },
           },
         },
       },
-    },
-  }
-});
+    }
+  });
   if (!user) throw new Error("No user found for username");
   // console.log("user", user)
   return user;
@@ -98,12 +99,33 @@ export async function getFullUserProfile() {
       content: true,
       design: true,
       template: true,
-    },
+    }
   })
 
-  console.log("🎯 Prisma profile:", profile)
+  // console.log("🎯 Prisma profile:", profile)
 
   if (!profile) throw new Error("No profile found for Supabase user")
 
   return profile
+}
+
+
+export async function getUserSubscription() {
+  const user = await getUser();
+
+  if (!user) return { error: 'No user found', data: null };
+
+  const subscription = await prisma.user.findFirst({
+    where: { email: user.email },
+    select: {
+      isActive: true,
+      billingCycle: true,
+      subscriptionId: true,
+      plan: true,
+    },
+  });
+
+  if (!subscription) return { error: 'No subscription found', data: null };
+
+  return { error: null, data: subscription };
 }

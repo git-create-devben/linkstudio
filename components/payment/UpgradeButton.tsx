@@ -5,7 +5,8 @@ const UpgradeButton = () => {
     return (
         <div>
             <Button
-                className="rounded-4xl bg-blue-600 hover:bg-blue-700 cursor-pointer text-white text-sm font-medium px-7 py-2.5 transition-colors" >
+            onClick={() => window.location.href = '/payment'}
+                className="rounded-full bg-blue-600 hover:bg-blue-700 cursor-pointer text-white text-xs font-medium px-4  transition-colors duration-200" >
                 Upgrade
             </Button>
         </div>

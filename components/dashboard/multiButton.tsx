@@ -26,11 +26,11 @@ const MultiButton: React.FC<MultiButtonProps> = ({
         onClick={handlePreview}
         disabled={isDisabled}
         className={`
-          px-4 py-2 rounded-full
+          px-3 py-2 rounded-full
           bg-gray-200/80 hover:bg-gray-200
           dark:bg-gray-800/80 dark:hover:bg-gray-800
           backdrop-blur-sm
-          text-sm font-medium
+          text-xs font-medium
           text-black
           transition-all duration-200
           cursor-pointer
@@ -46,10 +46,10 @@ const MultiButton: React.FC<MultiButtonProps> = ({
         onClick={onPublish}
         disabled={isDisabled || isPublishing}
         className={`
-          px-4 py-2 rounded-full
+          px-3 py-2 rounded-full
           bg-blue-600 hover:bg-blue-700
           text-white
-          text-sm font-medium
+          text-xs font-medium
           transition-all duration-200
           disabled:opacity-50 disabled:cursor-not-allowed
           flex items-center gap-2

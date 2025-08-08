@@ -1,29 +1,46 @@
-// app/auth/callback/route.ts
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+// In '/auth/callback/route.ts'
+
+import { handleOAuthCallback } from '@/actions/authActions';
+import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-//   const token_hash = requestUrl.searchParams.get('toke')
-//   const type = requestUrl.searchParams.get('type')
+  console.log('🚀 [CALLBACK_ROUTE] - Route handler initiated.');
 
-  if (code) {
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+  const { searchParams, origin } = new URL(request.url);
+  const code = searchParams.get('code');
+
+  if (!code) {
+    return NextResponse.redirect(`${origin}/login?error=Authentication failed: No code provided.`);
+  }
+  
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+  if (error) {
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
+  }
+
+  if (data.user) {
+    console.log('✅ [CALLBACK_ROUTE] - Session successfully exchanged. User found:', data.user.email);
     
-    if (!error) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+    try {
+      console.log('🔄 [CALLBACK_ROUTE] - Calling handleOAuthCallback to process user in DB...');
+      const { isNew } = await handleOAuthCallback(data.user);
+
+      const redirectTo = isNew ? '/onboarding' : '/dashboard';
+      
+      console.log(`✅ [CALLBACK_ROUTE] - User processed. Redirecting ${isNew ? 'new' : 'existing'} user to: ${origin}${redirectTo}`);
+      return NextResponse.redirect(`${origin}${redirectTo}`);
+
+    } catch (dbError) {
+      console.error('❌ [CALLBACK_ROUTE] - Database processing ERROR:', dbError);
+      return NextResponse.redirect(`${origin}/login?error=Could not process user data.`);
     }
   }
 
-  // Handle email confirmation
-  if (code) {
-    return NextResponse.redirect(new URL(`/auth/confirm`, request.url))
-  }
-
-  // Default redirect for any other case
-  return NextResponse.redirect(new URL('/auth', request.url))
+  // This part should ideally not be reached
+  console.warn('⚠️ [CALLBACK_ROUTE] - Fallback: No user data after successful exchange. This should not happen.');
+  return NextResponse.redirect(`${origin}/login?error=An unknown authentication error occurred.`);
 }

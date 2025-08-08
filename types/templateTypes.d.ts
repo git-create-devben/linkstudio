@@ -1,3 +1,4 @@
+import { ContentType, DesignType } from "@/stores/useContentStore";
 import { StaticImageData } from "next/image";
 
 export type TemplateType = {
@@ -35,4 +36,9 @@ export type LinkItem = {
         bio: boolean;
         heading: boolean;
       };
+      // content:any;
+      // actionItems?:ActionItemType;
+      // socialLinks?:SocialLinkType;
+      // design?:DesignType;
+      // actions?:ActionType;
   };

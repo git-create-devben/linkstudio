@@ -54,11 +54,14 @@ body {
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
-/* @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
+@layer base {
+  /* body {
     @apply bg-background text-foreground;
-  }
-} */
+  } */
+   .text-font-medium {
+    @apply text-sm font-medium
+   }
+   .text-font-bold {
+    @apply text-sm font-bold
+   }
+}

@@ -4,6 +4,7 @@ import { Eye, Link, Percent, UserPlus } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { getAnalyticsData } from "@/actions/analyticsActions"; // Adjust the import path
+import { getUserSubscription } from "@/actions/userActions";
 
 // Define a type for our fetched data for type safety
 type AnalyticsData = {
@@ -14,6 +15,7 @@ type AnalyticsData = {
 
 export default function StatsCard() {
   const [data, setData] = useState<AnalyticsData | null>(null);
+  const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   // 1. Fetch data when the component first loads
@@ -32,7 +34,21 @@ export default function StatsCard() {
     };
 
     fetchData();
-  }, []); // The empty dependency array means this runs once on mount
+  }, []); 
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      const subscription = await getUserSubscription();
+      if (subscription.error) {
+        console.error("Failed to load subscription:", subscription.error);
+        return;
+      }
+      // Handle the subscription data
+      setSubscription(subscription.data);
+    };
+
+    fetchSubscription();
+  }, []);
 
   // 2. Calculate derived metrics and prepare the stats array dynamically
   const clickRate = data?.pageViews ? ((data.totalLinkClicks / data.pageViews) * 100).toFixed(1) + "%" : "0%";
@@ -56,11 +72,16 @@ export default function StatsCard() {
           <h2 className="text-base md:text-lg font-semibold">Lifetime Stats</h2>
           <span className="text-muted-foreground text-sm cursor-pointer">?</span>
         </div>
-        <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto">
+        <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto text-white">
           <Button variant="outline" className="flex-1 sm:flex-none">
             Export
           </Button>
-          <Button className="flex-1 sm:flex-none">
+          {!subscription?.isActive && (
+            <Button className="flex-1 sm:flex-none">
+            Upgrade
+          </Button>
+          )}
+          <Button className="flex-1 sm:flex-none text-black">
             View Details
           </Button>
         </div>

@@ -17,6 +17,7 @@ import {
   SparklesIcon,
 } from "lucide-react"
 import { toast } from "sonner"
+import PaymentPlans from "@/components/payment/paymentPlan"
 
 // Section Component for consistent padding
 const Section = ({
@@ -242,17 +243,17 @@ export default async function LinkStudioApplePage() {
                   imageUrl: "/placeholder.svg?width=450&height=600&text=Brand+Showcase+Template",
                   category: "Brands & Businesses",
                 },
-                {
-                  title: "Chic Influencer Page",
-                  imageUrl: "/placeholder.svg?width=450&height=600&text=Influencer+Template",
-                  category: "Influencers & Content Creators",
-                },
+                // {
+                //   title: "Chic Influencer Page",
+                //   imageUrl: "/placeholder.svg?width=450&height=600&text=Influencer+Template",
+                //   category: "Influencers & Content Creators",
+                // },
               ].map((template, i) => (
                 <TemplateCard key={i} {...template} />
               ))}
             </div>
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-              {[...Array(5)].map((_, i) => (
+              {[...Array(4)].map((_, i) => (
                 <button
                   key={i}
                   aria-label={`Go to slide ${i + 1}`}
@@ -266,7 +267,7 @@ export default async function LinkStudioApplePage() {
               asChild
               variant="outline"
               size="lg"
-              className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-900 text-base px-8 py-3 rounded-lg"
+              className="border-gray-300 text-gray-200 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-900 text-base px-8 py-3 rounded-lg"
             >
               <Link href="/templates">
                 Explore All Templates <LayoutGrid className="ml-2 w-5 h-5" />
@@ -313,18 +314,18 @@ export default async function LinkStudioApplePage() {
 
         {/* Visual Showcase / "Inspiration" Section */}
         <Section id="showcase" className="bg-gray-900 text-white" fullWidth>
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-16">
+          {/* <div className="max-w-7xl mx-auto px-6 lg:px-8"> */}
+            {/* <div className="text-center mb-16">
               <AnimatedWrapper>
                 <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">Imagine the Impact.</h2>
                 <p className="mt-4 max-w-xl mx-auto text-lg text-gray-300">
                   See how creators, artists, and innovators are shaping their digital narratives with LinkStudio.
                 </p>
               </AnimatedWrapper>
-            </div>
-          </div>
-          <div className="relative mt-12 pb-12">
-            <div className="flex overflow-x-auto space-x-6 lg:space-x-8 px-6 lg:px-8 snap-x snap-mandatory scrollbar-hide">
+            </div> */}
+          {/* </div> */}
+          <div className="relative">
+            {/* <div className="flex overflow-x-auto space-x-6 lg:space-x-8 px-6 lg:px-8 snap-x snap-mandatory scrollbar-hide">
               {[
                 {
                   title: "Artist Portfolio Showcase",
@@ -360,7 +361,8 @@ export default async function LinkStudioApplePage() {
                   <p className="mt-4 text-center text-sm text-gray-400">{item.title}</p>
                 </AnimatedWrapper>
               ))}
-            </div>
+            </div> */}
+            <PaymentPlans/>
           </div>
         </Section>
 

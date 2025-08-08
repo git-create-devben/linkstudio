@@ -130,7 +130,7 @@ const ContentPanel = ({ onClose }: { onClose: () => void }) => {
                             {content.profilePicture ? 'Change Image' : 'Upload Image'}
                         </span>
                     </label>
-                    <input id="cover-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleUploadProfilePicture} />
+                    <input id="cover-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleCoverImageUpload} />
                 </div>
                 </div>
 

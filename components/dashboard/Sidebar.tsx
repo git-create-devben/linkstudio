@@ -18,7 +18,7 @@ import UpgradeButton from "../payment/UpgradeButton";
 const menuItems = [
   { icon: <Home className="w-5 h-5" />, label: "Home", link: "/dashboard" },
   { icon: <Link2 className="w-5 h-5" />, label: "Link in Bio", link: "/dashboard/editor" },
-  { icon: <LayoutTemplate className="w-5 h-5" />, label: "Analytics", link: "/editor" },
+  { icon: <LayoutTemplate className="w-5 h-5" />, label: "Analytics", link: "/dashboard/analytics" },
   { icon: <L className="w-5 h-5" />, label: "Short Links", link: "/editor" },
   { icon: <Film className="w-5 h-5" />, label: "Template", link: "/editor" },
   { icon: <Monitor className="w-5 h-5" />, label: "Website", link: "/editor" },

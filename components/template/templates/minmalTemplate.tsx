@@ -2,8 +2,7 @@ import React from "react";
 import { TemplateProps } from "@/types/editorTypes";
 import LinkListAction from "../actions/LinkListAction";
 import { getPlatformIcon } from "@/lib/getPlatformIcons";
-
-
+import defaultProfilePicture from "@/public/Devben Portfolio.webp"
 
 // Your main template component
 const MinimalTemplate: React.FC<TemplateProps> = ({
@@ -22,16 +21,16 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
       className="min-h-screen w-full flex flex-col items-center p-2"
       style={{ background, color }}
     >
-      <div className="w-full max-w-md mx-auto px-4 pb-8 flex flex-col items-center">
+      <div className="w-full max-w-md mx-auto px-1 pb-8 flex flex-col items-center">
         {/* Banner */}
         {coverImage && (
-            <img src={coverImage} alt="Banner" className="w-full h-40 object-cover mb-[-50px] rounded-md" />
+            <img src={coverImage || defaultProfilePicture.src} alt="Banner" className="w-full h-40 object-cover mb-[-50px] rounded-md bg-center bg-cover" />
         )}
 
         {/* Avatar */}
         {profilePicture && (
           <img
-            src={profilePicture }
+            src={profilePicture || defaultProfilePicture.src}
             alt={profileName || "Profile"}
             className="w-24 h-24 rounded-full border-4 shadow-lg object-cover"
             style={{ borderColor: background}} // Make border match background
@@ -43,7 +42,7 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
           {toggles.profileName && <h1 className="text-2xl font-bold">{profileName}</h1>}
           {toggles.bio && <p className="text-base opacity-80">{profileBio}</p>}
         </div>
-        <div className="flex gap-4 space-y-5">
+        <div className="flex gap-4 space-y-5 mb-2">
         {
          socialLinks && socialLinks?.map((link) => {
             return (

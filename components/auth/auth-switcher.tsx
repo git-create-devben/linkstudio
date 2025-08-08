@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { signup, login } from '@/actions/authActions'
+import { signup, login, googleSignIn } from '@/actions/authActions'
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -29,7 +29,7 @@ const AuthSwitcher = () => {
           if (isLogin) {
             toast.success("Login successful")
             router.push("/dashboard")
-          } 
+          }
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -42,11 +42,21 @@ const AuthSwitcher = () => {
   }
 
   const handleGoogleLogin = async () => {
+    // const supabase = await createClient()
     // Implement Google login logic here
     try {
       // Add your Google login implementation
-      toast.success("Google login successful")
-      router.push("/dashboard")
+       await googleSignIn()
+      // console.log(res.success)
+      // if (res.error) {
+      //   console.log("success:", JSON.stringify(res.error))
+      // }
+      // if(data?.url){
+      //   window.location.href = data?.url
+      // }
+      // console.log("google return data", data)
+      // toast.success("Google login successful")
+      // router.push("/dashboard")
     } catch (err) {
       setError("Failed to login with Google")
     }

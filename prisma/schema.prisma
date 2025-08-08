@@ -22,6 +22,12 @@ model User {
   profile             Profile?      @relation("ProfileToUser")
   socialLinks         SocialLinks[]
   webLinks            WebLink[]
+  payments            Payment[]
+  subscriptionId      String?
+  isActive            Boolean       @default(false)
+  plan                String?
+  billingCycle        String?
+  payment_gateway     String?
 
   @@map("users")
 }
@@ -122,4 +128,15 @@ model WebLink {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("web_links")
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String
+  reference     String   @unique
+  amount        Int
+  status        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
 }

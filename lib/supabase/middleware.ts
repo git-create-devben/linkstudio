@@ -42,7 +42,7 @@ export async function updateSession(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
   // Auth routes (redirect to dashboard if already logged in)
-  const authRoutes = ['/auth']
+  const authRoutes = ['/auth',"/"]
   const isAuthRoute = authRoutes.includes(pathname)
 
   if (isProtectedRoute && !user) {

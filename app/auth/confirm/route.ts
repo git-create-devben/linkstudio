@@ -16,9 +16,17 @@ export async function GET(request: NextRequest) {
   redirectTo.searchParams.delete('token_hash')
   redirectTo.searchParams.delete('type')
 
-  if (token_hash && type) {
-    const supabase = await createClient()
+  // Check if user is already authenticated (OAuth case)
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (user && !token_hash && !type) {
+    // User is already authenticated (likely OAuth), redirect to onboarding
+    console.log('Already authenticated user redirected to onboarding')
+    return NextResponse.redirect(redirectTo)
+  }
 
+  if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash,

@@ -25,6 +25,7 @@ import {
     DrawerTitle,
     DrawerTrigger,
   } from "@/components/ui/drawer"
+import DesignPanel from './panels/designPanel';
 
 type ActionType = "actions" | "social" | "content" | "design" | "search" | "settings";
 
@@ -49,19 +50,7 @@ const ResponsiveEditorSidebar = () => {
       case 'content':
         return <ContentPanel onClose={() => setActivePanel(null)} />;
       case 'design':
-        return (
-          <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Design</h2>
-              <button onClick={() => setActivePanel(null)} className="p-1 hover:bg-gray-100 rounded">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="flex-1 p-4">
-              <p className="text-gray-600">Design options go here...</p>
-            </div>
-          </div>
-        );
+        return <DesignPanel onClose={() => setActivePanel(null)} />;
       case 'search':
         return (
           <div className="flex flex-col h-full">
@@ -71,8 +60,12 @@ const ResponsiveEditorSidebar = () => {
                 <X size={20} />
               </button>
             </div>
-            <div className="flex-1 p-4">
-              <p className="text-gray-600">Search functionality goes here...</p>
+            <div className="flex flex-col justify-center items-center p-4">
+              <p className="text-gray-600 text-font-medium">Search is comming soon stay tune...</p>
+              <div className="w-full max-w-md mt-8 space-y-4">
+                <h1 className='text-font-bold'>What does search do?</h1>
+                <p className='text-font-medium'>Search lets you find content on your page. You can search for a specific keyword, phrase, or link. You can also search for content by date, category, or tag.</p>
+              </div>
             </div>
           </div>
         );

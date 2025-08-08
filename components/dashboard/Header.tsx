@@ -10,8 +10,16 @@ import { toast } from 'sonner'
 
 const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle: () => void }) => {
     const pathname = usePathname()
+
     const isEditorPage = pathname === '/dashboard/editor'
     const isDashboardPage = pathname === '/dashboard'
+    const isOtherPage = pathname.startsWith('/dashboard') && pathname !== '/dashboard' && pathname !== '/dashboard/editor'
+    console.log(pathname, isEditorPage, isDashboardPage, isOtherPage, pathname.startsWith("/dashboard"), pathname !== '/dashboard/editor')
+
+
+    //if it dashboard show upgradebutton and profile button
+    //if it editor show multi button and upgrade button
+    //if it other page show profile alone
 
     const [user, setUser] = useState<UserProps | null>(null)
     console.log("user", user)
@@ -42,30 +50,22 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                     <LogoApple />
                 </div>
                 <div className='flex gap-6'>
-                    {isEditorPage && (
-                        <>
-                            <MultiButton username={user.username} />
-                            <div className='hidden md:flex'>
-                                <UpgradeButton />
-                            </div>
-                        </>
-                    )}
-                    {!isDashboardPage && !isEditorPage && (
-                        <>
-                            <MultiButton username={user.username} />
-                            <div className='hidden md:flex'>
-                                <UpgradeButton />
-                            </div>
 
-                            <Profile />
-                        </>
-                    )}
-                    {isDashboardPage && (
+
+                    {isEditorPage ?
                         <>
+                            <MultiButton username={"flash"} />
                             <UpgradeButton />
-                            <Profile />
                         </>
-                    )}
+                        : isDashboardPage ?
+                            <>
+                                <UpgradeButton />
+                                <Profile />
+                            </ >
+                            :
+                            <Profile />
+                    }
+
                 </div>
             </nav>
         </header>

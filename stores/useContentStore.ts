@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import defaultImage from "@/public/Devben Portfolio.webp";
 import { SocialLink } from "@/types/editorTypes";
+import { deepmerge } from "deepmerge-ts";
 
 // === Types ===
 export type DesignType = {
@@ -17,9 +18,9 @@ export type ContentType = {
   coverImage: string | null;
   id: string;
   profileId: string;
-  profilePicture: string | null;
-  profileName: string | null;
-  profileBio: string | null;
+  profilePicture: string;
+  profileName: string;
+  profileBio: string;
   profileVerified: boolean;
 };
 
@@ -51,6 +52,12 @@ type UserContentStore = {
   addActionItem: (item: ActionItemType) => void;
   updateActionItem: (id: string, updates: Partial<ActionItemType["config"]>) => void;
   removeActionItem: (id: string) => void;
+  
+  // New method to handle temporary ID conversion
+  convertTemporaryId: (oldId: string, newId: string) => void;
+  
+  // Method to check if an ID is temporary
+  isTemporaryId: (id: string) => boolean;
 
   socialLinks: SocialLink[];
   setSocialLinks: (links: SocialLink[]) => void;
@@ -58,19 +65,24 @@ type UserContentStore = {
   updateSocialLink: (id: string, newUrl: string) => void;
   removeSocialLink: (id: string) => void;
 
-  initializeStore: (data: {
-    templateId: string;
-    design: DesignType;
-    content: ContentType;
-    actionItems: ActionItemType[];
-    socialLinks: SocialLink[];
-  }) => void;
+  initializeStore: (data: StoreUpdateData) => void;
 };
+
+type StoreUpdateData = {
+  templateId?: string;
+  design?: Partial<DesignType>;
+  content?: Partial<ContentType>;
+  actionItems?: ActionItemType[];
+  socialLinks?: SocialLink[];
+};
+
+// Helper function to generate temporary IDs
+const generateTempId = () => `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 // === Store ===
 export const useUserContentStore = create<UserContentStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       loading: true,
       setLoading: (value) => set({ loading: value }),
 
@@ -79,13 +91,13 @@ export const useUserContentStore = create<UserContentStore>()(
 
       design: {
         layout: "minimal",
-        background: "#FFFFFF",
+        background: "#1F2937",
         buttonColor: "#374151",
-        color: "#1F2937",
+        color: "#FFFFFF",
         font: "Inter",
       },
       setDesign: (data) =>
-        set((state) => ({ design: { ...state.design, ...data } })),
+        set((state) => ({ design: deepmerge(state.design, data) })),
 
       content: {
         id: "",
@@ -97,19 +109,19 @@ export const useUserContentStore = create<UserContentStore>()(
         profileVerified: false,
       },
       setContent: (data) =>
-        set((state) => ({ content: { ...state.content, ...data } })),
+        set((state) => ({ content: deepmerge(state.content, data) })),
 
       actionItems: [
         {
-          id: "default",
+          id: generateTempId(), // Use generated temp ID instead of "default"
           order: 0,
           type: "LINK_LIST",
           config: {
             links: [
               { title: "Link 1", url: "" },
-              { title: "Link 1", url: "" },
-              { title: "Link 1", url: "" },
-              { title: "Link 1", url: "" },
+              { title: "Link 2", url: "" },
+              { title: "Link 3", url: "" },
+              { title: "Link 4", url: "" },
             ],
           },
         },
@@ -121,7 +133,7 @@ export const useUserContentStore = create<UserContentStore>()(
         set((state) => ({
           actionItems: state.actionItems.map((item) =>
             item.id === id
-              ? { ...item, config: { ...item.config, ...updates } }
+              ? { ...item, config: deepmerge(item.config, updates) }
               : item
           ),
         })),
@@ -129,6 +141,17 @@ export const useUserContentStore = create<UserContentStore>()(
         set((state) => ({
           actionItems: state.actionItems.filter((item) => item.id !== id),
         })),
+
+      // New method to convert temporary IDs to real database IDs
+      convertTemporaryId: (oldId, newId) =>
+        set((state) => ({
+          actionItems: state.actionItems.map((item) =>
+            item.id === oldId ? { ...item, id: newId } : item
+          ),
+        })),
+
+      // Method to check if an ID is temporary
+      isTemporaryId: (id) => id === "default" || id.startsWith("temp_"),
 
       socialLinks: [],
       setSocialLinks: (links) => set({ socialLinks: links }),
@@ -145,18 +168,19 @@ export const useUserContentStore = create<UserContentStore>()(
           socialLinks: state.socialLinks.filter((link) => link.id !== id),
         })),
 
-      initializeStore: (data) =>
-        set({
-          templateId: data.templateId,
-          design: data.design,
-          content: data.content,
-          actionItems: data.actionItems,
-          socialLinks: data.socialLinks,
+      initializeStore: (data: StoreUpdateData) =>
+        set((state) => ({
+          ...state,
           loading: false,
-        }),
+          templateId: data.templateId ?? state.templateId,
+          design: data.design ? deepmerge(state.design, data.design) : state.design,
+          content: data.content ? deepmerge(state.content, data.content) : state.content,
+          actionItems: data.actionItems ?? state.actionItems,
+          socialLinks: data.socialLinks ?? state.socialLinks,
+        })),
     }),
     {
-      name: "user-content-storage", // localStorage key
+      name: "user-content-storage",
       partialize: (state) => ({
         templateId: state.templateId,
         design: state.design,

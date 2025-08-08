@@ -23,15 +23,17 @@ const TemplateRenderer = ({ templateId }: TemplateRendererProps) => {
   const {socialLinks,  actionItems, design, content} = useUserContentStore();
   console.log("socialLinks", socialLinks)
 
-  const templateProps: TemplateProps = useMemo(
+  const templateProps = useMemo<TemplateProps>(
     () => ({
+      name: templateId,
       content,
       design,
-      actions: actionItems,
+      actionItems,
       toggles: STATIC_TOGGLES, 
       socialLinks,
+      actions: actionItems,
     }),
-    [content, design, actionItems] 
+    [content, design, actionItems, socialLinks, actionItems, templateId] 
   );
 
   const TemplateComponent = templateRegistry[templateId];
@@ -40,7 +42,7 @@ const TemplateRenderer = ({ templateId }: TemplateRendererProps) => {
     return <div>Template '{templateId}' not found.</div>;
   }
 
-  return <TemplateComponent name={templateId} {...templateProps} />;
+  return <TemplateComponent  {...templateProps} />;
 };
 
 export default TemplateRenderer;

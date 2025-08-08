@@ -1,10 +1,12 @@
+// Updated contentActions.ts
 "use server";
 
-import  prisma  from "@/lib/prismaClient";
+import prisma from "@/lib/prismaClient";
 import { getUser } from "./authActions";
 import { revalidatePath } from "next/cache";
 import { ActionItemType } from "@/stores/useContentStore";
 import { createClient } from "@/lib/supabase/server";
+
 export async function useContent() {
   const profile = await getUser();
   console.log("profile", profile?.profile);
@@ -34,14 +36,6 @@ export async function useContent() {
   return content;
 }
 
-// async function getProfile() {
-//   const user = await getUser();
-//   if (!user?.profile?.id) {
-//     throw new Error("Profile not found. User may not be logged in.");
-//   }
-//   return user.profile;
-// }
-// actions/contentActions.ts
 export async function updateUserContent(updates: {
   profileName?: string;
   profileBio?: string;
@@ -75,7 +69,6 @@ async function getProfile() {
   return user.profile;
 }
 
-// Action to update CONTENT
 export async function updateContent(updates: {
   profileName?: string;
   profileBio?: string;
@@ -87,19 +80,12 @@ export async function updateContent(updates: {
     where: { profileId: profile.id },
     data: updates,
   });
-  // revalidatePath(`/${profile.user.username}`);
   return updatedContent;
 }
 
-// --- ACTIONS FOR ACTIONS ---
-
-// Action to CREATE a new ActionItem (e.g., a LinkList)
-
-
-// Action to UPDATE an existing ActionItem
 export async function createActionItem(actionData: {
   type: string;
-  config: object; // Prisma handles the JSON conversion
+  config: object;
   order: number;
 }) {
   const profile = await getProfile();
@@ -111,14 +97,18 @@ export async function createActionItem(actionData: {
       order: actionData.order,
     },
   });
-  // revalidatePath(`/${profile.user.username}`);
-  return newAction; // <-- CRITICAL: Return the new action with its DB-generated ID
+  return newAction;
 }
 
-// Action to DELETE an ActionItem
 export async function deleteActionItem(id: string) {
   const profile = await getProfile();
-  // Optional: Add a check to ensure the action item belongs to the current user
+  
+  // Check if this is a temporary/default ID
+  if (id === "default" || id.startsWith("temp_")) {
+    // For temporary IDs, just return success since they don't exist in DB
+    return { success: true, isTemporary: true };
+  }
+  
   const actionToDelete = await prisma.actionItem.findUnique({ where: { id } });
   if (actionToDelete?.profileId !== profile.id) {
     throw new Error("Unauthorized");
@@ -127,20 +117,34 @@ export async function deleteActionItem(id: string) {
   await prisma.actionItem.delete({
     where: { id: id },
   });
-  // revalidatePath(`/${profile.user.username}`);
   return { success: true };
 }
 
-
-// ... (imports and other actions like createActionItem, deleteActionItem)
-
+// Updated updateActionItem to handle temporary IDs
 export async function updateActionItem(id: string, config: object) {
-  const profile = await getProfile(); // Assuming you have this helper
+  const profile = await getProfile();
 
-  // Optional: Check if the user is authorized to edit this item
+  // Check if this is a temporary/default ID
+  if (id === "default" || id.startsWith("temp_")) {
+    // For temporary IDs, create a new action item instead of updating
+    const newAction = await createActionItem({
+      type: "LINK_LIST", // or determine type from config
+      config,
+      order: 0, // or determine order from existing items
+    });
+    
+    return {
+      ...newAction,
+      wasTemporary: true,
+      originalId: id
+    };
+  }
+
+  // For existing items, proceed with normal update
   const itemToUpdate = await prisma.actionItem.findFirst({
     where: { id, profileId: profile.id }
   });
+  
   if (!itemToUpdate) {
     throw new Error("Action not found or unauthorized.");
   }
@@ -150,10 +154,32 @@ export async function updateActionItem(id: string, config: object) {
     data: { config },
   });
 
-  revalidatePath(`/${profile.displayName}`); // Update public page
+  revalidatePath(`/${profile.displayName}`);
   return updatedAction;
 }
 
+// New function to convert temporary action items to real ones
+export async function convertTemporaryActionItems(actionItems: ActionItemType[]) {
+  const profile = await getProfile();
+  const conversions: { oldId: string; newId: string }[] = [];
+
+  for (const item of actionItems) {
+    if (item.id === "default" || item.id.startsWith("temp_")) {
+      const newAction = await createActionItem({
+        type: item.type,
+        config: item.config,
+        order: item.order,
+      });
+      
+      conversions.push({
+        oldId: item.id,
+        newId: newAction.id
+      });
+    }
+  }
+
+  return conversions;
+}
 
 export async function createSocialLink(data: { name: string; url: string }) {
   const user = await getUser();
@@ -172,7 +198,6 @@ export async function createSocialLink(data: { name: string; url: string }) {
 
 export async function updateSocialLink(id: string, newUrl: string) {
   const user = await getUser();
-  // Add auth check to ensure user owns this link
   const updatedLink = await prisma.socialLinks.update({
     where: { id: id },
     data: { url: newUrl },
@@ -183,7 +208,6 @@ export async function updateSocialLink(id: string, newUrl: string) {
 
 export async function deleteSocialLink(id: string) {
   const user = await getUser();
-  // Add auth check
   await prisma.socialLinks.delete({
     where: { id: id },
   });
@@ -222,7 +246,6 @@ export async function updateDesign(updates: {
       profileId: user.profile.id,
       layout: updates.layout ?? "default",
       background: updates.background ?? "#ffffff",
-      // buttonColor: updates.buttonColor ?? "#000000",
       color: updates.textColor ?? "#000000",
       font: updates.font ?? "sans-serif",
     }
@@ -232,13 +255,11 @@ export async function updateDesign(updates: {
   return updatedDesign;
 }
 
-
 export async function uploadCoverImage(formData: FormData) {
   const file = formData.get('file') as File;
   if (!file) throw new Error("No file provided.");
 
   const supabase = await createClient();
-
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
@@ -247,9 +268,8 @@ export async function uploadCoverImage(formData: FormData) {
   if (uploadError) throw new Error(uploadError.message);
 
   const { data: { publicUrl } } = supabase.storage.from('covers').getPublicUrl(filePath);
-  console.log("publick url", publicUrl)
+  console.log("public url", publicUrl);
 
-  // 3. Update the coverImage path in the Content table
   await prisma.content.update({
     where: { profileId: user.profile?.id },
     data: { coverImage: publicUrl }
@@ -264,7 +284,6 @@ export async function uploadProfilePicture(formData: FormData) {
   if (!file) throw new Error("No file provided.");
 
   const supabase = await createClient();
-
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
@@ -273,9 +292,8 @@ export async function uploadProfilePicture(formData: FormData) {
   if (uploadError) throw new Error(uploadError.message);
 
   const { data: { publicUrl } } = supabase.storage.from('profilepicture').getPublicUrl(filePath);
-  console.log("publick url", publicUrl)
+  console.log("public url", publicUrl);
 
-  // 3. Update the coverImage path in the Content table
   await prisma.content.update({
     where: { profileId: user.profile?.id },
     data: { profilePicture: publicUrl }
