@@ -201,11 +201,11 @@ const ActionsPanel = ({ onClose }: { onClose: () => void }) => {
     
     // --- MAIN RETURN & DIALOGS ---
     return (
-         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+         <div className="fixed inset-0 bg-black/20 z-100 bg-opacity-10 flex items-center justify-center z-50">
             <div className="bg-white w-full max-w-4xl h-full max-h-[90vh] rounded-lg overflow-hidden relative">
                 {currentView.startsWith('link-list') ? renderActionForm() : renderMainView()}
                 {deleteCandidateId && (
-                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-20">
+                    <div className="absolute inset-0 bg-black/10 bg-opacity-30 flex items-center justify-center z-20">
                         <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
                             <h3 className="text-lg font-bold text-gray-900">Delete Action</h3><p className="text-sm text-gray-600 mt-2">Are you sure? This cannot be undone.</p>
                             <div className="flex gap-3 mt-6">

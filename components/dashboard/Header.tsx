@@ -39,7 +39,7 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
     if (!user) return null
 
     return (
-        <header className='sticky top-0 shadow-sm bg-white/40 z-10'>
+        <header className='sticky top-0 shadow-sm bg-gradient-to-br from-purple-50 via-white to-blue-50 z-10'>
             <nav className='flex justify-between items-center py-2.5 px-5'>
                 <div className='flex gap-4 items-center'>
                     <MenuIcon
@@ -54,7 +54,7 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
 
                     {isEditorPage ?
                         <>
-                            <MultiButton username={"flash"} />
+                            <MultiButton username={user.username} />
                             <UpgradeButton />
                         </>
                         : isDashboardPage ?

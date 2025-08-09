@@ -38,7 +38,7 @@ const ResponsiveEditorSidebar = () => {
     { id: 'content', icon: FileText, label: 'Content' },
     { id: 'design', icon: Palette, label: 'Design' },
     { id: 'search', icon: Search, label: 'Search' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    // { id: 'settings', icon: Settings, label: 'Settings' },
   ];
 
   const renderPanelContent = () => {
@@ -69,20 +69,20 @@ const ResponsiveEditorSidebar = () => {
             </div>
           </div>
         );
-      case 'settings':
-        return (
-          <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Settings</h2>
-              <button onClick={() => setActivePanel(null)} className="p-1 hover:bg-gray-100 rounded">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="flex-1 p-4">
-              <p className="text-gray-600">Settings panel goes here...</p>
-            </div>
-          </div>
-        );
+      // case 'settings':
+      //   return (
+      //     <div className="flex flex-col h-full">
+      //       <div className="flex items-center justify-between p-4 border-b">
+      //         <h2 className="text-lg font-semibold">Settings</h2>
+      //         <button onClick={() => setActivePanel(null)} className="p-1 hover:bg-gray-100 rounded">
+      //           <X size={20} />
+      //         </button>
+      //       </div>
+      //       <div className="flex-1 p-4">
+      //         <p className="text-gray-600">Settings panel goes here...</p>
+      //       </div>
+      //     </div>
+      //   );
       default:
         return null;
     }
@@ -91,9 +91,9 @@ const ResponsiveEditorSidebar = () => {
   return (
     <div className="relative">
       {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden">
+      <div className="lg:hidden ">
         {/* Mobile Bottom Navigation (fixed at bottom) */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50">
+        <div className=" bg-gradient-to-br from-purple-50 via-white to-blue-50 fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-2 z-50">
           <div className="flex justify-between items-center">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
@@ -104,7 +104,7 @@ const ResponsiveEditorSidebar = () => {
                   <DrawerTrigger asChild>
                     <button
                       className={`flex flex-col items-center gap-1 py-2 px-3 rounded-lg transition-colors ${
-                        isActive ? 'bg-gray-100 text-blue-500' : 'text-gray-600 hover:bg-gray-50'
+                        isActive ? 'bg-gradient-to-br from-blue-100 via-white to-purple-100 text-gray-900' : 'text-gray-600 hover:bg-gradient-to-br from-blue-200 via-white to-purple-200'
                       }`}
                       onClick={() => setActivePanel(item.id as ActionType)}
                     >

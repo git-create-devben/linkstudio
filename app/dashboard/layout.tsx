@@ -28,7 +28,7 @@ export default function DashboardLayout({
         <Header isVisible={isVisible} onToggle={toggleSidebar}/>
         <main className="flex flex-1 overflow-hidden">
           <Sidebar isVisible={isVisible}/>
-          <div className="flex-1 p-2 overflow-y-auto">
+          <div className="flex-1 p-2 overflow-y-auto  bg-[center_55px_/var(--glass-background)] bg-no-repeat bg-gradient-to-br from-purple-50 via-white to-blue-50 backdrop-blur-xl border border-white/[0.06] shadow-2xl">
             {children}
           </div>
         </main>

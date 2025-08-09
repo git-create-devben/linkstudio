@@ -91,8 +91,8 @@ export const useUserContentStore = create<UserContentStore>()(
 
       design: {
         layout: "minimal",
-        background: "#1F2937",
-        buttonColor: "#374151",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        buttonColor: "rgba(255, 255, 255, 0.2)",
         color: "#FFFFFF",
         font: "Inter",
       },
@@ -113,7 +113,7 @@ export const useUserContentStore = create<UserContentStore>()(
 
       actionItems: [
         {
-          id: generateTempId(), // Use generated temp ID instead of "default"
+          id: "default", // Use deterministic ID for SSR/CSR
           order: 0,
           type: "LINK_LIST",
           config: {

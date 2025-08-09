@@ -26,6 +26,19 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ color, onChange, label }) => 
     '#EDE9FE', '#8B5CF6', '#7C3AED', '#5B21B6'
   ];
 
+  const presetGradients = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+    'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+    'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+    'linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)'
+  ];
+
   return (
     <div className="relative">
       <button
@@ -136,12 +149,40 @@ const DesignPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </div>
         </div>
         
-        {/* Background Color Section */}
+        {/* Background Section */}
         <div>
-          <h3 className="text-base font-medium mb-3">Background Color</h3>
+          <h3 className="text-base font-medium mb-3">Background</h3>
+          
+          {/* Gradient Presets */}
+          <div className="mb-4">
+            <h4 className="text-sm font-medium mb-2 text-gray-600">Gradient Presets</h4>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+                'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+              ].map((gradient, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleDesignChange({ background: gradient })}
+                  className="w-full h-12 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-all duration-200 hover:scale-105"
+                  style={{ background: gradient }}
+                  title={`Gradient ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+          
+          {/* Solid Color Option */}
           <ColorPicker
-            label="Background"
-            color={design.background as string}
+            label="Solid Color"
+            color={typeof design.background === 'string' && !design.background.includes('gradient') ? design.background : '#667eea'}
             onChange={(color) => handleDesignChange({ background: color })}
           />
         </div>

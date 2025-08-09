@@ -104,89 +104,82 @@ const ContentPanel = ({ onClose }: { onClose: () => void }) => {
                 </button>
             </div>
 
-            <div className="space-y-6 p-4">
-                {/* Profile Image - Placeholder for upload logic */}
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Profile Image</label>
-                    {/* <div className="relative w-24 h-24">
-                        <img
-                            src={content.profilePicture || `https://avatar.vercel.sh/${content.profileName}.svg`}
-                            alt="Profile"
-                            className="w-full h-full rounded-full object-cover bg-gray-200"
-                        />
-                        <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-600">
-                            <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" />
-                            <Camera size={16} className="text-white" />
-                        </button>
-                    </div> */}
-                    <div
-                    className="group relative h-24 w-24 rounded-full border-2 bg-cover bg-center flex items-center justify-center"
-                    style={{ backgroundImage: `url(${content.profilePicture})`, backgroundColor: '#f0f0f0' }}
-                >
-                    <div className="absolute inset-0 group-hover:bg-bla transition-colors rounded-lg" />
-                    <label htmlFor="cover-upload" className="relative z-10 flex flex-col items-center text-white bg-bla p-4 rounded-lg cursor-pointer">
-                        <UploadCloud size={20} />
-                        <span className="text-xs text-center font-medium mt-1">
-                            {content.profilePicture ? 'Change Image' : 'Upload Image'}
-                        </span>
-                    </label>
-                    <input id="cover-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleCoverImageUpload} />
-                </div>
-                </div>
-
-                {/* Cover Image - Placeholder for upload logic */}
-                <div
-                    className="group relative h-32 rounded-lg border-2 border-dashed border-gray-300 bg-cover bg-center flex items-center justify-center"
-                    style={{ backgroundImage: `url(${content.coverImage})`, backgroundColor: '#f0f0f0' }}
-                >
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors rounded-lg" />
-                    <label htmlFor="cover-upload" className="relative z-10 flex flex-col items-center text-white bg-black/30 p-4 rounded-lg cursor-pointer">
-                        <UploadCloud size={24} />
-                        <span className="text-sm font-medium mt-1">
-                            {content.coverImage ? 'Change Image' : 'Upload Image'}
-                        </span>
-                    </label>
-                    <input id="cover-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleCoverImageUpload} />
-                </div>
-
-                {/* Profile Name */}
-                <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium">Profile Name</label>
-                    <div className="relative">
-                        <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            id="profileName"
-                            name="profileName" // The 'name' attribute must match the state key
-                            type="text"
-                            value={content.profileName || ''}
-                            onChange={handleInputChange}
-                            onBlur={() => handleSave('profileName')} // Save when user clicks away
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg"
-                            placeholder="Enter your name"
-                        />
+            <div className="space-y-8 p-4">
+                {/* Modern Profile Card */}
+                <div className="relative flex flex-col items-center">
+                    {/* Cover Image with floating FAB */}
+                    <div className="relative w-full h-32 rounded-xl overflow-hidden mb-[-2.5rem] flex items-center justify-center">
+                        {content.coverImage ? (
+                            <img
+                                src={content.coverImage}
+                                alt="Cover"
+                                className="w-full h-full object-cover object-center"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-blue-200 via-white to-purple-200" />
+                        )}
+                        {/* FAB for cover upload */}
+                        <label htmlFor="cover-upload" className="absolute bottom-3 right-3 bg-black/60 hover:bg-blue-600 transition-colors rounded-full p-2 cursor-pointer shadow-lg z-20">
+                            <UploadCloud size={20} className="text-white" />
+                            <input id="cover-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleCoverImageUpload} />
+                        </label>
+                        <div className="absolute inset-0 bg-black/10 pointer-events-none" />
                     </div>
-                </div>
-
-                {/* Bio */}
-                <div className="space-y-2">
-                    <label htmlFor="bio" className="text-sm font-medium">Bio</label>
-                    <textarea
-                        id="profileBio"
-                        name="profileBio" // The 'name' attribute must match the state key
-                        value={content.profileBio || ''}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border rounded-lg resize-none"
-                        rows={4}
-                        placeholder="Tell people about yourself..."
-                    />
-                    <button
-                        onClick={() => handleSave('profileBio')}
-                        disabled={savingField === 'bio'}
-                        className="px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 flex items-center space-x-2"
-                    >
-                        <Save size={16} />
-                        <span>{savingField === 'bio' ? 'Saving...' : 'Save Bio'}</span>
-                    </button>
+                    {/* Avatar floating over cover */}
+                    <div className="relative -mt-12 z-10">
+                        <div className="relative w-24 h-24">
+                            <img
+                                src={content.profilePicture || `https://avatar.vercel.sh/${content.profileName}.svg`}
+                                alt="Profile"
+                                className="w-24 h-24 rounded-full border-4 border-white shadow-xl object-cover bg-gray-100"
+                            />
+                            {/* FAB for avatar upload */}
+                            <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 transition-colors rounded-full p-1.5 cursor-pointer shadow-md border-2 border-white">
+                                <Camera size={16} className="text-white" />
+                                <input id="avatar-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleUploadProfilePicture} />
+                            </label>
+                        </div>
+                    </div>
+                    {/* Name field with edit icon */}
+                    <div className="w-full flex flex-col items-center mt-4">
+                        <label htmlFor="profileName" className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">Name</label>
+                        <div className="relative w-full">
+                            <input
+                                id="profileName"
+                                name="profileName"
+                                type="text"
+                                value={content.profileName || ''}
+                                onChange={handleInputChange}
+                                onBlur={() => handleSave('profileName')}
+                                className="w-full text-center px-4 py-2 rounded-lg border border-gray-200 shadow-sm text-lg font-semibold focus:ring-2 focus:ring-blue-300 outline-none transition-all"
+                                placeholder="Enter your name"
+                            />
+                            <User size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                        </div>
+                    </div>
+                    {/* Bio field with edit icon */}
+                    <div className="w-full mt-3 flex flex-col items-center">
+                        <label htmlFor="profileBio" className="text-xs font-semibold text-gray-600 mb-1 flex items-center gap-1">Bio</label>
+                        <div className="relative w-full">
+                            <textarea
+                                id="profileBio"
+                                name="profileBio"
+                                value={content.profileBio || ''}
+                                onChange={handleInputChange}
+                                className="w-full px-4 py-2 rounded-lg border border-gray-200 shadow-sm text-base resize-none focus:ring-2 focus:ring-blue-300 outline-none transition-all min-h-[80px]"
+                                rows={3}
+                                placeholder="Tell people about yourself..."
+                            />
+                        </div>
+                        <button
+                            onClick={() => handleSave('profileBio')}
+                            disabled={savingField === 'bio'}
+                            className="mt-2 px-4 py-2 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 flex items-center space-x-2"
+                        >
+                            <Save size={16} />
+                            <span>{savingField === 'bio' ? 'Saving...' : 'Save Bio'}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -27,7 +27,7 @@ const EditorSidebar = () => {
     { id: 'content', icon: FileText, label: 'Content' },
     { id: 'design', icon: Palette, label: 'Design' },
     { id: 'search', icon: Search, label: 'Search' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    // { id: 'settings', icon: Settings, label: 'Settings' },
   ];
 
   const handleItemClick = (itemId: ActionType) => {
@@ -69,23 +69,23 @@ const EditorSidebar = () => {
           </div>
         );
 
-      case 'settings':
-        return (
-          <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Settings</h2>
-              <button
-                onClick={() => setActivePanel(null)}
-                className="p-1 hover:bg-gray-100 rounded"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <div className="flex-1 p-4">
-              <p className="text-gray-600">Settings panel goes here...</p>
-            </div>
-          </div>
-        );
+      // case 'settings':
+      //   return (
+      //     <div className="flex flex-col h-full">
+      //       <div className="flex items-center justify-between p-4 border-b">
+      //         <h2 className="text-lg font-semibold">Settings</h2>
+      //         <button
+      //           onClick={() => setActivePanel(null)}
+      //           className="p-1 hover:bg-gray-100 rounded"
+      //         >
+      //           <X size={20} />
+      //         </button>
+      //       </div>
+      //       <div className="flex-1 p-4">
+      //         <p className="text-gray-600">Settings panel goes here...</p>
+      //       </div>
+      //     </div>
+      //   );
 
       default:
         return null;
@@ -95,7 +95,7 @@ const EditorSidebar = () => {
   return (
     <div className="absolut left-0 top-0 p-2 flex h-[calc(75vh-1rem)]">
       {/* Sidebar */}
-      <div className="pl-2 w-25 h-[calc(75vh-1rem)] rounded-2xl bg-white border-r border-gray-200 flex flex-col py-2 overflow-y-scroll">
+      <div className="pl-2 w-25 h-[calc(50vh-1rem)] rounded-2xl bg-white border-r border-gray-200 flex flex-col py-2 overflow-y-scroll">
         {sidebarItems.map((item) => {
           const Icon = item.icon;
           const isActive = activePanel === item.id;
@@ -119,7 +119,7 @@ const EditorSidebar = () => {
 
       {/* Expandable Panel */}
       {activePanel && (
-        <div className="w-80 h-100vh rounded-2xl bg-white border-r border-gray-200 ">
+        <div className="w-80 h-100vh rounded-2xl ">
           {renderPanelContent()}
         </div>
       )}

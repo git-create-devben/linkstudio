@@ -3,7 +3,7 @@ import TemplateInitializer from "@/components/template/templateInitializer";
 
 const Page = () => {
   return (
-    <div className="w-full h-[90vh]">
+    <div className="w-full md:h-[90vh] h-[calc(85vh-1rem)]">
       <PhoneMockup>
         <TemplateInitializer />
       </PhoneMockup>

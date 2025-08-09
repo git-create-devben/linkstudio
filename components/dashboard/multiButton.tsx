@@ -35,6 +35,7 @@ const MultiButton: React.FC<MultiButtonProps> = ({
           transition-all duration-200
           cursor-pointer
           disabled:opacity-50 disabled:cursor-not-allowed
+          bg-gradient-to-br from-blue-200 via-white to-purple-200
         `}
       >
         Preview
@@ -47,8 +48,8 @@ const MultiButton: React.FC<MultiButtonProps> = ({
         disabled={isDisabled || isPublishing}
         className={`
           px-3 py-2 rounded-full
-          bg-blue-600 hover:bg-blue-700
-          text-white
+          bg-gradient-to-br from-blue-200 via-white to-purple-200 hover:bg-gradient-to-br from-blue-600 via-white to-purple-600
+          text-black
           text-xs font-medium
           transition-all duration-200
           disabled:opacity-50 disabled:cursor-not-allowed

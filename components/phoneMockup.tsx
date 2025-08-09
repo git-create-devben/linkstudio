@@ -109,7 +109,7 @@ const [dimensions, setDimensions] = useState({
             />
 
             {/* Status Bar */}
-            <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 pt-3 z-40 bg-transparent">
+            <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 pt-3 z-40 bg-white">
               <div className="text-black text-sm font-semibold">
                 9:41
               </div>

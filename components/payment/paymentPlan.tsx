@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Star, Zap, Users, Shield, Crown, Globe } from 'lucide-react';
 import { getUser } from '@/actions/authActions';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 const PaymentPlansWithDualGateway = () => {
@@ -14,6 +14,7 @@ const PaymentPlansWithDualGateway = () => {
   const [paymentGateway, setPaymentGateway] = useState('stripe'); // default to stripe
   const [customerEmail, setCustomerEmail] = useState(''); // Added for email input
   const router = useRouter()
+  const pathname = usePathname()
 
   // Detect user's country on component mount
   useEffect(() => {
@@ -21,12 +22,12 @@ const PaymentPlansWithDualGateway = () => {
   }, []);
 
   useEffect(() => {
+    // No user check here; only set email if user is already present (optional)
     const fetchUser = async () => {
-    const user = await getUser();
-    if(!user) toast.error('You must be logged in to access this page');
-    setCustomerEmail(user?.email || '');
-    }
-    fetchUser()
+      const user = await getUser();
+      setCustomerEmail(user?.email || '');
+    };
+    fetchUser();
   }, []);
 
   const detectUserCountry = async () => {
@@ -34,7 +35,7 @@ const PaymentPlansWithDualGateway = () => {
       // Method 1: Using ipapi.co (free tier available)
       const response = await fetch('https://ipapi.co/json/');
       const data = await response.json();
-      
+
       if (data.country_code) {
         setUserCountry(data.country_code);
         // Set payment gateway based on country
@@ -131,7 +132,7 @@ const PaymentPlansWithDualGateway = () => {
     },
     {
       id: 'premium',
-      name: 'Premium', 
+      name: 'Premium',
       price: {
         monthly: { usd: 41.67, ngn: 18750 },
         yearly: { usd: 499.99, ngn: 225000 },
@@ -186,7 +187,7 @@ const PaymentPlansWithDualGateway = () => {
 
   const formatPrice = (price:any) => {
     if (price === 0) return 'Free';
-    
+
     if (paymentGateway === 'paystack' && userCountry === 'NG') {
       return `₦${price.toLocaleString()}`;
     }
@@ -195,7 +196,7 @@ const PaymentPlansWithDualGateway = () => {
 
   const getCurrentPrice = (plan:any) => {
     if (plan.price.monthly.usd === 0) return 0;
-    
+
     if (paymentGateway === 'paystack' && userCountry === 'NG') {
       return plan.price[billingCycle].ngn;
     }
@@ -204,7 +205,7 @@ const PaymentPlansWithDualGateway = () => {
 
   const getSavings = (plan:any) => {
     if (plan.price.monthly.usd === 0) return null;
-    
+
     const currency = (paymentGateway === 'paystack' && userCountry === 'NG') ? 'ngn' : 'usd';
     const monthlyCost = plan.price.monthly[currency] * 12;
     const savings = monthlyCost - plan.price.yearly[currency];
@@ -227,25 +228,25 @@ const PaymentPlansWithDualGateway = () => {
   };
 
   const handleSubscribe = async (plan:any) => {
-    if (plan.id === 'premium') { // Changed from 'enterprise' to 'premium'
-      // For premium, redirect to contact form
-      window.location.href = 'mailto:sales@yourcompany.com?subject=Premium Plan Inquiry';
+    const user = await getUser();
+    if (!user) {
+      router.push('/auth');
       return;
     }
-    
-    if (plan.id === 'free') {
-      // For free plan, redirect to signup
-      window.location.href = '/signup';
+    if (plan.id === 'premium') { // Changed from 'enterprise' to 'premium'
+      // For premium, redirect to contact form
+      router.push('/contact');
       return;
     }
 
-    if (!customerEmail) {
-      alert('Please enter your email address to proceed.');
+    if (plan.id === 'free') {
+      // For free plan, redirect to signup
+      router.push('/auth');
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       if (paymentGateway === 'paystack') {
         await initiatePaystackPayment(plan);
@@ -275,7 +276,7 @@ const PaymentPlansWithDualGateway = () => {
     });
 
     const data = await response.json();
-    
+
     if (data.authorization_url) {
       window.location.href = data.authorization_url;
     } else {
@@ -298,7 +299,7 @@ const PaymentPlansWithDualGateway = () => {
     });
 
     const session = await response.json();
-    
+
     if (session.url) {
       window.location.href = session.url;
     } else {
@@ -310,7 +311,7 @@ const PaymentPlansWithDualGateway = () => {
     <div className="flex items-center justify-center mb-6 text-sm text-gray-600">
       <Globe className="w-4 h-4 mr-2" />
       <span>
-        {userCountry === 'NG' ? 'Nigerian users' : 'International users'} • 
+        {userCountry === 'NG' ? 'Nigerian users' : 'International users'} •
         Powered by {paymentGateway === 'paystack' ? 'Paystack' : 'Stripe'}
       </span>
     </div>
@@ -326,16 +327,16 @@ const PaymentPlansWithDualGateway = () => {
         <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto">
           Grow your audience with the perfect plan for your needs
         </p>
-        
+
         {/* Payment Gateway Indicator */}
         <PaymentGatewayIndicator />
 
         {/* Email Input */}
         <div className="max-w-md mx-auto mb-8">
         </div>
-        
+
         {/* Billing Toggle */}
-        <div 
+        <div
           className="inline-flex items-center bg-gray-100 rounded-full p-1"
           role="tablist"
           aria-label="Billing cycle selection"
@@ -448,7 +449,7 @@ const PaymentPlansWithDualGateway = () => {
                     e.stopPropagation();
                     handleSubscribe(plan);
                   }}
-                  disabled={isLoading || !customerEmail} // Disable if email is empty
+                  disabled={pathname === "/" ? false : isLoading || !customerEmail} // Disable if email is empty
                   className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${colorClasses.button}`}
                   aria-label={`${plan.buttonText} for ${plan.name} plan`}
                 >
@@ -495,7 +496,7 @@ const PaymentPlansWithDualGateway = () => {
               What payment methods do you accept?
             </summary>
             <p className="mt-2 text-gray-600 text-sm">
-              {paymentGateway === 'paystack' 
+              {paymentGateway === 'paystack'
                 ? 'We accept all major Nigerian banks, cards, and mobile money for Nigerian users.'
                 : 'We accept all major credit cards, PayPal, and bank transfers for annual plans.'
               }
