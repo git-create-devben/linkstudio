@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { X, Edit, UploadCloud } from 'lucide-react';
+import { X, Edit, UploadCloud, Palette, Sun, Moon, Sparkles, Image, } from 'lucide-react';
 import { updateDesign, uploadCoverImage } from '@/actions/editorActions';
 import { useUserContentStore } from '@/stores/useContentStore';
+import { getTheme, ThemeMode, bannerGradients } from '@/lib/themeSystem';
 import { toast } from 'sonner';
+import { IconColorFilter } from '@tabler/icons-react';
 
 interface DesignPanelProps {
   onClose: () => void;
@@ -123,94 +125,206 @@ const DesignPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const fonts = ['Inter', 'Lora', 'Roboto', 'Open Sans', 'Montserrat'];
 
-  return  (
-    <div className="flex flex-col h-full bg-white text-black">
-      <header className="flex items-center justify-between p-4 border-b">
-        <h2 className="text-lg font-semibold">Design</h2>
-        <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded"> <X size={20} /> </button>
+  const [bannerTab, setBannerTab] = useState<'none' | 'image' | 'gradient'>(
+    design.banner?.type || 'none'
+  );
+  
+  const currentTheme = getTheme(design.theme || 'dark');
+  
+  const handleThemeChange = (newTheme: ThemeMode) => {
+    handleDesignChange({ theme: newTheme });
+  };
+  
+  const handleBannerChange = (type: 'none' | 'image' | 'gradient', value?: string) => {
+    handleDesignChange({ 
+      banner: { 
+        ...design.banner, 
+        type, 
+        value: value || design.banner?.value 
+      } 
+    });
+    setBannerTab(type);
+  };
+
+  const handleBannerImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    toast.loading("Uploading banner image...");
+    try {
+        const newUrl = await uploadCoverImage(formData);
+        handleBannerChange('image', newUrl);
+        toast.success("Banner image updated!");
+    } catch (error) {
+        toast.error("Upload failed. Please try again.");
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
+      {/* Header */}
+      <header className="flex items-center justify-between p-4 border-b border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+          <Palette className="w-5 h-5 text-blue-600" />
+          <h2 className="text-lg font-bold">Design Studio</h2>
+        </div>
+        <button 
+          onClick={onClose} 
+          className="p-2 hover:bg-slate-200 rounded-lg transition-colors duration-200"
+        > 
+          <X size={18} /> 
+        </button>
       </header>
       
       <main className="flex-1 p-4 space-y-6 overflow-y-auto">
-        {/* Cover Image Section - Now Functional */}
-        <div>
-          <h3 className="text-base font-medium mb-3">Cover</h3>
+         {/* Preview Card */}
+         <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+          <h3 className="text-base font-semibold mb-3">Preview</h3>
           <div 
-            className="group relative h-32 rounded-lg border-2 border-dashed border-gray-300 bg-cover bg-center flex items-center justify-center"
-            style={{ backgroundImage: `url(${content.coverImage})`, backgroundColor: '#f0f0f0' }}
+            className="h-24 rounded-lg flex items-center justify-center text-white font-medium shadow-inner"
+            style={{ background: design.customBackground || currentTheme.colors.background }}
           >
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors rounded-lg"/>
-            <label htmlFor="cover-upload" className="relative z-10 flex flex-col items-center text-white bg-black/30 p-4 rounded-lg cursor-pointer">
-                <UploadCloud size={24}/>
-                <span className="text-sm font-medium mt-1">
-                    {content.coverImage ? 'Change Image' : 'Upload Image'}
-                </span>
-            </label>
-            <input id="cover-upload" type="file" className="hidden" accept="image/*,video/*" onChange={handleCoverImageUpload}/>
+            <div className="text-center">
+              <div className="w-8 h-8 bg-white/20 rounded-full mx-auto mb-2" />
+              <div className="text-sm opacity-90">Your Profile</div>
+            </div>
           </div>
         </div>
         
-        {/* Background Section */}
-        <div>
-          <h3 className="text-base font-medium mb-3">Background</h3>
+        {/* Theme Selection */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+          <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+            <Sparkles className="w-4 h-4" />
+            Theme Mode
+          </h3>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { key: 'light' as ThemeMode, icon: Sun, label: 'Light', bg: 'from-blue-100 to-purple-100' },
+              { key: 'dark' as ThemeMode, icon: Moon, label: 'Dark', bg: 'from-slate-700 to-slate-900' },
+              { key: 'glassmorphic' as ThemeMode, icon: Sparkles, label: 'Glass', bg: 'from-purple-500 to-pink-500' }
+            ].map(({ key, icon: Icon, label, bg }) => {
+              const isActive = design.theme === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleThemeChange(key)}
+                  className={`p-3 rounded-lg border-2 transition-all duration-300 hover:scale-105 ${
+                    isActive 
+                      ? 'border-blue-500 shadow-lg' 
+                      : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className={`w-full h-8 rounded bg-gradient-to-r ${bg} mb-2`} />
+                  <div className="flex items-center justify-center gap-1">
+                    <Icon className="w-3 h-3" />
+                    <span className="text-xs font-medium">{label}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Background Gradients */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+          <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+            <IconColorFilter className="w-4 h-4" />
+            Background
+          </h3>
+          <div className="grid grid-cols-3 gap-2">
+            {currentTheme.gradients.map((gradient, index) => (
+              <button
+                key={index}
+                onClick={() => handleDesignChange({ customBackground: gradient })}
+                className="w-full h-12 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all duration-200 hover:scale-105 shadow-sm"
+                style={{ background: gradient }}
+                title={`Gradient ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Banner Section */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+          <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+            <Image className="w-4 h-4" />
+            Banner
+          </h3>
           
-          {/* Gradient Presets */}
-          <div className="mb-4">
-            <h4 className="text-sm font-medium mb-2 text-gray-600">Gradient Presets</h4>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-                'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-                'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
-                'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-                'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
-              ].map((gradient, index) => (
+          {/* Banner Type Selector */}
+          <div className="flex gap-2 mb-4">
+            {[
+              { key: 'none', label: 'None', icon: X },
+              { key: 'image', label: 'Image', icon: Image },
+              { key: 'gradient', label: 'Gradient', icon:IconColorFilter  }
+            ].map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                onClick={() => handleBannerChange(key as any)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  bannerTab === key
+                    ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Banner Content */}
+          {bannerTab === 'image' && (
+            <div>
+              <div 
+                className="relative h-24 rounded-lg border-2 border-dashed border-slate-300 bg-cover bg-center flex items-center justify-center hover:border-blue-400 transition-colors duration-200"
+                style={{ 
+                  backgroundImage: design.banner?.value ? `url(${design.banner.value})` : 'none',
+                  backgroundColor: '#f8fafc' 
+                }}
+              >
+                <label htmlFor="banner-upload" className="flex flex-col items-center text-slate-600 cursor-pointer">
+                  <UploadCloud size={20}/>
+                  <span className="text-xs font-medium mt-1">
+                    {design.banner?.value ? 'Change Banner' : 'Upload Banner'}
+                  </span>
+                </label>
+                <input 
+                  id="banner-upload" 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleBannerImageUpload}
+                />
+              </div>
+            </div>
+          )}
+
+          {bannerTab === 'gradient' && (
+            <div className="grid grid-cols-2 gap-2">
+              {bannerGradients.slice(0, 8).map((gradient, index) => (
                 <button
                   key={index}
-                  onClick={() => handleDesignChange({ background: gradient })}
-                  className="w-full h-12 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-all duration-200 hover:scale-105"
+                  onClick={() => handleBannerChange('gradient', gradient)}
+                  className="w-full h-10 rounded-lg border-2 border-slate-200 hover:border-blue-400 transition-all duration-200 hover:scale-105"
                   style={{ background: gradient }}
-                  title={`Gradient ${index + 1}`}
+                  title={`Banner Gradient ${index + 1}`}
                 />
               ))}
             </div>
-          </div>
-          
-          {/* Solid Color Option */}
-          <ColorPicker
-            label="Solid Color"
-            color={typeof design.background === 'string' && !design.background.includes('gradient') ? design.background : '#667eea'}
-            onChange={(color) => handleDesignChange({ background: color })}
-          />
-        </div>
-
-        {/* Colors Section (Buttons & Text) */}
-        <div>
-          <h3 className="text-base font-medium mb-3">Accent Colors</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <ColorPicker
-              label="Buttons"
-              color={design.buttonColor as string}
-              onChange={(color) => handleDesignChange({ buttonColor: color })}
-            />
-            <ColorPicker
-              label="Text"
-              color={design.color as string}
-              onChange={(color) => handleDesignChange({ color })}
-            />
-          </div>
+          )}
         </div>
 
         {/* Font Section */}
-        <div>
-          <h3 className="text-base font-medium mb-3">Font</h3>
-           <select
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+          <h3 className="text-base font-semibold mb-4">Typography</h3>
+          <select
             value={design.font}
             onChange={(e) => handleDesignChange({ font: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white appearance-none"
+            className="w-full p-3 border border-slate-300 rounded-lg bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
             style={{ fontFamily: design.font }}
           >
             {fonts.map((font) => (
@@ -220,6 +334,8 @@ const DesignPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             ))}
           </select>
         </div>
+
+       
       </main>
     </div>
   );

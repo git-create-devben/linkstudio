@@ -3,11 +3,22 @@
 
 import { createContext, useContext } from 'react';
 
-interface User {
+export interface User {
   id: string;
   email: string;
-  fullName: string;
-  // Add other user properties as needed
+  username: string | null;
+  createdAt: Date;
+  profile: {
+    id: string;
+    profileImageUrl: string | null;
+    displayName: string | null;
+    bio: string | null;
+    templateId: string | null;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    pageViews: number;
+  } | null;
 }
 
 const UserContext = createContext<User | null>(null);

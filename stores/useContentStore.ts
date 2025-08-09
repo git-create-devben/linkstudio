@@ -3,11 +3,14 @@ import { persist } from "zustand/middleware";
 import defaultImage from "@/public/Devben Portfolio.webp";
 import { SocialLink } from "@/types/editorTypes";
 import { deepmerge } from "deepmerge-ts";
+import { ThemeMode, BannerConfig, defaultBannerConfig } from "@/lib/themeSystem";
 
 // === Types ===
 export type DesignType = {
   layout?: string;
-  background?: string;
+  theme: ThemeMode;
+  customBackground?: string;
+  banner: BannerConfig;
   buttonColor?: string;
   color?: string;
   font?: string;
@@ -91,7 +94,9 @@ export const useUserContentStore = create<UserContentStore>()(
 
       design: {
         layout: "minimal",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        theme: 'dark' as ThemeMode,
+        customBackground: undefined,
+        banner: defaultBannerConfig,
         buttonColor: "rgba(255, 255, 255, 0.2)",
         color: "#FFFFFF",
         font: "Inter",
