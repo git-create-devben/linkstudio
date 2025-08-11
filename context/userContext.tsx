@@ -7,6 +7,10 @@ export interface User {
   id: string;
   email: string;
   username: string | null;
+  plan: string | null;
+  isActive: boolean;
+  billingCycle: string | null;
+  subscriptionId: string | null;
   createdAt: Date;
   profile: {
     id: string;

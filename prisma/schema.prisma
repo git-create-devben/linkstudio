@@ -87,15 +87,56 @@ model Content {
 }
 
 model Design {
-  id           String  @id @default(uuid())
-  profileId    String  @unique
-  layout       String?
-  background   String?
-  color        String?
-  buttonColor  String?
-  font         String?
-  bottomStyles Json?
-  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  id                String  @id @default(uuid())
+  profileId         String  @unique
+  // Theme and Layout
+  theme             String? @default("dark") // light, dark, glassmorphic
+  layout            String?
+  font              String? @default("Inter")
+  
+  // Background customization
+  customBackground  String? // Custom gradient or color for main background
+  
+  // Banner/Curve system
+  bannerType        String? @default("none") // none, image, curve
+  bannerValue       String? // URL for image or gradient for curve
+  bannerHeight      Int?    @default(200)
+  bannerOpacity     Float?  @default(1.0)
+  bannerBlur        Boolean @default(false)
+  curveShape        String? // wave, mountains, arch, etc.
+  curveColor        String? // Independent curve color/gradient
+  curveAnimated     Boolean @default(true)
+  
+  // Text customization
+  textPrimaryColor   String? // Primary text color override
+  textSecondaryColor String? // Secondary text color override
+  textAlignment      String? @default("center") // left, center, right
+  
+  // Button customization
+  buttonStyle        String? @default("default") // default, rounded, square, pill
+  buttonColor        String? // Button background color
+  buttonTextColor    String? // Button text color
+  buttonBorderColor  String? // Button border color
+  buttonHoverColor   String? // Button hover color
+  buttonShadow       Boolean @default(true)
+  buttonAnimation    String? @default("scale") // scale, slide, glow, none
+  
+  // Card/Container styling
+  cardStyle          String? @default("glass") // glass, solid, outline, minimal
+  cardBorderRadius   Int?    @default(12) // Border radius in pixels
+  cardShadow         Boolean @default(true)
+  cardBlur           Boolean @default(true)
+  
+  // Animation preferences
+  reducedMotion      Boolean @default(false)
+  animationSpeed     String? @default("normal") // slow, normal, fast
+  
+  // Legacy fields (for backward compatibility)
+  background         String?
+  color              String?
+  bottomStyles       Json?
+  
+  profile            Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@map("designs")
 }

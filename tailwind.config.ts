@@ -56,46 +56,58 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom colors for Apple-inspired theme
         "apple-blue": "#007AFF",
         "apple-gray": {
-          50: "#F9FAFB", // Lighter than 100 for subtle backgrounds
-          100: "#F5F5F7", // Light background
-          200: "#E5E5EA", // UI elements
-          300: "#D1D1D6", // Borders
+          50: "#F9FAFB",
+          100: "#F5F5F7",
+          200: "#E5E5EA",
+          300: "#D1D1D6",
           400: "#C7C7CC",
           500: "#AEAEB2",
-          600: "#8E8E93", // Secondary text
+          600: "#8E8E93",
           700: "#636366",
           800: "#3A3A3C",
-          900: "#1C1C1E", // Primary text (dark mode)
+          900: "#1C1C1E",
         },
       },
       borderRadius: {
-        // Updated border radius based on --radius
-        lg: "var(--radius)", // 0.75rem
-        md: "calc(var(--radius) - 0.25rem)", // 0.5rem
-        sm: "calc(var(--radius) - 0.375rem)", // 0.375rem
-        xl: "calc(var(--radius) + 0.25rem)", // 1rem
-        "2xl": "calc(var(--radius) + 0.75rem)", // 1.5rem
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 0.25rem)",
+        sm: "calc(var(--radius) - 0.375rem)",
+        xl: "calc(var(--radius) + 0.25rem)",
+        "2xl": "calc(var(--radius) + 0.75rem)",
       },
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
+        "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
+        "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
+        wave: { "0%, 100%": { transform: 'translateY(0)' }, "50%": { transform: 'translateY(-10px)' } },
+        "wave-reverse": { "0%, 100%": { transform: 'translateY(0)' }, "50%": { transform: 'translateY(10px)' } },
+        "mountain-drift": { "0%, 100%": { transform: 'scale(1)' }, "50%": { transform: 'scale(1.05)' } },
+        "arch-expand": { "0%, 100%": { borderRadius: '0 0 50% 50% / 0 0 30px 30px' }, "50%": { borderRadius: '0 0 50% 50% / 0 0 40px 40px' } },
+        "cloud-drift": { "0%, 100%": { transform: 'translateX(0)' }, "50%": { transform: 'translateX(10px)' } },
+        breathe: { "0%, 100%": { transform: 'scaleY(1)' }, "50%": { transform: 'scaleY(1.05)' } },
+        "petal-sway": { "0%, 100%": { transform: 'rotate(0deg)' }, "50%": { transform: 'rotate(2deg)' } },
+        "dune-shift": { "0%, 100%": { backgroundPosition: '0% 50%' }, "50%": { backgroundPosition: '100% 50%' } },
+        aurora: { "0%, 100%": { opacity: "0.8" }, "50%": { opacity: "1" } },
+        bloom: { "0%, 100%": { transform: 'scale(1)' }, "50%": { transform: 'scale(1.02)' } },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        wave: 'wave 3s ease-in-out infinite',
+        "wave-reverse": 'wave-reverse 3s ease-in-out infinite',
+        "mountain-drift": 'mountain-drift 5s ease-in-out infinite',
+        "arch-expand": 'arch-expand 4s ease-in-out infinite',
+        "cloud-drift": 'cloud-drift 7s ease-in-out infinite',
+        breathe: 'breathe 4s ease-in-out infinite',
+        "petal-sway": 'petal-sway 6s ease-in-out infinite',
+        "dune-shift": 'dune-shift 8s ease-in-out infinite',
+        aurora: 'aurora 5s ease-in-out infinite',
+        bloom: 'bloom 6s ease-in-out infinite',
       },
       boxShadow: {
-        "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.15)", // Softer shadow
-        lg: "0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03)", // Softer large
+        "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+        lg: "0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03)",
       },
     },
   },

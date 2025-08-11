@@ -2,8 +2,45 @@ import React from "react";
 import { TemplateProps } from "@/types/editorTypes";
 import LinkListAction from "../actions/LinkListAction";
 import { getPlatformIcon } from "@/lib/getPlatformIcons";
-import { getTheme } from "@/lib/themeSystem";
+import { getTheme, curveShapes, curveColors } from "@/lib/themeSystem";
 import defaultProfilePicture from "@/public/Devben Portfolio.webp"
+
+// Helper function to get curve style from shape and color
+const getCurveStyle = (shapeId?: string, curveColor?: string, animated?: boolean) => {
+  if (!shapeId) return {};
+  
+  const shape = curveShapes.find(s => s.id === shapeId);
+  if (!shape) return {};
+  
+  const finalColor = curveColor || curveColors[0].value; // Default to first color
+  
+  return {
+    clipPath: shape.clipPath,
+    borderRadius: shape.borderRadius,
+    background: shape.background 
+      ? `${finalColor}, ${shape.background}` 
+      : finalColor,
+    ...(animated !== false && { 
+      animation: shape.animationClass?.replace('animate-', '') + ' 6s ease-in-out infinite'
+    })
+  };
+};
+
+// Helper to get text styles based on design customization
+const getTextStyles = (design: any, themeConfig: any) => {
+  return {
+    primaryText: {
+      color: design.textPrimaryColor || themeConfig.colors.textPrimary,
+      textAlign: design.textAlignment || 'center' as const,
+      fontFamily: design.font || 'Inter, system-ui, sans-serif'
+    },
+    secondaryText: {
+      color: design.textSecondaryColor || themeConfig.colors.textSecondary,
+      textAlign: design.textAlignment || 'center' as const,
+      fontFamily: design.font || 'Inter, system-ui, sans-serif'
+    }
+  };
+};
 
 // Your main template component
 const MinimalTemplate: React.FC<TemplateProps> = ({
@@ -28,7 +65,8 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
       className="min-h-screen w-full flex flex-col items-center relative overflow-hidden transition-all duration-500"
       style={{ 
         background: finalBackground,
-        color: themeConfig.colors.textPrimary
+        color: themeConfig.colors.textPrimary,
+        fontFamily: design.font || 'Inter, system-ui, sans-serif'
       }}
     >
       {/* Animated background elements - adjusted based on theme */}
@@ -53,13 +91,14 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
         />
       </div>
 
-      {/* Banner Section */}
-      {banner && banner.type !== 'none' && (
+      {/* Banner/Curve Section */}
+      {((banner && banner.type !== 'none') || (design.bannerType === 'curve' && design.curveShape)) && (
         <div 
           className="w-full relative overflow-hidden"
-          style={{ height: banner.height || 200 }}
+          style={{ height: design.bannerHeight || banner?.height || 160 }}
         >
-          {banner.type === 'image' && banner.value && (
+          {/* Legacy banner image support */}
+          {banner?.type === 'image' && banner.value && (
             <>
               <img 
                 src={banner.value} 
@@ -70,12 +109,29 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
             </>
           )}
-          {banner.type === 'gradient' && banner.value && (
+          
+          {/* Legacy banner gradient support */}
+          {banner?.type === 'gradient' && banner.value && !design.curveShape && (
             <div 
-              className="w-full h-full"
+              className="w-full h-full transition-all duration-500"
               style={{ 
                 background: banner.value,
                 opacity: banner.opacity || 1
+              }}
+            />
+          )}
+          
+          {/* New Curve System */}
+          {design.bannerType === 'curve' && design.curveShape && (
+            <div 
+              className={`w-full h-full transition-all duration-500 ${
+                design.curveAnimated !== false 
+                  ? curveShapes.find(s => s.id === design.curveShape)?.animationClass || ''
+                  : ''
+              }`}
+              style={{
+                opacity: design.bannerOpacity || 1,
+                ...getCurveStyle(design.curveShape, design.curveColor, design.curveAnimated)
               }}
             />
           )}
@@ -87,7 +143,7 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
         <div className={`${banner && banner.type !== 'none' ? 'pt-6 -mt-12' : 'pt-8'} pb-6 flex flex-col items-center`}>
           {/* Avatar with enhanced styling */}
           {profilePicture && (
-            <div className="relative mb-4">
+            <div className="relative mb-2">
               <div 
                 className="absolute inset-0 rounded-full blur-lg scale-110 transition-all duration-300" 
                 style={{ 
@@ -96,11 +152,16 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
                     : 'rgba(255, 255, 255, 0.2)'
                 }}
               />
-              <div className="relative">
+              <div className="relative p-2 rounded-full -mt-16"
+              style={{
+                background: finalBackground,
+                // filter: theme === 'glassmorphic' ? 'brightness(1.1)' : 'none'
+              }}
+              >
                 <img
                   src={profilePicture || defaultProfilePicture.src}
                   alt={profileName || "Profile"}
-                  className="relative w-28 h-28 rounded-full shadow-2xl object-cover transition-all duration-300"
+                  className="relative w-32 h-32 rounded-full shadow-2xl object-cover transition-all duration-300"
                   style={{
                     border: `3px solid ${themeConfig.colors.border}`,
                     filter: theme === 'glassmorphic' ? 'brightness(1.1)' : 'none'
@@ -119,11 +180,17 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
           )}
           
           {/* Name & Bio with improved typography */}
-          <div className="text-center mb-6">
+          <div 
+            className="mb-6 transition-all duration-300"
+            style={{ textAlign: design.textAlignment || 'center' }}
+          >
             {toggles.profileName && (
               <h1 
                 className="text-3xl font-bold mb-3 drop-shadow-lg transition-all duration-300"
-                style={{ color: themeConfig.colors.textPrimary }}
+                style={{ 
+                  color: design.textPrimaryColor || themeConfig.colors.textPrimary,
+                  fontFamily: design.font || 'Inter, system-ui, sans-serif'
+                }}
               >
                 {profileName}
               </h1>
@@ -131,7 +198,10 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
             {toggles.bio && (
               <p 
                 className="text-lg leading-relaxed max-w-xs mx-auto transition-all duration-300"
-                style={{ color: themeConfig.colors.textSecondary }}
+                style={{ 
+                  color: design.textSecondaryColor || themeConfig.colors.textSecondary,
+                  fontFamily: design.font || 'Inter, system-ui, sans-serif'
+                }}
               >
                 {profileBio}
               </p>
@@ -140,7 +210,7 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
 
           {/* Enhanced Social Links */}
           {socialLinks && socialLinks.length > 0 && (
-            <div className="flex gap-3 mb-8 flex-wrap justify-center">
+            <div className="flex gap-3 mb-4 flex-wrap justify-center">
               {socialLinks.map((link, index) => (
                 <a 
                   key={link.id} 
@@ -173,7 +243,7 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
         </div>
      
         {/* --- DYNAMIC ACTIONS SECTION --- */}
-        <div className="w-full space-y-4 px-6">
+        <div className="w-full space-y-2 px-6">
           {actions.map((action, index) => {
             // Use a switch to render the correct component for each action type
             switch (action.type) {

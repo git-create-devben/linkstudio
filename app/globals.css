@@ -103,6 +103,67 @@ body {
   .theme-transition {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  
+  /* Curve Animations for Premium Banners */
+  .animate-wave {
+    animation: wave 6s ease-in-out infinite;
+  }
+  
+  .animate-wave-reverse {
+    animation: waveReverse 6s ease-in-out infinite;
+  }
+  
+  .animate-wave-slow {
+    animation: wave 8s ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  .animate-float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-subtle {
+    animation: pulseSubtle 3s ease-in-out infinite;
+  }
+  
+  .animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+  
+  .animate-sway {
+    animation: sway 5s ease-in-out infinite;
+  }
+  
+  .animate-aurora {
+    animation: aurora 8s ease-in-out infinite;
+  }
+  
+  .animate-bloom {
+    animation: bloom 6s ease-in-out infinite;
+  }
+  
+  .animate-mountain-drift {
+    animation: mountain-drift 5s ease-in-out infinite;
+  }
+  
+  .animate-arch-expand {
+    animation: arch-expand 4s ease-in-out infinite;
+  }
+  
+  .animate-cloud-drift {
+    animation: cloud-drift 7s ease-in-out infinite;
+  }
+  
+  .animate-petal-sway {
+    animation: petal-sway 6s ease-in-out infinite;
+  }
+  
+  .animate-dune-shift {
+    animation: dune-shift 8s ease-in-out infinite;
+  }
 }
 
 @keyframes fadeIn {
@@ -144,5 +205,163 @@ body {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* Curve Animation Keyframes */
+@keyframes wave {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+    transform: translateX(0);
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 90%);
+    transform: translateX(2px);
+  }
+}
+
+@keyframes waveReverse {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 75%);
+    transform: translateX(0);
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 85%);
+    transform: translateX(-2px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.01);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    transform: scale(1) rotateX(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02) rotateX(1deg);
+    opacity: 0.95;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(0.98) scaleX(1.01);
+    opacity: 0.9;
+  }
+}
+
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg) scale(1) skewX(0deg);
+  }
+  25% {
+    transform: rotate(0.8deg) scale(1.005) skewX(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.8deg) scale(0.995) skewX(-0.5deg);
+  }
+}
+
+@keyframes aurora {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 1;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    background-position: 100% 25%;
+    opacity: 0.8;
+    filter: hue-rotate(30deg);
+  }
+  50% {
+    background-position: 50% 100%;
+    opacity: 0.9;
+    filter: hue-rotate(60deg);
+  }
+  75% {
+    background-position: 25% 0%;
+    opacity: 0.95;
+    filter: hue-rotate(30deg);
+  }
+}
+
+@keyframes bloom {
+  0%, 100% {
+    border-radius: 0 0 40px 40px;
+    transform: scale(1) rotateZ(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    border-radius: 0 0 55px 55px;
+    transform: scale(1.02) rotateZ(0.5deg);
+    filter: brightness(1.1);
+  }
+}
+
+/* Additional curve animations */
+@keyframes mountain-drift {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+    transform: scale(1);
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 52% 95%, 0 85%);
+    transform: scale(1.01);
+  }
+}
+
+@keyframes arch-expand {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+    border-radius: 0 0 50% 50% / 0 0 30px 30px;
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+    border-radius: 0 0 60% 60% / 0 0 40px 40px;
+  }
+}
+
+@keyframes cloud-drift {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 85% 95%, 70% 90%, 50% 95%, 30% 90%, 15% 95%, 0 90%);
+    transform: translateX(0);
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 100% 88%, 85% 93%, 70% 88%, 50% 93%, 30% 88%, 15% 93%, 0 88%);
+    transform: translateX(3px);
+  }
+}
+
+@keyframes petal-sway {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+    border-radius: 0 0 30px 30px;
+    transform: rotateZ(0deg);
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+    border-radius: 0 0 35px 35px;
+    transform: rotateZ(1deg);
+  }
+}
+
+@keyframes dune-shift {
+  0%, 100% {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 75% 90%, 50% 85%, 25% 90%, 0 85%);
+  }
+  50% {
+    clip-path: polygon(0 0, 100% 0, 100% 88%, 75% 93%, 50% 88%, 25% 93%, 0 88%);
   }
 }

@@ -14,10 +14,16 @@ export type TemplateDefaults = {
 const minimalTemplateDefaults: TemplateDefaults = {
   design: {
     layout: "minimal",
-    background: "#FFFFFF",
     buttonColor: "#374151",
     color: "#1F2937",
     font: "Inter",
+    theme: "dark",
+    banner: {
+      type: "none",
+      value: "",
+    },
+    customBackground: "",
+    bottomStyles: "default",
   },
   content: {
     id: "",
@@ -50,10 +56,17 @@ const minimalTemplateDefaults: TemplateDefaults = {
 const modernTemplateDefaults: TemplateDefaults = {
   design: {
     layout: "modern",
-    background: "#000000",
+    // background: "#000000",
     buttonColor: "#FFFFFF",
     color: "#FFFFFF",
     font: "Poppins",
+    theme: "dark",
+    banner: {
+      type: "none",
+      value: "",
+    },
+    customBackground: "",
+    bottomStyles: "default",
   },
   content: {
     id: "",

@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
 
     const plan = data.metadata?.planId || 'starter';
     const billingCycle = data.metadata?.billingCycle || 'monthly';
-
+    console.log("Email from Paystack:", customerEmail);
+    console.log("Paystack metadata:", data.metadata);
     // Optional: Store Paystack reference/transactionId if needed
     try {
       const updatedUser = await prisma.user.update({

@@ -5,14 +5,21 @@ import { useUserContentStore } from "@/stores/useContentStore";
 import EditorSkeleton from "./EditorSkeleton";
 import EditorSidebar from "./EditorSidebar";
 import EditorSidebarMobile from "./EditorSidebarMobile";
+import useExitWarning from "@/hooks/useExitWarning";
 
 interface EditorWrapperProps {
   children: React.ReactNode;
 }
 
 const EditorWrapper: React.FC<EditorWrapperProps> = ({ children }) => {
-  const { loading, setLoading } = useUserContentStore();
+  const { loading, setLoading, isDirty } = useUserContentStore();
   const [mounted, setMounted] = useState(false);
+
+  // Exit warning for unsaved changes
+  useExitWarning({ 
+    isDirty,
+    message: "You have unsaved changes that will be lost. Save your changes before leaving."
+  });
 
   useEffect(() => {
     // Simulate loading sequence with proper timing

@@ -72,9 +72,10 @@ const PaymentPlansWithDualGateway = () => {
       features: [
         'Basic link-in-bio page',
         'Up to 2 actions',
-        'No analytics',
-        '1 template',
-        'Subdomain hosting',
+        'Basic social links (3 max)',
+        '1 minimal template',
+        'LinkStudio branding',
+        'Community support',
       ],
       buttonText: 'Get Started',
       popular: false,

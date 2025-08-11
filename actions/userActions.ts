@@ -2,6 +2,7 @@
 import prisma from "@/lib/prismaClient";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "./authActions";
+import { redirect } from "next/navigation";
 console.log("userActions")
 export async function getUserId(supabaseId: string) {
   const user = await prisma.user.findUnique({ where: { supabaseId } });
@@ -71,7 +72,9 @@ export async function getUserByUsername(username: string) {
       },
     }
   });
-  if (!user) throw new Error("No user found for username");
+  if (!user){
+    redirect("/")
+  };
   // console.log("user", user)
   return user;
 }

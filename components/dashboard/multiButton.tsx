@@ -1,11 +1,15 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useUserContentStore } from "@/stores/useContentStore";
+import { Save, Eye, Upload, ChevronDown, Check, X } from "lucide-react";
+import { toast } from "sonner";
 
 interface MultiButtonProps {
   username: string;
   onPublish?: () => void;
   isPublishing?: boolean;
   isDisabled?: boolean;
+  className?: string;
 }
 
 const MultiButton: React.FC<MultiButtonProps> = ({
@@ -13,74 +17,125 @@ const MultiButton: React.FC<MultiButtonProps> = ({
   onPublish,
   isPublishing = false,
   isDisabled = false,
+  className = "",
 }) => {
+  const { isDirty, isSaving, saveError, lastSaved, saveAllChanges } = useUserContentStore();
+  const [isOpen, setIsOpen] = useState(false);
+
   const handlePreview = () => {
     window.open(`/${username}`, "_blank");
+    setIsOpen(false);
   };
 
-  return (
-    <div className="flex items-center gap-2">
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={handlePreview}
-        disabled={isDisabled}
-        className={`
-          px-3 py-2 rounded-full
-          bg-gray-200/80 hover:bg-gray-200
-          dark:bg-gray-800/80 dark:hover:bg-gray-800
-          backdrop-blur-sm
-          text-xs font-medium
-          text-black
-          transition-all duration-200
-          cursor-pointer
-          disabled:opacity-50 disabled:cursor-not-allowed
-          bg-gradient-to-br from-blue-200 via-white to-purple-200
-        `}
-      >
-        Preview
-      </motion.button>
+  const handleSave = async () => {
+    try {
+      await saveAllChanges();
+      toast.success("✨ Changes saved successfully!");
+    } catch (error) {
+      toast.error("Failed to save changes. Please try again.");
+    }
+  };
 
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={onPublish}
-        disabled={isDisabled || isPublishing}
-        className={`
-          px-3 py-2 rounded-full
-          bg-gradient-to-br from-blue-200 via-white to-purple-200 hover:bg-gradient-to-br from-blue-600 via-white to-purple-600
-          text-black
-          text-xs font-medium
-          transition-all duration-200
-          disabled:opacity-50 disabled:cursor-not-allowed
-          flex items-center gap-2
-          cursor-pointer
-        `}
-      >
-        {isPublishing ? (
-          <>
-            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            Publishing...
-          </>
-        ) : (
-          "Publish"
+  const handlePublish = async () => {
+    if (isDirty) {
+      await handleSave();
+    }
+    if (onPublish) {
+      onPublish();
+      toast.success("🚀 Profile published successfully!");
+    }
+  };
+
+  const menuItems = [
+    {
+      label: "Preview",
+      icon: <Eye className="w-4 h-4" />,
+      onClick: handlePreview,
+      disabled: false,
+    },
+    {
+      label: isSaving ? "Saving..." : "Save Changes",
+      icon: isSaving ? <div className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />,
+      onClick: handleSave,
+      disabled: !isDirty || isSaving || isDisabled,
+    },
+    {
+      label: isPublishing ? "Publishing..." : "Publish Changes",
+      icon: isPublishing ? <div className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />,
+      onClick: handlePublish,
+      disabled: isDisabled || isPublishing || isSaving,
+    },
+  ];
+
+  return (
+    <div className={`relative inline-block text-left ${className}`}>
+      <div className="flex rounded-md shadow-sm">
+        <button
+          onClick={handleSave}
+          disabled={isDisabled || isPublishing || isSaving}
+          className={`inline-flex items-center px-4 py-2 text-sm font-medium transition-colors rounded-l-md ${
+            isDisabled || isPublishing || isSaving
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-gradient-to-br from-blue-200 via-white to-purple-200 group-hover:bg-blue-600 transition-colors duration-300 text-black hover:bg-indigo-700"
+          }`}
+        >
+          {isSaving ? "Saving..." : "Save Changes"}
+        </button>
+        
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className={`inline-flex items-center px-2 py-2 -ml-px text-sm font-medium transition-colors rounded-r-md ${
+            isDisabled || isPublishing || isSaving
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-gradient-to-br from-blue-200 via-white to-purple-200 group-hover:bg-blue-600 transition-colors duration-300 text-black hover:bg-indigo-700"
+          }`}
+          aria-expanded="true"
+          aria-haspopup="true"
+        >
+          <ChevronDown className="w-5 h-5" />
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            role="menu"
+            aria-orientation="vertical"
+            tabIndex={-1}
+          >
+            <div className="py-1" role="none">
+              {menuItems.map((item, index) => (
+                <button
+                  key={item.label}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    item.onClick();
+                  }}
+                  disabled={item.disabled}
+                  className={`${
+                    item.disabled
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-gray-700 hover:bg-gray-100"
+                  } group flex w-full items-center px-4 py-2 text-sm`}
+                  role="menuitem"
+                  tabIndex={-1}
+                >
+                  <span className="flex items-center w-5 mr-3">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
         )}
-      </motion.button>
+      </AnimatePresence>
     </div>
   );
 };

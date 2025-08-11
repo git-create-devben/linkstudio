@@ -54,10 +54,11 @@ interface ActionType {
   allowMultipleUrls?: boolean;
 }
 
-export interface ActionsPanelProps {
-  onClose: () => void;
-  initialActions?: Action[];
-  onActionsChange?: (actions: Action[]) => void;
+export interface LinkListItemProps {
+  link: { title: string; url: string; icon?: string };
+  index: number;
+  onUpdate: (index: number, updates: { title?: string; url?: string; icon?: string }) => void;
+  onRemove: (index: number) => void;
 }
 type ActionsPanelView = 'main' | 'select-type' | 'add-url' | 'edit-action';
 

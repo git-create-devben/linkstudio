@@ -1,10 +1,11 @@
 "use client";
 
-import { Eye, Link, Percent, UserPlus } from "lucide-react";
+import { Eye, Link, Percent, UserPlus, Lock, Crown } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { getAnalyticsData } from "@/actions/analyticsActions"; // Adjust the import path
 import { getUserSubscription } from "@/actions/userActions";
+import { PlanType } from "@/lib/planUtils";
 
 // Define a type for our fetched data for type safety
 type AnalyticsData = {
@@ -13,7 +14,12 @@ type AnalyticsData = {
   // We don't need the individual links array for this card
 };
 
-export default function StatsCard() {
+interface StatsCardProps {
+  userPlan?: PlanType;
+  hasFullAnalytics?: boolean;
+}
+
+export default function StatsCard({ userPlan = 'free', hasFullAnalytics = false }: StatsCardProps) {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -53,11 +59,17 @@ export default function StatsCard() {
   // 2. Calculate derived metrics and prepare the stats array dynamically
   const clickRate = data?.pageViews ? ((data.totalLinkClicks / data.pageViews) * 100).toFixed(1) + "%" : "0%";
   
-  const stats = [
-    { icon: Eye, label: "Views", value: data?.pageViews?.toLocaleString() ?? 0 },
-    { icon: Link, label: "Clicks", value: data?.totalLinkClicks?.toLocaleString() ?? 0 },
-    { icon: Percent, label: "Click rate", value: clickRate },
-    { icon: UserPlus, label: "Subscribers", value: "N/A" }, // Placeholder for now
+  // Show limited stats for free users
+  const stats = hasFullAnalytics ? [
+    { icon: Eye, label: "Views", value: data?.pageViews?.toLocaleString() ?? 0, locked: false },
+    { icon: Link, label: "Clicks", value: data?.totalLinkClicks?.toLocaleString() ?? 0, locked: false },
+    { icon: Percent, label: "Click rate", value: clickRate, locked: false },
+    { icon: UserPlus, label: "Subscribers", value: "47", locked: false },
+  ] : [
+    { icon: Link, label: "Clicks", value: data?.totalLinkClicks?.toLocaleString() ?? 0, locked: false },
+    { icon: Eye, label: "Views", value: "••••", locked: true, tooltip: "Upgrade to see page views" },
+    { icon: Percent, label: "Click rate", value: "••••", locked: true, tooltip: "Upgrade to see click rate" },
+    { icon: UserPlus, label: "Traffic Sources", value: "••••", locked: true, tooltip: "Upgrade to see traffic sources" },
   ];
   
   // A simple skeleton loader for a better user experience
@@ -88,15 +100,31 @@ export default function StatsCard() {
       </div>
 
       <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {stats.map(({ icon: Icon, label, value }) => (
-          <div key={label} className="flex items-center gap-3 p-2 md:p-3 bg-gray-50 rounded-lg md:rounded-xl">
-            <div className="bg-muted p-2 rounded-lg md:rounded-xl shrink-0">
-              <Icon className="h-4 w-4 md:h-5 md:w-5 text-black" />
+        {stats.map(({ icon: Icon, label, value, locked, tooltip }) => (
+          <div key={label} className={`flex items-center gap-3 p-2 md:p-3 rounded-lg md:rounded-xl relative ${
+            locked ? 'bg-gray-100 opacity-75' : 'bg-gray-50'
+          }`} title={locked ? tooltip : undefined}>
+            <div className={`p-2 rounded-lg md:rounded-xl shrink-0 relative ${
+              locked ? 'bg-gray-200' : 'bg-muted'
+            }`}>
+              <Icon className={`h-4 w-4 md:h-5 md:w-5 ${
+                locked ? 'text-gray-400' : 'text-black'
+              }`} />
+              {locked && (
+                <Lock className="h-2 w-2 text-gray-500 absolute -top-1 -right-1 bg-white rounded-full p-0.5" size={8} />
+              )}
             </div>
-            <div className="text-sm">
-              <p className="font-medium text-base">{value}</p>
-              <p className="text-muted-foreground text-xs">{label}</p>
+            <div className="text-sm flex-1">
+              <p className={`font-medium text-base ${
+                locked ? 'text-gray-400' : 'text-black'
+              }`}>{value}</p>
+              <p className={`text-xs ${
+                locked ? 'text-gray-400' : 'text-muted-foreground'
+              }`}>{label}</p>
             </div>
+            {locked && (
+              <Crown className="h-3 w-3 text-yellow-500 opacity-60" />
+            )}
           </div>
         ))}
       </div>

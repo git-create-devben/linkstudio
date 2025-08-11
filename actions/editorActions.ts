@@ -4,62 +4,8 @@
 import prisma from "@/lib/prismaClient";
 import { getUser } from "./authActions";
 import { revalidatePath } from "next/cache";
-import { ActionItemType } from "@/stores/useContentStore";
+import { ActionItemType, DesignType, ContentType } from "@/stores/useContentStore";
 import { createClient } from "@/lib/supabase/server";
-
-export async function useContent() {
-  const profile = await getUser();
-  console.log("profile", profile?.profile);
-
-  if (!profile?.profile?.id) {
-    console.log("No profile found");
-    throw new Error("No profile found");
-  }
-
-  const content = await prisma.content.findUnique({
-    where: {
-      profileId: profile.profile.id,
-    },
-    include: {
-      profile: {
-        include: {
-          content: true,
-          design: true,
-          actionItems: true,
-          Actions: true,
-        },
-      },
-    },
-  });
-
-  console.log("content", content);
-  return content;
-}
-
-export async function updateUserContent(updates: {
-  profileName?: string;
-  profileBio?: string;
-  profileVerified?: boolean;
-  profilePicture?: string;
-  coverImage?: string;
-}) {
-  const profile = await getUser();
-
-  if (!profile?.profile?.id) {
-    throw new Error("No profile found");
-  }
-
-  const updated = await prisma.content.update({
-    where: {
-      profileId: profile.profile.id,
-    },
-    data: {
-      ...updates,
-    },
-  });
-
-  return updated;
-}
 
 async function getProfile() {
   const user = await getUser();
@@ -69,18 +15,61 @@ async function getProfile() {
   return user.profile;
 }
 
-export async function updateContent(updates: {
-  profileName?: string;
-  profileBio?: string;
-  profilePicture?: string;
-  coverImage?: string;
+export async function saveAll(data: {
+  design: DesignType;
+  content: ContentType;
+  actionItems: ActionItemType[];
+  templateId: string;
 }) {
   const profile = await getProfile();
-  const updatedContent = await prisma.content.update({
+
+  const { id: designId, profileId: designProfileId, ...designData } = data.design as any;
+  const { id: contentId, profileId: contentProfileId, ...contentData } = data.content as any;
+
+  // 1. Save Design
+  await prisma.design.update({
     where: { profileId: profile.id },
-    data: updates,
+    data: designData,
   });
-  return updatedContent;
+
+  // 2. Save Content
+  await prisma.content.update({
+    where: { profileId: profile.id },
+    data: contentData,
+  });
+
+  // 3. Save Action Items
+  for (const item of data.actionItems) {
+    if (item.id === "default" || item.id.startsWith("temp_")) {
+      // Create new item
+      await prisma.actionItem.create({
+        data: {
+          profileId: profile.id,
+          type: item.type,
+          config: item.config,
+          order: item.order,
+        },
+      });
+    } else {
+      // Update existing item
+      await prisma.actionItem.update({
+        where: { id: item.id },
+        data: {
+          config: item.config,
+          order: item.order,
+        },
+      });
+    }
+  }
+
+  // 4. Save Template
+  await prisma.profile.update({
+    where: { id: profile.id },
+    data: { templateId: data.templateId },
+  });
+
+  revalidatePath(`/${profile.displayName}`);
+  return { success: true };
 }
 
 export async function createActionItem(actionData: {
@@ -102,62 +91,32 @@ export async function createActionItem(actionData: {
 
 export async function deleteActionItem(id: string) {
   const profile = await getProfile();
-  
-  // Check if this is a temporary/default ID
   if (id === "default" || id.startsWith("temp_")) {
-    // For temporary IDs, just return success since they don't exist in DB
     return { success: true, isTemporary: true };
   }
-  
   const actionToDelete = await prisma.actionItem.findUnique({ where: { id } });
   if (actionToDelete?.profileId !== profile.id) {
     throw new Error("Unauthorized");
   }
-
-  await prisma.actionItem.delete({
-    where: { id: id },
-  });
+  await prisma.actionItem.delete({ where: { id: id } });
   return { success: true };
 }
 
-// Updated updateActionItem to handle temporary IDs
 export async function updateActionItem(id: string, config: object) {
   const profile = await getProfile();
-
-  // Check if this is a temporary/default ID
-  if (id === "default" || id.startsWith("temp_")) {
-    // For temporary IDs, create a new action item instead of updating
-    const newAction = await createActionItem({
-      type: "LINK_LIST", // or determine type from config
-      config,
-      order: 0, // or determine order from existing items
-    });
-    
-    return {
-      ...newAction,
-      wasTemporary: true,
-      originalId: id
-    };
-  }
-
-  // For existing items, proceed with normal update
   const itemToUpdate = await prisma.actionItem.findFirst({
-    where: { id, profileId: profile.id }
+    where: { id, profileId: profile.id },
   });
-  
   if (!itemToUpdate) {
     throw new Error("Action not found or unauthorized.");
   }
-
   const updatedAction = await prisma.actionItem.update({
     where: { id: id },
     data: { config },
   });
-
   revalidatePath(`/${profile.displayName}`);
   return updatedAction;
 }
-
 // New function to convert temporary action items to real ones
 export async function convertTemporaryActionItems(actionItems: ActionItemType[]) {
   const profile = await getProfile();

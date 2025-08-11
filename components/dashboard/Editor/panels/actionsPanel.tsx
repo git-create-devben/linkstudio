@@ -1,93 +1,92 @@
 "use client";
 import React, { useState } from 'react';
-import { X, ArrowLeft, Edit, List, Plus, Trash2 } from 'lucide-react';
-import { ActionItemType, useUserContentStore } from '@/stores/useContentStore'; // Adjust path
-import { createActionItem, deleteActionItem, updateActionItem } from '@/actions/editorActions'; // Adjust path
+import { X, ArrowLeft, Edit, List, Plus, Trash2, Crown, Lock } from 'lucide-react';
+import { ActionItemType, useUserContentStore } from '@/stores/useContentStore';
+import { createActionItem, deleteActionItem, updateActionItem } from '@/actions/editorActions';
 import { toast } from 'sonner';
+import { IconPicker } from '../IconPicker';
+import { useUser } from '@/context/userContext';
+import { canUserAddAction, getUserPlan, getPlanDisplayName, getUpgradeMessage, getMinimumPlanForFeature } from '@/lib/planUtils';
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt';
+import { useRouter } from 'next/navigation';
 
 type LinkListFormState = {
-    title?: string; // Title is now optional
-    links: { title: string; url: string }[];
+    title?: string;
+    links: { title: string; url: string; icon?: string }[];
 };
 
 const ActionsPanel = ({ onClose }: { onClose: () => void }) => {
-    // --- STATE MANAGEMENT ---
     const [currentView, setCurrentView] = useState('main');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [deleteCandidateId, setDeleteCandidateId] = useState<string | null>(null);
-    
-    // **NEW**: State to track if we are adding or editing
     const [editingActionId, setEditingActionId] = useState<string | null>(null);
 
     const [formState, setFormState] = useState<LinkListFormState>({
         title: '',
-        links: [{ title: '', url: '' }],
+        links: [{ title: '', url: '', icon: undefined }],
     });
 
-    const { actionItems, addActionItem, removeActionItem, updateActionItem: updateStoreAction } = useUserContentStore();
+    const { actionItems, addActionItem, removeActionItem, updateActionItem: updateStoreAction, convertTemporaryId } = useUserContentStore();
+    const user = useUser();
+    const router = useRouter();
+    
+    // Check if user can add more actions
+    const canAddAction = canUserAddAction(user, actionItems.length);
+    const userPlan = getUserPlan(user);
+    const planDisplayName = getPlanDisplayName(userPlan);
 
-    // --- HELPER FUNCTIONS ---
     const handleFormLinkChange = (index: number, field: 'title' | 'url', value: string) => {
         const updatedLinks = [...formState.links];
         updatedLinks[index][field] = value;
         setFormState(prev => ({ ...prev, links: updatedLinks }));
     };
 
-    const addLinkToForm = () => setFormState(prev => ({ ...prev, links: [...prev.links, { title: '', url: '' }] }));
-    
+    const handleFormLinkIconChange = (index: number, icon: string) => {
+        const updatedLinks = [...formState.links];
+        updatedLinks[index].icon = icon;
+        setFormState(prev => ({ ...prev, links: updatedLinks }));
+    };
+
+    const addLinkToForm = () => {
+        const lastLink = formState.links[formState.links.length - 1];
+        if (lastLink.title.trim() !== '' && lastLink.url.trim() !== '') {
+            setFormState(prev => ({ ...prev, links: [...prev.links, { title: '', url: '', icon: undefined }] }));
+        } else {
+            toast.error("Please fill the last link before adding a new one.");
+        }
+    };
+
     const removeLinkFromForm = (index: number) => {
         if (formState.links.length <= 1) { toast.error("You must have at least one link."); return; }
         const updatedLinks = formState.links.filter((_, i) => i !== index);
         setFormState(prev => ({ ...prev, links: updatedLinks }));
     };
 
-    // **NEW**: Function to open the form for editing
     const handleEditClick = (action: ActionItemType) => {
         setEditingActionId(action.id);
-        // Pre-fill the form with the existing action's data
         setFormState(action.config as LinkListFormState);
-        setCurrentView('link-list-edit'); // Use a new view key to differentiate
+        setCurrentView('link-list-edit');
     };
 
-    // --- CORE CRUD HANDLERS ---
-    const handleSubmit = () => {
-        // If we have an editing ID, call update. Otherwise, call add.
-        if (editingActionId) {
-            handleUpdateAction();
-        } else {
-            handleAddAction();
-        }
-    };
-
-    const handleAddAction = async () => {
-        // **MODIFIED**: Removed the required title check
+    const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            const payload = { type: 'LINK_LIST', config: formState, order: actionItems.length };
-            const newActionFromDb = await createActionItem(payload);
-            addActionItem(newActionFromDb as ActionItemType);
-            toast.success("Action added successfully!");
+            if (editingActionId) {
+                await updateActionItem(editingActionId, formState);
+                updateStoreAction(editingActionId, formState);
+                toast.success("Action updated successfully!");
+            } else {
+                const tempId = `temp_${Date.now()}`;
+                const payload = { id: tempId, type: 'LINK_LIST', config: formState, order: actionItems.length };
+                addActionItem(payload as ActionItemType);
+                const newActionFromDb = await createActionItem(payload);
+                convertTemporaryId(tempId, newActionFromDb.id);
+                toast.success("Action added successfully!");
+            }
             setCurrentView('main');
+            setEditingActionId(null);
         } catch (error) {
-            toast.error("Failed to add action.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-    
-    // **NEW**: Function to handle updating an existing action
-    const handleUpdateAction = async () => {
-        if (!editingActionId) return;
-        setIsSubmitting(true);
-        try {
-            await updateActionItem(editingActionId, formState);
-            // Update the item in our global store
-            updateStoreAction(editingActionId, formState);
-            toast.success("Action updated successfully!");
-            setCurrentView('main');
-            setEditingActionId(null); // Reset editing mode
-        } catch (error) {
-            toast.error("Failed to update action.");
+            toast.error("Failed to save action.");
         } finally {
             setIsSubmitting(false);
         }
@@ -107,58 +106,98 @@ const ActionsPanel = ({ onClose }: { onClose: () => void }) => {
             setDeleteCandidateId(null);
         }
     };
-    
-    const actionTypes = [
-        {
-            id: 'link-list-add', // Use a specific key for adding
-            icon: List,
-            title: 'Link List',
-            description: 'Add a list of links, with or without a heading.',
-            preview: (
-                 <div className="bg-gray-100 p-4 rounded-lg text-black">
-                    <h3 className="font-bold text-center mb-2">My Links</h3>
-                    <div className="space-y-2 w-56 m-auto">
-                        <div className="bg-black p-2 text-sm rounded-md border text-center text-white">Website</div>
-                        <div className="bg-black p-2 text-sm rounded-md border text-center text-white border-white ">Social Media</div>
-                    </div>
-                </div>
-            )
-        },
-    ];
-    
-    // --- RENDER FUNCTIONS ---
+
     const renderActionForm = () => {
         const isEditing = !!editingActionId;
         return (
-            <div className="flex flex-col h-full text-black">
-                <div className="flex items-center gap-4 p-6 border-b">
-                    <button onClick={() => { setCurrentView('main'); setEditingActionId(null); }} className="p-2 hover:bg-gray-100 rounded-lg"><ArrowLeft size={20} /></button>
-                    <h2 className="text-xl font-semibold">{isEditing ? 'Edit Link List' : 'Add Link List'}</h2>
-                </div>
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-2">List Title (Optional)</label>
-                        <input type="text" placeholder="e.g., My Projects, Socials" value={formState.title || ''} onChange={(e) => setFormState(prev => ({...prev, title: e.target.value}))} className="w-full px-3 py-2 border rounded-lg" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Links</label>
-                        {formState.links.map((link, index) => (
-                        <div key={index} className="space-y-2 mb-2 p-3 border rounded-md">
-                             <div className="flex gap-2 items-center">
-                                <input type="text" placeholder="Link title" value={link.title} onChange={(e) => handleFormLinkChange(index, 'title', e.target.value)} className="flex-1 px-3 py-2 border rounded-lg" />
-                                <button onClick={() => removeLinkFromForm(index)} className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
-                            </div>
-                            <input type="url" placeholder="https://example.com" value={link.url} onChange={(e) => handleFormLinkChange(index, 'url', e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+            <div className="flex flex-col h-full text-gray-900 bg-gray-50">
+                <div className="flex items-center justify-between gap-4 p-4 bg-white/90 backdrop-blur">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => { setCurrentView('main'); setEditingActionId(null); }}
+                            className="p-2 hover:bg-gray-100 rounded-full"
+                            aria-label="Back"
+                        >
+                            <ArrowLeft size={20} />
+                        </button>
+                        <div>
+                            <h2 className="text-lg font-semibold leading-tight">
+                                {isEditing ? 'Edit Link List' : 'Add Link List'}
+                            </h2>
+                            <p className="text-sm text-gray-500">Create a list of links with optional icons.</p>
                         </div>
-                        ))}
-                        <button onClick={addLinkToForm} className="text-blue-500 hover:bg-blue-50 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-1"><Plus size={16} /> Add Link</button>
                     </div>
                 </div>
-                <div className="p-6 border-t bg-gray-50">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium mb-2 text-gray-700">List Title (optional)</label>
+                        <input
+                            type="text"
+                            placeholder="e.g. My Projects, Socials"
+                            value={formState.title || ''}
+                            onChange={(e) => setFormState(prev => ({...prev, title: e.target.value}))}
+                            className="w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <p className="mt-1 text-xs text-gray-500">Shown above the links. Leave blank to hide.</p>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="block text-sm font-medium text-gray-700">Links</label>
+                            <button
+                                type="button"
+                                onClick={addLinkToForm}
+                                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:bg-blue-50 px-3 py-1.5 rounded-md"
+                            >
+                                <Plus size={16} /> Add another link
+                            </button>
+                        </div>
+                        {formState.links.map((link, index) => (
+                            <div key={index} className="space-y-3 mb-3 p-4 rounded-lg bg-white shadow-sm">
+                                <div className="flex items-center border-b border-gray-200 pb-3">
+                                    <IconPicker onSelectIcon={(icon) => handleFormLinkIconChange(index, icon)} selectedIcon={link.icon} />
+                                    <input
+                                        type="text"
+                                        placeholder="Link title"
+                                        value={link.title}
+                                        onChange={(e) => handleFormLinkChange(index, 'title', e.target.value)}
+                                        className="flex-1 px-4 py-2.5 rounded-lg"
+                                    />
+                                    <button
+                                        onClick={() => removeLinkFromForm(index)}
+                                        className="p-2 text-red-500 hover:bg-red-50 rounded-full"
+                                        aria-label={`Remove link ${index + 1}`}
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                                <div className="mt-3">
+                                    <input
+                                        type="url"
+                                        placeholder="https://example.com"
+                                        value={link.url}
+                                        onChange={(e) => handleFormLinkChange(index, 'url', e.target.value)}
+                                        className="w-full px-4 py-2.5 rounded-lg"
+                                    />
+                                    <p className="mt-1 text-xs text-gray-500">Use a full URL including https://</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="p-4 border-t bg-white">
                     <div className="flex gap-3">
-                        <button onClick={() => { setCurrentView('main'); setEditingActionId(null); }} className="flex-1 px-4 py-2 text-gray-700 bg-white border rounded-lg">Cancel</button>
-                        <button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 px-4 py-2 text-white bg-blue-500 rounded-lg disabled:bg-blue-300">
-                           {isSubmitting ? (isEditing ? 'Saving...' : 'Adding...') : (isEditing ? 'Save Changes' : 'Add Action')}
+                        <button
+                            onClick={() => { setCurrentView('main'); setEditingActionId(null); }}
+                            className="flex-1 px-4 py-3 text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg font-semibold transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={isSubmitting}
+                            className="flex-1 px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:bg-blue-400 font-semibold transition-colors"
+                        >
+                           {isSubmitting ? (isEditing ? 'Saving Changes...' : 'Adding Action...') : (isEditing ? 'Save Changes' : 'Add Action')}
                         </button>
                     </div>
                 </div>
@@ -167,50 +206,115 @@ const ActionsPanel = ({ onClose }: { onClose: () => void }) => {
     };
 
     const renderMainView = () => (
-        <div className="flex flex-col h-full text-black">
-            <header className="flex items-center justify-between p-6 border-b"><h2 className="text-xl font-semibold">Page Actions</h2><button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg"><X size={20} /></button></header>
+        <div className="flex flex-col h-full text-gray-900 bg-gray-50">
+            <header className="flex items-center justify-between p-4 border-b bg-white/90 backdrop-blur">
+                <div>
+                    <h2 className="text-lg font-semibold leading-tight">Page Actions</h2>
+                    <p className="text-sm text-gray-500">Manage and create reusable link lists for your page.</p>
+                </div>
+                <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full" aria-label="Close panel">
+                    <X size={20} />
+                </button>
+            </header>
             <main className="flex-1 overflow-y-auto p-6">
-                 <div className="mb-8">
-                    <h3 className="text-lg font-medium mb-4">Shown actions ({actionItems.length})</h3>
+                <div className="mb-8">
+                    <h3 className="text-base font-semibold mb-4 text-gray-800">Your Actions</h3>
                     {actionItems.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {actionItems.map((action) => (
-                                <div key={action.id} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"><List size={20} className="text-blue-500" /></div>
-                                    <div className="flex-1"><h4 className="font-medium">{action.config.title || 'Untitled List'}</h4><p className="text-sm text-gray-500">Link List</p></div>
-                                    {/* -- NEW: Edit and Delete Buttons -- */}
-                                    <button onClick={() => handleEditClick(action)} className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-lg"><Edit size={18} /></button>
-                                    <button onClick={() => setDeleteCandidateId(action.id)} className="p-2 text-gray-500 hover:bg-red-100 hover:text-red-600 rounded-lg"><Trash2 size={18} /></button>
+                                <div key={action.id} className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <List size={20} className="text-blue-600" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-semibold text-gray-900 truncate">{action.config.title || 'Untitled List'}</h4>
+                                        <p className="text-sm text-gray-500">Link List</p>
+                                    </div>
+                                    <button onClick={() => handleEditClick(action)} className="p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-full" aria-label="Edit action">
+                                        <Edit size={18} />
+                                    </button>
+                                    <button onClick={() => setDeleteCandidateId(action.id)} className="p-2 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-full" aria-label="Delete action">
+                                        <Trash2 size={18} />
+                                    </button>
                                 </div>
                             ))}
                         </div>
-                    ) : <div className="text-center py-8"><h3 className="text-lg font-medium mb-2">No actions added</h3><p className="text-gray-500">Add an action to get started.</p></div>}
+                    ) : (
+                        <div className="text-center py-12 border-2 border-dashed rounded-xl bg-white">
+                            <h3 className="text-lg font-semibold mb-2 text-gray-800">No actions yet</h3>
+                            <p className="text-gray-500">Create your first action using the card below.</p>
+                        </div>
+                    )}
                 </div>
                 <div>
-                    <h3 className="text-lg font-medium mb-4">Choose Action Type</h3>
-                    {actionTypes.map((actionType) => (
-                        <div key={actionType.id} onClick={() => { setFormState({ title: '', links: [{ title: '', url: '' }] }); setCurrentView('link-list-add'); }} className="text-left p-4 border rounded-lg hover:border-blue-300 cursor-pointer">
-                            <div className="flex gap-4 items-center"><div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0"><List size={20} className="text-gray-600" /></div><div className="flex-1"><h4 className="font-medium mb-1">{actionType.title}</h4><p className="text-sm text-gray-600">{actionType.description}</p></div></div>
-                            <div className="mt-4">{actionType.preview}</div>
+                    <h3 className="text-base font-semibold mb-4 text-gray-800">Add New Action</h3>
+                    <div
+                        onClick={() => {
+                            if (!canAddAction) {
+                                toast.error(getUpgradeMessage('maxActions'));
+                                router.push('/payment');
+                                return;
+                            }
+                            setFormState({ title: '', links: [{ title: '', url: '', icon: undefined }] });
+                            setCurrentView('link-list-add');
+                        }}
+                        className={`text-left p-5 border-2 border-dashed rounded-xl transition-colors bg-white ${
+                            canAddAction
+                                ? 'hover:border-blue-500 hover:bg-blue-50 cursor-pointer'
+                                : 'opacity-60 cursor-not-allowed'
+                        }`}
+                        role="button"
+                        tabIndex={canAddAction ? 0 : -1}
+                        onKeyDown={(e) => {
+                            if (canAddAction && (e.key === 'Enter' || e.key === ' ')) {
+                                setFormState({ title: '', links: [{ title: '', url: '', icon: undefined }] });
+                                setCurrentView('link-list-add');
+                            }
+                        }}
+                        aria-label="Add new Link List action"
+                        aria-disabled={!canAddAction}
+                    >
+                        <div className="flex gap-4 items-center">
+                            <div className={`w-12 h-12 ${canAddAction ? 'bg-gray-100' : 'bg-gray-200'} rounded-lg flex items-center justify-center flex-shrink-0 relative`}>
+                                <List size={24} className={`${canAddAction ? 'text-gray-600' : 'text-gray-400'}`} />
+                                {!canAddAction && (
+                                    <Lock size={12} className="absolute top-1 right-1 text-gray-500" />
+                                )}
+                            </div>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                    <h4 className="font-semibold text-lg text-gray-900">Link List</h4>
+                                    {!canAddAction && (
+                                        <Crown size={16} className="text-yellow-500" />
+                                    )}
+                                </div>
+                                <p className={`${canAddAction ? 'text-gray-600' : 'text-gray-500'}`}>
+                                    {canAddAction 
+                                        ? 'A list of links to your websites, social media, or any other URL.'
+                                        : `Upgrade to ${getPlanDisplayName(getMinimumPlanForFeature('maxActions'))} to add more actions (${actionItems.length} used)`
+                                    }
+                                </p>
+                            </div>
                         </div>
-                    ))}
+                    </div>
                 </div>
             </main>
         </div>
     );
-    
-    // --- MAIN RETURN & DIALOGS ---
+
     return (
-         <div className="fixed inset-0 bg-black/20 z-100 bg-opacity-10 flex items-center justify-center z-50">
-            <div className="bg-white w-full max-w-4xl h-full max-h-[90vh] rounded-lg overflow-hidden relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+            <div className="relative w-full max-w-4xl h-[90vh] bg-white rounded-2xl overflow-auto shadow-2xl">
                 {currentView.startsWith('link-list') ? renderActionForm() : renderMainView()}
                 {deleteCandidateId && (
-                    <div className="absolute inset-0 bg-black/10 bg-opacity-30 flex items-center justify-center z-20">
-                        <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
-                            <h3 className="text-lg font-bold text-gray-900">Delete Action</h3><p className="text-sm text-gray-600 mt-2">Are you sure? This cannot be undone.</p>
-                            <div className="flex gap-3 mt-6">
-                                <button onClick={() => setDeleteCandidateId(null)} disabled={isSubmitting} className="flex-1 px-4 py-2 text-gray-700 bg-white border rounded-lg">Cancel</button>
-                                <button onClick={handleDeleteAction} disabled={isSubmitting} className="flex-1 px-4 py-2 text-white bg-red-600 rounded-lg disabled:bg-red-400">{isSubmitting ? 'Deleting...' : 'Confirm Delete'}</button>
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+                        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm m-4">
+                            <h3 className="text-xl font-bold text-gray-900">Delete Action</h3>
+                            <p className="text-gray-600 mt-2">Are you sure you want to delete this action? This cannot be undone.</p>
+                            <div className="flex gap-4 mt-6">
+                                <button onClick={() => setDeleteCandidateId(null)} disabled={isSubmitting} className="flex-1 px-4 py-3 text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg font-semibold transition-colors">Cancel</button>
+                                <button onClick={handleDeleteAction} disabled={isSubmitting} className="flex-1 px-4 py-3 text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:bg-red-400 font-semibold transition-colors">{isSubmitting ? 'Deleting...' : 'Confirm Delete'}</button>
                             </div>
                         </div>
                     </div>

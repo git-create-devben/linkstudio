@@ -1,11 +1,18 @@
 "use client"
 import { cn } from '@/lib/utils';
 import { Tabs } from '@radix-ui/react-tabs';
+import { Lock, Crown } from 'lucide-react';
 import React, { useState } from 'react'
+import { PlanType } from '@/lib/planUtils';
 
 type ContentTabsType = "Links" | "Social" | "Shop";
 
-const ContentCard = () => {
+interface ContentCardProps {
+  userPlan?: PlanType;
+  hasFullAnalytics?: boolean;
+}
+
+const ContentCard = ({ userPlan = 'free', hasFullAnalytics = false }: ContentCardProps) => {
     const [activePanel, setActivePanel] = useState<ContentTabsType | null>("Links");
     const handleTabClick = (tabsId: string) => {
         setActivePanel(tabsId as ContentTabsType);
@@ -53,20 +60,49 @@ const ContentCard = () => {
 
                         <div className="space-y-4">
                             {
-                                MockLinksClick.map((item, i) => (
+                                MockLinksClick.slice(0, hasFullAnalytics ? 4 : 2).map((item, i) => (
                                     <div key={i} className='bg-gray-50/10 p-4 rounded-lg shadow-sm flex items-center justify-between'>
                                         <h3 className='text-font-medium'>{item.name}</h3>
                                         <div className='flex items-center gap-5'>
                                             <p className='text-font-bold text-gray-500'>{item.clicksCount} clicks</p>
-                                            {/* <input type="range" name="" id="" className='w-12' disabled /> */}
                                             <div className='bg-blue-200 h-3 w-24 rounded-full'>
                                                 <div className={cn(`bg-blue-400 transition-colors duration-300 w-[${item.clicksCount}px] h-3 rounded-full`)} />
                                             </div>
                                         </div>
-
                                     </div>
                                 ))
                             }
+                            {!hasFullAnalytics && (
+                                <>
+                                    {/* Show blurred/locked content for free users */}
+                                    <div className='bg-gray-50/10 p-4 rounded-lg shadow-sm flex items-center justify-between opacity-50 relative'>
+                                        <div className='absolute inset-0 bg-gray-50/30 backdrop-blur-sm rounded-lg flex items-center justify-center'>
+                                            <div className='flex items-center gap-2 text-gray-600'>
+                                                <Lock className='w-4 h-4' />
+                                                <span className='text-sm'>Upgrade to see more</span>
+                                                <Crown className='w-4 h-4 text-yellow-500' />
+                                            </div>
+                                        </div>
+                                        <h3 className='text-font-medium blur-sm'>••••••</h3>
+                                        <div className='flex items-center gap-5 blur-sm'>
+                                            <p className='text-font-bold text-gray-500'>••• clicks</p>
+                                            <div className='bg-blue-200 h-3 w-24 rounded-full'>
+                                                <div className='bg-blue-400 w-16 h-3 rounded-full' />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='bg-gray-50/10 p-4 rounded-lg shadow-sm flex items-center justify-between opacity-30 relative'>
+                                        <div className='absolute inset-0 bg-gray-50/30 backdrop-blur-sm rounded-lg'></div>
+                                        <h3 className='text-font-medium blur-sm'>••••••</h3>
+                                        <div className='flex items-center gap-5 blur-sm'>
+                                            <p className='text-font-bold text-gray-500'>••• clicks</p>
+                                            <div className='bg-blue-200 h-3 w-24 rounded-full'>
+                                                <div className='bg-blue-400 w-10 h-3 rounded-full' />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 )

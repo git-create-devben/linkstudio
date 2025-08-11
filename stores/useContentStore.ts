@@ -4,16 +4,40 @@ import defaultImage from "@/public/Devben Portfolio.webp";
 import { SocialLink } from "@/types/editorTypes";
 import { deepmerge } from "deepmerge-ts";
 import { ThemeMode, BannerConfig, defaultBannerConfig } from "@/lib/themeSystem";
+import { saveAll } from "@/actions/editorActions";
 
 // === Types ===
 export type DesignType = {
-  layout?: string;
   theme: ThemeMode;
-  customBackground?: string;
-  banner: BannerConfig;
-  buttonColor?: string;
-  color?: string;
+  layout?: string;
   font?: string;
+  customBackground?: string;
+  bannerType?: 'none' | 'image' | 'curve';
+  bannerValue?: string;
+  bannerHeight?: number;
+  bannerOpacity?: number;
+  bannerBlur?: boolean;
+  curveShape?: string;
+  curveColor?: string;
+  curveAnimated?: boolean;
+  textPrimaryColor?: string;
+  textSecondaryColor?: string;
+  textAlignment?: 'left' | 'center' | 'right';
+  buttonStyle?: 'default' | 'rounded' | 'square' | 'pill';
+  buttonColor?: string;
+  buttonTextColor?: string;
+  buttonBorderColor?: string;
+  buttonHoverColor?: string;
+  buttonShadow?: boolean;
+  buttonAnimation?: 'scale' | 'slide' | 'glow' | 'none';
+  cardStyle?: 'glass' | 'solid' | 'outline' | 'minimal';
+  cardBorderRadius?: number;
+  cardShadow?: boolean;
+  cardBlur?: boolean;
+  reducedMotion?: boolean;
+  animationSpeed?: 'slow' | 'normal' | 'fast';
+  banner?: BannerConfig;
+  color?: string;
   bottomStyles?: string;
 };
 
@@ -32,7 +56,7 @@ export type ActionItemType = {
   type: "LINK_LIST" | "OTHER_ACTION";
   config: {
     title?: string;
-    links?: { title: string; url: string }[];
+    links?: { title: string; url: string; icon?: string }[];
   };
   order: number;
 };
@@ -40,35 +64,36 @@ export type ActionItemType = {
 type UserContentStore = {
   loading: boolean;
   setLoading: (value: boolean) => void;
-
+  isDirty: boolean;
+  setIsDirty: (dirty: boolean) => void;
+  lastSaved: Date | null;
+  setLastSaved: (date: Date) => void;
+  isSaving: boolean;
+  setIsSaving: (saving: boolean) => void;
+  saveError: string | null;
+  setSaveError: (error: string | null) => void;
   templateId: string;
   setTemplateId: (templateId: string) => void;
-
   design: DesignType;
   setDesign: (data: Partial<DesignType>) => void;
-
   content: ContentType;
   setContent: (data: Partial<ContentType>) => void;
-
   actionItems: ActionItemType[];
   setActionItems: (items: ActionItemType[]) => void;
   addActionItem: (item: ActionItemType) => void;
   updateActionItem: (id: string, updates: Partial<ActionItemType["config"]>) => void;
   removeActionItem: (id: string) => void;
-  
-  // New method to handle temporary ID conversion
   convertTemporaryId: (oldId: string, newId: string) => void;
-  
-  // Method to check if an ID is temporary
   isTemporaryId: (id: string) => boolean;
-
   socialLinks: SocialLink[];
   setSocialLinks: (links: SocialLink[]) => void;
   addSocialLink: (link: SocialLink) => void;
   updateSocialLink: (id: string, newUrl: string) => void;
   removeSocialLink: (id: string) => void;
-
   initializeStore: (data: StoreUpdateData) => void;
+  saveAllChanges: () => Promise<void>;
+  discardChanges: () => void;
+  resetToLastSaved: () => void;
 };
 
 type StoreUpdateData = {
@@ -79,19 +104,21 @@ type StoreUpdateData = {
   socialLinks?: SocialLink[];
 };
 
-// Helper function to generate temporary IDs
-const generateTempId = () => `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-// === Store ===
 export const useUserContentStore = create<UserContentStore>()(
   persist(
     (set, get) => ({
       loading: true,
       setLoading: (value) => set({ loading: value }),
-
+      isDirty: false,
+      setIsDirty: (dirty) => set({ isDirty: dirty }),
+      lastSaved: null,
+      setLastSaved: (date) => set({ lastSaved: date }),
+      isSaving: false,
+      setIsSaving: (saving) => set({ isSaving: saving }),
+      saveError: null,
+      setSaveError: (error) => set({ saveError: error }),
       templateId: "minimal",
-      setTemplateId: (templateId) => set({ templateId }),
-
+      setTemplateId: (templateId) => set({ templateId, isDirty: true }),
       design: {
         layout: "minimal",
         theme: 'dark' as ThemeMode,
@@ -102,8 +129,7 @@ export const useUserContentStore = create<UserContentStore>()(
         font: "Inter",
       },
       setDesign: (data) =>
-        set((state) => ({ design: deepmerge(state.design, data) })),
-
+        set((state) => ({ design: deepmerge(state.design, data), isDirty: true })),
       content: {
         id: "",
         profileId: "",
@@ -114,11 +140,10 @@ export const useUserContentStore = create<UserContentStore>()(
         profileVerified: false,
       },
       setContent: (data) =>
-        set((state) => ({ content: deepmerge(state.content, data) })),
-
+        set((state) => ({ content: deepmerge(state.content, data), isDirty: true })),
       actionItems: [
         {
-          id: "default", // Use deterministic ID for SSR/CSR
+          id: "default",
           order: 0,
           type: "LINK_LIST",
           config: {
@@ -131,58 +156,78 @@ export const useUserContentStore = create<UserContentStore>()(
           },
         },
       ],
-      setActionItems: (items) => set({ actionItems: items }),
+      setActionItems: (items) => set({ actionItems: items, isDirty: true }),
       addActionItem: (item) =>
-        set((state) => ({ actionItems: [...state.actionItems, item] })),
+        set((state) => ({ actionItems: [...state.actionItems, item], isDirty: true })),
       updateActionItem: (id, updates) =>
         set((state) => ({
           actionItems: state.actionItems.map((item) =>
             item.id === id
-              ? { ...item, config: deepmerge(item.config, updates) }
+              ? { ...item, config: { ...item.config, ...updates } }
               : item
           ),
+          isDirty: true
         })),
       removeActionItem: (id) =>
         set((state) => ({
           actionItems: state.actionItems.filter((item) => item.id !== id),
+          isDirty: true
         })),
-
-      // New method to convert temporary IDs to real database IDs
       convertTemporaryId: (oldId, newId) =>
         set((state) => ({
           actionItems: state.actionItems.map((item) =>
             item.id === oldId ? { ...item, id: newId } : item
           ),
         })),
-
-      // Method to check if an ID is temporary
       isTemporaryId: (id) => id === "default" || id.startsWith("temp_"),
-
       socialLinks: [],
-      setSocialLinks: (links) => set({ socialLinks: links }),
+      setSocialLinks: (links) => set({ socialLinks: links, isDirty: true }),
       addSocialLink: (link) =>
-        set((state) => ({ socialLinks: [...state.socialLinks, link] })),
+        set((state) => ({ socialLinks: [...state.socialLinks, link], isDirty: true })),
       updateSocialLink: (id, newUrl) =>
         set((state) => ({
           socialLinks: state.socialLinks.map((link) =>
             link.id === id ? { ...link, url: newUrl } : link
           ),
+          isDirty: true
         })),
       removeSocialLink: (id) =>
         set((state) => ({
           socialLinks: state.socialLinks.filter((link) => link.id !== id),
+          isDirty: true
         })),
-
-      initializeStore: (data: StoreUpdateData) =>
+      initializeStore: (data: StoreUpdateData) => {
         set((state) => ({
           ...state,
           loading: false,
+          isDirty: false,
+          lastSaved: new Date(),
           templateId: data.templateId ?? state.templateId,
           design: data.design ? deepmerge(state.design, data.design) : state.design,
           content: data.content ? deepmerge(state.content, data.content) : state.content,
           actionItems: data.actionItems ?? state.actionItems,
           socialLinks: data.socialLinks ?? state.socialLinks,
-        })),
+        }));
+      },
+      saveAllChanges: async () => {
+        const { isSaving, design, content, actionItems, templateId } = get();
+        if (isSaving) return;
+
+        set({ isSaving: true, saveError: null });
+        try {
+          await saveAll({ design, content, actionItems, templateId });
+          set({ isDirty: false, isSaving: false, lastSaved: new Date() });
+        } catch (error) {
+          console.error("Failed to save changes:", error);
+          set({ isSaving: false, saveError: "Failed to save. Please try again." });
+        }
+      },
+      resetToLastSaved: () => {
+        set({ isDirty: false });
+      },
+      discardChanges: () => {
+        get().resetToLastSaved();
+      },
     }),
     {
       name: "user-content-storage",

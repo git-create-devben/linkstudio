@@ -207,6 +207,10 @@ export async function getUser() {
         id: true,
         email: true,
         username: true,
+        plan: true,
+        isActive: true,
+        billingCycle: true,
+        subscriptionId: true,
         profile: true,
         createdAt: true,
       }

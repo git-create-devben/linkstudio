@@ -20,7 +20,11 @@ export const templates: TemplateType[] = [
         }}
         design={{
           layout: "minimal",
-          background: "#ffffff",
+          theme: "dark",
+          banner: {
+            type: "none",
+            value: "",
+          },
           color: "#111",
           font: "Inter",
           buttonColor:"#ffff"
@@ -72,7 +76,11 @@ export const templates: TemplateType[] = [
         }}
         design={{
           layout: "minimal",
-          background: "#ffffff",
+          theme: "dark",
+          banner: {
+            type: "none",
+            value: "",
+          },
           color: "#111",
           font: "Inter",
           buttonColor:"#ffff"

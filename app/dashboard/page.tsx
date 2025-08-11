@@ -2,6 +2,7 @@ import StatsCard from "@/components/card/statsCard"
 import { Separator } from "@/components/ui/separator"
 import { getUser } from "@/actions/authActions"
 import { redirect } from "next/navigation"
+import WebsitePage from "@/components/dashboard/website/WebsitePage"
 
 const Dashboard =  async () => {
   const user = await getUser()
@@ -19,6 +20,9 @@ const Dashboard =  async () => {
       <Separator className="my-4" />
       <section>
         <StatsCard/>
+      </section>
+      <section className="mt-10">
+        <WebsitePage/>
       </section>
     </main>
   )

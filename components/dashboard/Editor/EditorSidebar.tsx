@@ -15,8 +15,9 @@ import ContentPanel from './panels/contentPanel';
 import SocialLinksPanel from './panels/socialLink';
 import ActionsPanel from './panels/actionsPanel';
 import DesignPanel from './panels/designPanel';
+import { IconRobot } from '@tabler/icons-react';
 
-type ActionType = "actions" | "social" | "content" | "design" | "search" | "settings";
+type ActionType = "actions" | "social" | "content" | "design" | "AI" | "settings";
 
 const EditorSidebar = () => {
   const [activePanel, setActivePanel] = useState<ActionType | null>(null);
@@ -26,7 +27,7 @@ const EditorSidebar = () => {
     { id: 'social', icon: ThumbsUp, label: 'Social Links' },
     { id: 'content', icon: FileText, label: 'Content' },
     { id: 'design', icon: Palette, label: 'Design' },
-    { id: 'search', icon: Search, label: 'Search' },
+    { id: 'AI', icon: IconRobot, label: 'AI Suggestion' },
     // { id: 'settings', icon: Settings, label: 'Settings' },
   ];
 
@@ -47,11 +48,11 @@ const EditorSidebar = () => {
       case 'design':
         return  <DesignPanel onClose={() => setActivePanel(null)} />;
 
-      case 'search':
+      case 'AI':
         return (
           <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold text-black">Search</h2>
+            <div className="flex items-center justify-between p-4 bg-gray-100">
+              <h2 className="text-lg font-semibold text-black">AI Suggestion</h2>
               <button
                 onClick={() => setActivePanel(null)}
                 className="p-1 hover:bg-gray-100 rounded"
@@ -59,12 +60,14 @@ const EditorSidebar = () => {
                 <X size={20} />
               </button>
             </div>
-            <div className="flex flex-col justify-center items-center p-4">
-              <p className="text-gray-600 text-font-medium">Search is comming soon stay tune...</p>
-              <div className="w-full max-w-md mt-8 space-y-4 text-black">
-                <h1 className='text-font-bold'>What does search do?</h1>
-                <p className='text-font-medium'>Search lets you find content on your page. You can search for a specific keyword, phrase, or link. You can also search for content by date, category, or tag.</p>
+            <div className="flex flex-col justify-center items-center p-4 space-y-4">
+              <div className="w-full max-w-md mt-8 text-black">
+                <h1 className="text-1xl font-bold text-center">Coming Soon...</h1>
+                <p className="text-md text-center">We are working on AI Suggestion feature. It will be available soon.</p>
               </div>
+              {/* <div className="w-full h-1 bg-gray-200 rounded-full">
+                <div className="h-1 bg-brand-500 rounded-full" style={{ width: "50%" }} />
+              </div> */}
             </div>
           </div>
         );

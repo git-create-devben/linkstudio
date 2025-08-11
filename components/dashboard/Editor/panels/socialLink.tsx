@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Crown, Lock, Plus } from 'lucide-react';
 import { useUserContentStore } from '@/stores/useContentStore';
 import { createSocialLink, updateSocialLink, deleteSocialLink, getSocialLinks } from '@/actions/editorActions';
 import EmptyState from '../emptyState';
@@ -8,6 +8,9 @@ import SocialLinksList from '../socialLinkList';
 import { SocialLink, SocialPlatform } from '@/types/editorTypes';
 import { toast } from 'sonner';
 import PlatformSelector from '../platFormSelector';
+import { useUser } from '@/context/userContext';
+import { canUserAddSocialLink, getUserPlan, getPlanLimits, getUpgradeMessage } from '@/lib/planUtils';
+import { useRouter } from 'next/navigation';
 
 const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
   const {socialLinks, setSocialLinks, addSocialLink, updateSocialLink: updateStoreLink, removeSocialLink } = useUserContentStore();
@@ -15,6 +18,13 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
   const [handle, setHandle] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<SocialLink | null>(null);
+  
+  const user = useUser();
+  const router = useRouter();
+  const userPlan = getUserPlan(user);
+  const planLimits = getPlanLimits(userPlan);
+  const canAddMoreLinks = canUserAddSocialLink(user, socialLinks?.length || 0);
+  const maxSocialLinks = planLimits.socialLinks;
 
   console.log("social links", socialLinks)
   useEffect(() => {
@@ -49,7 +59,6 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleDelete = async (linkId: string) => {
-    toast.loading('Deleting link...');
     try {
       await deleteSocialLink(linkId);
       removeSocialLink(linkId);
@@ -100,13 +109,56 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
 
       <main className="flex-1 p-4">
         <div className="flex items-center justify-between mb-6">
-          <span className="text-sm text-gray-600">
-            Your social profiles ({socialLinks?.length})
-          </span>
-          <button onClick={handleAddClick} className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium">
-            Add Social Link
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">
+              Your social profiles ({socialLinks?.length})
+            </span>
+            {maxSocialLinks !== -1 && (
+              <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-500">
+                {maxSocialLinks - (socialLinks?.length || 0)} left
+              </span>
+            )}
+          </div>
+          <button 
+            onClick={() => {
+              if (!canAddMoreLinks) {
+                toast.error(getUpgradeMessage('socialLinks'));
+                router.push('/payment');
+                return;
+              }
+              handleAddClick();
+            }}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              canAddMoreLinks 
+                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            }`}
+            disabled={!canAddMoreLinks}
+          >
+            {canAddMoreLinks ? 'Add Social Link' : (
+              <span className="flex items-center gap-1">
+                <Lock size={14} />
+                Upgrade to Add
+              </span>
+            )}
           </button>
         </div>
+        
+        {/* Plan limitation warning */}
+        {!canAddMoreLinks && userPlan === 'free' && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+            <div className="flex items-center gap-2">
+              <Crown className="w-4 h-4 text-yellow-600" />
+              <span className="text-sm font-medium text-yellow-800">
+                Free Plan Limit Reached
+              </span>
+            </div>
+            <p className="text-xs text-yellow-700 mt-1">
+              You've reached the maximum of {maxSocialLinks} social links for the free plan. 
+              Upgrade to add unlimited social links.
+            </p>
+          </div>
+        )}
 
         {socialLinks?.length === 0 ? (
           <EmptyState onAddLink={handleAddClick} />

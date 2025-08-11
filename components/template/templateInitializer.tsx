@@ -124,9 +124,9 @@ const TemplateInitializer = () => {
   }, [loading, initializeStore, isInitialized]);
 
   // Show loading spinner during initialization
-  if (loading || !isInitialized) {
-    return <LoadingSpinner />;
-  }
+  // if (loading || !isInitialized) {
+  //   return <LoadingSpinner />;
+  // }
 
   // Render the template once initialized
   return <TemplateRenderer templateId={templateId} />;
