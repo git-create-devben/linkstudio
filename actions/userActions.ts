@@ -79,6 +79,46 @@ export async function getUserByUsername(username: string) {
   return user;
 }
 
+export async function getFullUserProfileByUsername(username: string) {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    include: {
+      profile: {
+        include: {
+          actionItems: true,
+          content: true,
+          design: true,
+          template: true,
+        }
+      }
+    }
+  });
+
+  if (!user || !user.profile) {
+    throw new Error("No profile found for username: " + username);
+  }
+
+  return user.profile;
+}
+
+export async function getSocialLinksByUsername(username: string) {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: { id: true }
+  });
+
+  if (!user) {
+    return [];
+  }
+
+  const links = await prisma.socialLinks.findMany({
+    where: { userId: user.id },
+    orderBy: { id: "desc" },
+  });
+
+  return links;
+}
+
 export async function getFullUserProfile() {
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()

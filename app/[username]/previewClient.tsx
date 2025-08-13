@@ -1,29 +1,24 @@
 // app/preview/[username]/PreviewClient.tsx
 "use client";
 
-import TemplateRenderer from "@/components/template/templateRender";
+import PublicTemplateInitializer from "@/components/template/publicTemplateInitializer";
 import { incrementPageView } from "@/actions/analyticsActions";
 import { useEffect } from "react";
-import { useUserContentStore } from "@/stores/useContentStore";
 
 interface Props {
-  profile:string
+  username: string;
 }
 
-const PreviewClient = ({ profile }: Props) => {
-  const { templateId } = useUserContentStore();
-
+const PreviewClient = ({ username }: Props) => {
   useEffect(() => {
-    if (profile) {
-      incrementPageView(profile);
+    if (username) {
+      incrementPageView(username);
     }
-  }, [profile]);
-
-  if (!templateId) return <div>Loading template...</div>;
+  }, [username]);
 
   return (
     <div>
-      <TemplateRenderer templateId={templateId} />
+      <PublicTemplateInitializer username={username} />
     </div>
   );
 };

@@ -30,9 +30,12 @@ export async function saveUserTemplate(supabaseId: string, templateId: string) {
   if (!userId) throw new Error('No user found for supabaseId');
 
   try {
-    // Import template data
+    // Import template data and defaults
     const { templates } = await import('@/components/template/templateData');
+    const { getTemplateDefaults } = await import('@/components/template/templateDefault');
+    
     const templateData = templates.find(t => t.id === templateId);
+    const templateDefaults = getTemplateDefaults(templateId);
     
     if (!templateData) {
       throw new Error('Template not found');
@@ -68,19 +71,23 @@ export async function saveUserTemplate(supabaseId: string, templateId: string) {
           templateId: template.id,
           content: {
             create: {
-              profileName: templateData.defaultContent.profileName,
-              profileBio: templateData.defaultContent.profileBio,
-              profileVerified: templateData.defaultContent.profileVerified,
+              profileName: templateDefaults.content.profileName,
+              profileBio: templateDefaults.content.profileBio,
+              profileVerified: templateDefaults.content.profileVerified,
             }
           },
           design: {
             create: {
-              theme: templateData.defaultDesign.theme,
-              font: templateData.defaultDesign.font,
-              buttonColor: templateData.defaultDesign.buttonColor,
-              buttonTextColor: templateData.defaultDesign.buttonTextColor,
-              buttonStyle: templateData.defaultDesign.buttonStyle,
-              customBackground: templateData.defaultDesign.customBackground,
+              theme: templateDefaults.design.theme,
+              font: templateDefaults.design.font,
+              buttonColor: templateDefaults.design.buttonColor,
+              buttonTextColor: templateDefaults.design.buttonTextColor,
+              buttonStyle: templateDefaults.design.buttonStyle,
+              customBackground: templateDefaults.design.customBackground,
+              bannerType: templateDefaults.design.bannerType,
+              curveShape: templateDefaults.design.curveShape,
+              curveColor: templateDefaults.design.curveColor,
+              curveAnimated: templateDefaults.design.curveAnimated,
             }
           }
         },
@@ -95,34 +102,42 @@ export async function saveUserTemplate(supabaseId: string, templateId: string) {
           content: {
             upsert: {
               create: {
-                profileName: templateData.defaultContent.profileName,
-                profileBio: templateData.defaultContent.profileBio,
-                profileVerified: templateData.defaultContent.profileVerified,
+                profileName: templateDefaults.content.profileName,
+                profileBio: templateDefaults.content.profileBio,
+                profileVerified: templateDefaults.content.profileVerified,
               },
               update: {
-                profileName: templateData.defaultContent.profileName,
-                profileBio: templateData.defaultContent.profileBio,
-                profileVerified: templateData.defaultContent.profileVerified,
+                profileName: templateDefaults.content.profileName,
+                profileBio: templateDefaults.content.profileBio,
+                profileVerified: templateDefaults.content.profileVerified,
               }
             }
           },
           design: {
             upsert: {
               create: {
-                theme: templateData.defaultDesign.theme,
-                font: templateData.defaultDesign.font,
-                buttonColor: templateData.defaultDesign.buttonColor,
-                buttonTextColor: templateData.defaultDesign.buttonTextColor,
-                buttonStyle: templateData.defaultDesign.buttonStyle,
-                customBackground: templateData.defaultDesign.customBackground,
+                theme: templateDefaults.design.theme,
+                font: templateDefaults.design.font,
+                buttonColor: templateDefaults.design.buttonColor,
+                buttonTextColor: templateDefaults.design.buttonTextColor,
+                buttonStyle: templateDefaults.design.buttonStyle,
+                customBackground: templateDefaults.design.customBackground,
+                bannerType: templateDefaults.design.bannerType,
+                curveShape: templateDefaults.design.curveShape,
+                curveColor: templateDefaults.design.curveColor,
+                curveAnimated: templateDefaults.design.curveAnimated,
               },
               update: {
-                theme: templateData.defaultDesign.theme,
-                font: templateData.defaultDesign.font,
-                buttonColor: templateData.defaultDesign.buttonColor,
-                buttonTextColor: templateData.defaultDesign.buttonTextColor,
-                buttonStyle: templateData.defaultDesign.buttonStyle,
-                customBackground: templateData.defaultDesign.customBackground,
+                theme: templateDefaults.design.theme,
+                font: templateDefaults.design.font,
+                buttonColor: templateDefaults.design.buttonColor,
+                buttonTextColor: templateDefaults.design.buttonTextColor,
+                buttonStyle: templateDefaults.design.buttonStyle,
+                customBackground: templateDefaults.design.customBackground,
+                bannerType: templateDefaults.design.bannerType,
+                curveShape: templateDefaults.design.curveShape,
+                curveColor: templateDefaults.design.curveColor,
+                curveAnimated: templateDefaults.design.curveAnimated,
               }
             }
           }
@@ -131,21 +146,21 @@ export async function saveUserTemplate(supabaseId: string, templateId: string) {
     }
 
     // Create default actions for the template
-    if (templateData.defaultActions && templateData.defaultActions.length > 0) {
+    if (templateDefaults.actionItems && templateDefaults.actionItems.length > 0) {
       // First, delete existing actions
       await prisma.actionItem.deleteMany({
         where: { profileId: profile.id }
       });
 
-      // Create new actions from template
-      for (let i = 0; i < templateData.defaultActions.length; i++) {
-        const action = templateData.defaultActions[i];
+      // Create new actions from template defaults
+      for (let i = 0; i < templateDefaults.actionItems.length; i++) {
+        const action = templateDefaults.actionItems[i];
         await prisma.actionItem.create({
           data: {
             profileId: profile.id,
             type: action.type,
             config: action.config,
-            order: i,
+            order: action.order || i,
           }
         });
       }

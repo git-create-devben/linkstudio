@@ -100,12 +100,16 @@ type UserContentStore = {
   removeActionItem: (id: string) => void;
   convertTemporaryId: (oldId: string, newId: string) => void;
   isTemporaryId: (id: string) => boolean;
+  updateActionItemWithNewId: (oldId: string, newId: string, updates?: Partial<ActionItemType["config"]>) => void;
   socialLinks: SocialLink[];
   setSocialLinks: (links: SocialLink[]) => void;
   addSocialLink: (link: SocialLink) => void;
   updateSocialLink: (id: string, newUrl: string) => void;
   removeSocialLink: (id: string) => void;
   initializeStore: (data: StoreUpdateData) => void;
+  resetStoreWithTemplate: (data: StoreUpdateData) => void;
+  clearLocalStorage: () => void;
+  forceResetToTemplate: (templateId: string) => void;
   saveAllChanges: () => Promise<void>;
   discardChanges: () => void;
   resetToLastSaved: () => void;
@@ -191,7 +195,18 @@ export const useUserContentStore = create<UserContentStore>()(
             item.id === oldId ? { ...item, id: newId } : item
           ),
         })),
-      isTemporaryId: (id) => id === "default" || id.startsWith("temp_"),
+      isTemporaryId: (id) => id === "default" || id === "music-player" || id === "music-links" || 
+                       id === "travel-gallery" || id === "travel-links" || id === "creative-portfolio" ||
+                       id.startsWith("temp_") || id.length < 10,
+      updateActionItemWithNewId: (oldId, newId, updates) =>
+        set((state) => ({
+          actionItems: state.actionItems.map((item) =>
+            item.id === oldId
+              ? { ...item, id: newId, config: updates ? { ...item.config, ...updates } : item.config }
+              : item
+          ),
+          isDirty: true
+        })),
       socialLinks: [],
       setSocialLinks: (links) => set({ socialLinks: links, isDirty: true }),
       addSocialLink: (link) =>
@@ -220,6 +235,84 @@ export const useUserContentStore = create<UserContentStore>()(
           actionItems: data.actionItems ?? state.actionItems,
           socialLinks: data.socialLinks ?? state.socialLinks,
         }));
+      },
+      resetStoreWithTemplate: (data: StoreUpdateData) => {
+        // Completely replace store data with new template data
+        set({
+          loading: false,
+          isDirty: false,
+          lastSaved: new Date(),
+          isSaving: false,
+          saveError: null,
+          templateId: data.templateId || "minimal",
+          design: data.design || {
+            layout: "minimal",
+            theme: 'dark' as ThemeMode,
+            customBackground: undefined,
+            banner: defaultBannerConfig,
+            buttonColor: "rgba(255, 255, 255, 0.2)",
+            color: "#FFFFFF",
+            font: "Inter",
+          },
+          content: data.content || {
+            id: "",
+            profileId: "",
+            profileName: "Ben",
+            profileBio: "Content Creator",
+            profilePicture: defaultImage.src,
+            coverImage: null,
+            profileVerified: false,
+          },
+          actionItems: data.actionItems || [
+            {
+              id: "default",
+              order: 0,
+              type: "LINK_LIST",
+              config: {
+                links: [
+                  { title: "Link 1", url: "" },
+                ],
+              },
+            },
+          ],
+          socialLinks: data.socialLinks || [],
+        });
+      },
+      clearLocalStorage: () => {
+        // Clear the persisted localStorage data
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('user-content-storage');
+        }
+      },
+      forceResetToTemplate: (templateId: string) => {
+        console.log('Force resetting to template:', templateId);
+        
+        // Clear localStorage and reset to template defaults
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('user-content-storage');
+          console.log('Cleared localStorage');
+        }
+        
+        // Import and apply template defaults
+        import('@/components/template/templateDefault').then(({ getTemplateDefaults }) => {
+          const templateDefaults = getTemplateDefaults(templateId);
+          console.log('Applying template defaults for:', templateId, templateDefaults);
+          
+          set({
+            loading: false,
+            isDirty: true,
+            lastSaved: null,
+            isSaving: false,
+            saveError: null,
+            templateId: templateId,
+            design: templateDefaults.design,
+            content: templateDefaults.content,
+            actionItems: templateDefaults.actionItems,
+            socialLinks: templateDefaults.socialLinks,
+          });
+          
+          console.log('Store reset complete for template:', templateId);
+        });
       },
       saveAllChanges: async () => {
         const { isSaving, design, content, actionItems, templateId } = get();

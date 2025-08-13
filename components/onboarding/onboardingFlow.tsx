@@ -13,6 +13,7 @@ import OnboardingComplete from './onboardingComplete';
 import { fetchOnboardingStatus, updateOnboardingStatus } from '@/actions/onboardingActions';
 import { getSupabaseId } from '@/lib/user/getUser';
 import { useRouter } from 'next/navigation';
+import { useUserContentStore } from '@/stores/useContentStore';
 
 const steps = [
   'Welcome',
@@ -23,7 +24,7 @@ const steps = [
   'Platforms',
   // 'Links',
   'Complete'
-] 
+]
 
 const OnboardingFlow = () => {
   const [currentStep, setCurrentStep] = useState<number | any>(0);
@@ -40,6 +41,7 @@ const OnboardingFlow = () => {
 
   const router = useRouter();
   const { userId, loading } = getSupabaseId();
+  const { clearLocalStorage } = useUserContentStore();
 
   // const checkIfOnboardingComplete = useCallback(async () => {
   //   if (!userId) return;
@@ -53,18 +55,25 @@ const OnboardingFlow = () => {
     const loadStatus = async () => {
       if (!loading && userId) {
         const result = await fetchOnboardingStatus(userId);
-  
+
         if (result.onboardingCompleted === true) {
-          router.push('/dashboard');
+          router.push('/dashboard/editor');
           return;
         }
-  
+
+        // If user is starting fresh onboarding (step 0 or 1), clear localStorage
+        // to ensure no old template data interferes with new selections
+        if (result.onboardingStep <= 1) {
+          console.log('Clearing localStorage for fresh onboarding');
+          clearLocalStorage();
+        }
+
         setCurrentStep(result.onboardingStep);
       }
     };
-  
+
     loadStatus();
-  }, [userId, loading, router]);
+  }, [userId, loading, router, clearLocalStorage]);
 
   const nextStep = useCallback(async () => {
     if (!userId || currentStep >= steps.length - 1) return;

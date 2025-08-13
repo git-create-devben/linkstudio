@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { X, ArrowLeft, Edit, List, Plus, Trash2, Crown, Lock } from 'lucide-react';
 import { ActionItemType, useUserContentStore } from '@/stores/useContentStore';
-import { createActionItem, deleteActionItem, updateActionItem } from '@/actions/editorActions';
+import { createActionItem, deleteActionItem } from '@/actions/editorActions';
+import { updateActionItemSafely, getActionTypeFromId } from '@/lib/actionItemHelpers';
 import { toast } from 'sonner';
 import { IconPicker } from '../IconPicker';
 import { useUser } from '@/context/userContext';
@@ -72,8 +73,13 @@ const ActionsPanel = ({ onClose }: { onClose: () => void }) => {
         setIsSubmitting(true);
         try {
             if (editingActionId) {
-                await updateActionItem(editingActionId, formState);
-                updateStoreAction(editingActionId, formState);
+                const actionType = getActionTypeFromId(editingActionId, formState);
+                const result = await updateActionItemSafely(editingActionId, formState, actionType);
+                
+                // If ID was converted, use the new ID
+                const finalId = (result as any).newId || editingActionId;
+                updateStoreAction(finalId, formState);
+                
                 toast.success("Action updated successfully!");
             } else {
                 const tempId = `temp_${Date.now()}`;

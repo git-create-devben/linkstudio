@@ -10,7 +10,7 @@ const PreviewPage = async ({ params }: { params: { username: string } }) => {
     redirect("/")
   } ;
 
-  return <PreviewClient profile={profile.profile.displayName || ""} />;
+  return <PreviewClient username={params.username} />;
 };
 
 export default PreviewPage;

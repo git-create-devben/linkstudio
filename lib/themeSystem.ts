@@ -130,10 +130,26 @@ export const getButtonStyle = (design: any, theme: Theme) => {
 
 export const curveShapes = [
   {
-    id: 'wave',
+    id: 'wave-1',
     name: 'Ocean Wave',
     description: 'Flowing ocean waves',
     clipPath: 'polygon(0 0, 100% 0, 100% 75%, 0 100%)',
+    animationClass: 'animate-wave',
+    category: 'flowing'
+  },
+  {
+    id: 'wave-2',
+    name: 'Music Wave',
+    description: 'Dynamic music waves',
+    clipPath: 'polygon(0 0, 100% 0, 100% 80%, 75% 85%, 50% 80%, 25% 85%, 0 80%)',
+    animationClass: 'animate-wave',
+    category: 'flowing'
+  },
+  {
+    id: 'wave-3',
+    name: 'Travel Wave',
+    description: 'Adventure waves',
+    clipPath: 'polygon(0 0, 100% 0, 100% 85%, 85% 90%, 70% 85%, 50% 90%, 30% 85%, 15% 90%, 0 85%)',
     animationClass: 'animate-wave',
     category: 'flowing'
   },
@@ -214,6 +230,30 @@ export const curveShapes = [
     background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%)',
     animationClass: 'animate-bloom',
     category: 'organic'
+  },
+  {
+    id: 'liquid',
+    name: 'Liquid Flow',
+    description: 'Smooth liquid motion',
+    clipPath: 'polygon(0 0, 100% 0, 100% 88%, 90% 92%, 80% 88%, 70% 92%, 60% 88%, 50% 92%, 40% 88%, 30% 92%, 20% 88%, 10% 92%, 0 88%)',
+    animationClass: 'animate-liquid-flow',
+    category: 'flowing'
+  },
+  {
+    id: 'geometric-cut',
+    name: 'Geometric Cut',
+    description: 'Sharp geometric angles',
+    clipPath: 'polygon(0 0, 100% 0, 100% 70%, 80% 100%, 20% 100%, 0 70%)',
+    animationClass: 'animate-geometric-shift',
+    category: 'geometric'
+  },
+  {
+    id: 'music-wave',
+    name: 'Music Equalizer',
+    description: 'Dynamic music equalizer bars',
+    clipPath: 'polygon(0 0, 100% 0, 100% 85%, 95% 90%, 90% 85%, 85% 95%, 80% 85%, 75% 90%, 70% 85%, 65% 95%, 60% 85%, 55% 90%, 50% 85%, 45% 95%, 40% 85%, 35% 90%, 30% 85%, 25% 95%, 20% 85%, 15% 90%, 10% 85%, 5% 95%, 0 85%)',
+    animationClass: 'animate-equalizer',
+    category: 'music'
   }
 ];
 

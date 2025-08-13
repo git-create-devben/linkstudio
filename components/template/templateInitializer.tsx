@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useUserContentStore } from "@/stores/useContentStore";
 import { getFullUserProfile } from "@/actions/userActions";
-import { getSocialLinks } from "@/actions/editorActions";
+import { getSocialLinks, syncTemplateActionItemsToDatabase } from "@/actions/editorActions";
 import { mergeUserDataWithDefaults } from "./templateDefault";
 import LoadingSpinner from "../loadingSpinner";
 import TemplateRenderer from "./templateRender";
@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { DesignType, ActionItemType } from "@/stores/useContentStore";
 
 const TemplateInitializer = () => {
-  const { loading, initializeStore, templateId } = useUserContentStore();
+  const { loading, initializeStore, resetStoreWithTemplate, templateId } = useUserContentStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -103,7 +103,39 @@ const TemplateInitializer = () => {
 
         console.log("Final initialization data:", initData);
         
-        initializeStore(initData);
+        // Always prioritize database template ID over localStorage
+        const currentTemplateId = useUserContentStore.getState().templateId;
+        
+        // If database has a different template than localStorage, always use database version
+        if (currentTemplateId !== selectedTemplateId) {
+          console.log("Database template ID:", selectedTemplateId, "differs from localStorage:", currentTemplateId);
+          console.log("Resetting store to match database template");
+          resetStoreWithTemplate(initData);
+        } else {
+          // Only merge if templates match
+          initializeStore(initData);
+        }
+
+        // Sync any template action items to database to prevent update errors
+        if (mergedData.actionItems && mergedData.actionItems.length > 0) {
+          try {
+            const syncedItems = await syncTemplateActionItemsToDatabase(mergedData.actionItems);
+            
+            // Update store with new IDs if any were converted
+            if (syncedItems.length > 0) {
+              const { updateActionItemWithNewId } = useUserContentStore.getState();
+              syncedItems.forEach(({ oldId, newId }) => {
+                if (oldId !== newId) {
+                  console.log(`Synced action item: ${oldId} -> ${newId}`);
+                  updateActionItemWithNewId(oldId, newId);
+                }
+              });
+            }
+          } catch (error) {
+            console.error("Error syncing action items:", error);
+            // Continue anyway - the updateActionItemSafely function will handle individual conversions
+          }
+        }
         setIsInitialized(true);
 
       } catch (error) {

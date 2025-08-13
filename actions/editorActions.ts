@@ -102,22 +102,162 @@ export async function deleteActionItem(id: string) {
   return { success: true };
 }
 
-export async function updateActionItem(id: string, config: object) {
+export async function updateActionItem(id: string, config: object, actionType?: string, order?: number) {
   const profile = await getProfile();
-  const itemToUpdate = await prisma.actionItem.findFirst({
+
+  // Check if this is a temporary/default ID that needs to be converted to a real database entry
+  const isTemporaryId = id === "default" || id === "music-player" || id === "music-links" ||
+    id === "travel-gallery" || id === "travel-links" || id === "creative-portfolio" ||
+    id.startsWith("temp_") || id.length < 10;
+
+  let itemToUpdate = await prisma.actionItem.findFirst({
     where: { id, profileId: profile.id },
   });
+
   if (!itemToUpdate) {
-    throw new Error("Action not found or unauthorized.");
+    if (isTemporaryId) {
+      // This is a template default item that doesn't exist in DB yet - create it
+      console.log(`Creating new action item for temporary ID: ${id}`);
+
+      // Determine the action type based on the ID or config
+      let type: string = actionType || "LINK_LIST";
+
+      if (id.includes("music-player") || (config as any)?.spotifyUrl) {
+        type = "MUSIC_PLAYER";
+      } else if (id.includes("gallery") || (config as any)?.images) {
+        type = "IMAGE_GALLERY";
+      } else if (id.includes("calendar") || (config as any)?.calendarUrl) {
+        type = "CALENDAR_BOOKING";
+      } else if ((config as any)?.links) {
+        type = "LINK_LIST";
+      }
+
+      // Get the current order from existing items if not provided
+      const currentOrder = order ?? await prisma.actionItem.count({
+        where: { profileId: profile.id }
+      });
+
+      const newAction = await prisma.actionItem.create({
+        data: {
+          profileId: profile.id,
+          type: type as any,
+          config: config,
+          order: currentOrder,
+        },
+      });
+
+      revalidatePath(`/${profile.displayName}`);
+      return {
+        ...newAction,
+        isNewItem: true,
+        oldId: id,
+        newId: newAction.id
+      };
+    } else {
+      throw new Error("Action not found or unauthorized.");
+    }
   }
+
+  // Update existing item
   const updatedAction = await prisma.actionItem.update({
     where: { id: id },
     data: { config },
   });
+
   revalidatePath(`/${profile.displayName}`);
   return updatedAction;
 }
-// New function to convert temporary action items to real ones
+// Function to convert all temporary action items to real database entries
+// export async function convertTemporaryActionItems() {
+//   const profile = await getProfile();
+
+//   // Get all existing action items from database
+//   const existingItems = await prisma.actionItem.findMany({
+//     where: { profileId: profile.id },
+//     orderBy: { order: 'asc' }
+//   });
+
+//   return existingItems;
+// }
+
+// Function to create action item if it doesn't exist
+export async function createActionItemIfNotExists(tempId: string, type: string, config: object, order: number) {
+  const profile = await getProfile();
+
+  // Check if item already exists
+  const existing = await prisma.actionItem.findFirst({
+    where: { id: tempId, profileId: profile.id }
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  // Create new item
+  const newAction = await prisma.actionItem.create({
+    data: {
+      profileId: profile.id,
+      type: type as any,
+      config: config,
+      order: order,
+    },
+  });
+
+  revalidatePath(`/${profile.displayName}`);
+  return newAction;
+}
+
+// Function to sync template action items to database
+export async function syncTemplateActionItemsToDatabase(actionItems: ActionItemType[]) {
+  const profile = await getProfile();
+
+  const syncedItems = [];
+
+  for (const item of actionItems) {
+    // Check if this is a temporary ID
+    const isTemporary = item.id === "default" || item.id === "music-player" || item.id === "music-links" ||
+      item.id === "travel-gallery" || item.id === "travel-links" || item.id === "creative-portfolio" ||
+      item.id.startsWith("temp_") || item.id.length < 10;
+
+    if (isTemporary) {
+      // Check if item already exists in database
+      const existing = await prisma.actionItem.findFirst({
+        where: {
+          profileId: profile.id,
+          type: item.type,
+          order: item.order
+        }
+      });
+
+      if (!existing) {
+        // Create new database entry
+        const newAction = await prisma.actionItem.create({
+          data: {
+            profileId: profile.id,
+            type: item.type,
+            config: item.config,
+            order: item.order,
+          },
+        });
+
+        syncedItems.push({
+          oldId: item.id,
+          newId: newAction.id,
+          action: newAction
+        });
+      } else {
+        syncedItems.push({
+          oldId: item.id,
+          newId: existing.id,
+          action: existing
+        });
+      }
+    }
+  }
+
+  revalidatePath(`/${profile.displayName}`);
+  return syncedItems;
+}
 export async function convertTemporaryActionItems(actionItems: ActionItemType[]) {
   const profile = await getProfile();
   const conversions: { oldId: string; newId: string }[] = [];
@@ -129,7 +269,7 @@ export async function convertTemporaryActionItems(actionItems: ActionItemType[])
         config: item.config,
         order: item.order,
       });
-      
+
       conversions.push({
         oldId: item.id,
         newId: newAction.id

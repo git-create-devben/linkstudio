@@ -3,6 +3,7 @@ import { saveUserTemplate } from '@/actions/onboardingActions';
 import TemplateGrid from './TemplateGrid';
 import { getSupabaseId } from '@/lib/user/getUser';
 import { useState } from 'react';
+import { useUserContentStore } from '@/stores/useContentStore';
 
 const TemplateStep = ({
   nextStep,
@@ -16,6 +17,7 @@ const TemplateStep = ({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const { userId, loading } = getSupabaseId();
+  const { clearLocalStorage, forceResetToTemplate } = useUserContentStore();
 
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
 
@@ -26,14 +28,22 @@ const TemplateStep = ({
     setError('');
 
     try {
+      // Clear localStorage and immediately set the new template in the store
+      clearLocalStorage();
+      
+      // Force reset the store to the new template immediately
+      forceResetToTemplate(templateId);
+      
       const result = await saveUserTemplate(userId, templateId);
 
       if (result.success) {
+        console.log('Template saved successfully:', templateId);
         nextStep(); // Proceed to the next step if the template is saved successfully
       } else {
         setError(result.message || 'Failed to save template');
       }
     } catch (error) {
+      console.error('Error saving template:', error);
       setError('An error occurred while saving the template');
     } finally {
       setIsSaving(false);

@@ -17,19 +17,19 @@ import defaultProfilePicture from "@/public/Devben Portfolio.webp"
 // Helper function to get curve style from shape and color
 const getCurveStyle = (shapeId?: string, curveColor?: string, animated?: boolean) => {
   if (!shapeId) return {};
-  
+
   const shape = curveShapes.find(s => s.id === shapeId);
   if (!shape) return {};
-  
+
   const finalColor = curveColor || curveColors[0].value;
-  
+
   return {
     clipPath: shape.clipPath,
     borderRadius: shape.borderRadius,
-    background: shape.background 
-      ? `${finalColor}, ${shape.background}` 
+    background: shape.background
+      ? `${finalColor}, ${shape.background}`
       : finalColor,
-    ...(animated !== false && { 
+    ...(animated !== false && {
       animation: shape.animationClass?.replace('animate-', '') + ' 6s ease-in-out infinite'
     })
   };
@@ -45,17 +45,17 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
 }) => {
   const { profileName, profileBio, profilePicture } = content;
   const { theme = 'dark', banner, customBackground } = design;
-  
+
   const themeConfig = getTheme(theme);
-  
+
   // Music-themed gradient background
-  const musicBackground = customBackground || 
+  const musicBackground = customBackground ||
     'linear-gradient(135deg, #667eea 0%, #764ba2 20%, #f093fb 40%, #f5576c 60%, #4facfe 80%, #00f2fe 100%)';
-  
+
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center relative overflow-hidden transition-all duration-500"
-      style={{ 
+      style={{
         background: musicBackground,
         color: themeConfig.colors.textPrimary,
         fontFamily: design.font || 'Inter, system-ui, sans-serif'
@@ -64,9 +64,9 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
       {/* Music-themed animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Vinyl record animation */}
-        <div 
+        <div
           className="absolute top-10 right-10 w-32 h-32 rounded-full border-8 border-white/10 animate-spin"
-          style={{ 
+          style={{
             animationDuration: '20s',
             background: 'radial-gradient(circle, rgba(255,255,255,0.1) 30%, transparent 31%, transparent 40%, rgba(255,255,255,0.05) 41%, rgba(255,255,255,0.05) 60%, transparent 61%)'
           }}
@@ -74,7 +74,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
           <div className="absolute inset-4 rounded-full bg-white/5" />
           <div className="absolute top-1/2 left-1/2 w-4 h-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/20" />
         </div>
-        
+
         {/* Sound waves */}
         <div className="absolute bottom-20 left-10">
           {[...Array(5)].map((_, i) => (
@@ -91,14 +91,14 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
             />
           ))}
         </div>
-        
+
         {/* Musical notes floating */}
         <div className="absolute top-1/4 left-1/4 text-white/10 text-4xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}>♪</div>
         <div className="absolute top-1/3 right-1/3 text-white/10 text-3xl animate-bounce" style={{ animationDelay: '1s', animationDuration: '4s' }}>♫</div>
         <div className="absolute bottom-1/3 left-1/5 text-white/10 text-5xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}>♬</div>
-        
+
         {/* Gradient mesh overlay */}
-        <div 
+        <div
           className="absolute inset-0 opacity-20"
           style={{
             background: `
@@ -113,29 +113,28 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
       <div className="w-full max-w-md mx-auto relative z-10">
         {/* Music Banner Section */}
         {((banner && banner.type !== 'none') || (design.bannerType === 'curve' && design.curveShape)) && (
-          <div 
+          <div
             className="w-full relative overflow-hidden mb-6"
             style={{ height: design.bannerHeight || banner?.height || 160 }}
           >
             {banner?.type === 'image' && banner.value && (
               <>
-                <img 
-                  src={banner.value} 
-                  alt="Banner" 
+                <img
+                  src={banner.value}
+                  alt="Banner"
                   className={`w-full h-full object-cover ${banner.blur ? 'blur-sm' : ''}`}
                   style={{ opacity: banner.opacity || 1 }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
               </>
             )}
-            
+
             {design.bannerType === 'curve' && design.curveShape && (
-              <div 
-                className={`w-full h-full transition-all duration-500 ${
-                  design.curveAnimated !== false 
-                    ? curveShapes.find(s => s.id === design.curveShape)?.animationClass || ''
-                    : ''
-                }`}
+              <div
+                className={`w-full h-full transition-all duration-500 ${design.curveAnimated !== false
+                  ? curveShapes.find(s => s.id === design.curveShape)?.animationClass || ''
+                  : ''
+                  }`}
                 style={{
                   opacity: design.bannerOpacity || 1,
                   ...getCurveStyle(design.curveShape, design.curveColor, design.curveAnimated)
@@ -151,24 +150,24 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
           {profilePicture && (
             <div className="relative mb-6">
               {/* Pulsing music aura */}
-              <div 
-                className="absolute inset-0 rounded-full blur-2xl scale-150 animate-pulse" 
-                style={{ 
+              <div
+                className="absolute inset-0 rounded-full blur-2xl scale-150 animate-pulse"
+                style={{
                   background: 'linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1))',
                   animationDuration: '2s'
                 }}
               />
-              <div 
-                className="absolute inset-0 rounded-full blur-xl scale-125 animate-pulse" 
-                style={{ 
+              <div
+                className="absolute inset-0 rounded-full blur-xl scale-125 animate-pulse"
+                style={{
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05))',
                   animationDuration: '3s',
                   animationDelay: '0.5s'
                 }}
               />
-              
+
               <div className="relative">
-                <div 
+                <div
                   className="p-1 rounded-full"
                   style={{
                     background: 'linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2))',
@@ -184,30 +183,30 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                     }}
                   />
                 </div>
-                
+
                 {/* Music note verified badge */}
                 {content.profileVerified && (
                   <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-full flex items-center justify-center shadow-xl animate-bounce"
-                       style={{
-                         background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
-                         animationDuration: '2s'
-                       }}>
+                    style={{
+                      background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+                      animationDuration: '2s'
+                    }}>
                     <span className="text-white text-xl">♪</span>
                   </div>
                 )}
               </div>
             </div>
           )}
-          
+
           {/* Artist Name & Bio with music typography */}
-          <div 
+          <div
             className="mb-8 text-center max-w-sm"
             style={{ textAlign: design.textAlignment || 'center' }}
           >
             {toggles.profileName && (
-              <h1 
+              <h1
                 className="text-3xl font-bold mb-4 tracking-wide drop-shadow-lg"
-                style={{ 
+                style={{
                   color: design.textPrimaryColor || '#ffffff',
                   fontFamily: design.font || 'Inter, system-ui, sans-serif',
                   textShadow: '0 2px 15px rgba(0,0,0,0.4)'
@@ -217,9 +216,9 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
               </h1>
             )}
             {toggles.bio && (
-              <p 
+              <p
                 className="text-lg leading-relaxed opacity-90 drop-shadow-md"
-                style={{ 
+                style={{
                   color: design.textSecondaryColor || 'rgba(255,255,255,0.9)',
                   fontFamily: design.font || 'Inter, system-ui, sans-serif',
                   textShadow: '0 1px 8px rgba(0,0,0,0.3)'
@@ -234,10 +233,10 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
           {socialLinks && socialLinks.length > 0 && (
             <div className="flex gap-4 mb-8 flex-wrap justify-center">
               {socialLinks.map((link, index) => (
-                <a 
-                  key={link.id} 
-                  href={link.url} 
-                  target="_blank" 
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="group relative p-4 rounded-2xl transition-all duration-500 hover:scale-110 hover:-translate-y-3 hover:rotate-6"
                   style={{
@@ -249,16 +248,16 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                   }}
                 >
                   {/* Beat pulse effect */}
-                  <div 
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse" 
+                  <div
+                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse"
                     style={{
                       background: 'linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2))',
                       transform: 'scale(1.1)',
                       animationDuration: '1s'
                     }}
                   />
-                  
-                  <div 
+
+                  <div
                     className="relative transition-all duration-300 group-hover:scale-125"
                     style={{ color: '#ffffff' }}
                   >
@@ -269,14 +268,14 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
             </div>
           )}
         </div>
-     
+
         {/* Music Actions Section */}
         <div className="w-full space-y-4 px-6 pb-12">
           {actions.map((action, index) => {
             switch (action.type) {
               case "LINK_LIST":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -286,7 +285,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "CONTACT_FORM":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -296,7 +295,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "TEXT_BLOCK":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -306,7 +305,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "IMAGE_GALLERY":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -321,12 +320,12 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                   //   style={{ animationDelay: `${(index + 1) * 250}ms` }}
                   //   className="animate-fade-in-up"
                   // >
-                    <MusicPlayerAction action={action} theme={themeConfig} />
+                  <MusicPlayerAction action={action} theme={themeConfig} />
                   // </div>
                 );
               case "LOCATION_MAP":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -336,7 +335,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "VIDEO_SHOWCASE":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -346,7 +345,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "PRODUCT_SHOWCASE":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -356,7 +355,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "CALENDAR_BOOKING":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"
@@ -366,7 +365,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "PHONE_CALL":
                 return (
-                  <div 
+                  <div
                     key={action.id}
                     style={{ animationDelay: `${(index + 1) * 250}ms` }}
                     className="animate-fade-in-up"

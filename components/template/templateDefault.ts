@@ -136,13 +136,175 @@ const professionalTemplateDefaults: TemplateDefaults = {
   socialLinks: [],
 };
 
+// Default data for Creative Template
+const creativeTemplateDefaults: TemplateDefaults = {
+  design: {
+    layout: "creative",
+    buttonColor: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)",
+    color: "#ffffff",
+    font: "Inter",
+    theme: "dark",
+    banner: {
+      type: "curve",
+      value: "",
+    },
+    bannerType: "curve",
+    curveShape: "wave-1",
+    curveColor: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)",
+    curveAnimated: true,
+    customBackground: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)",
+    bottomStyles: "rounded",
+  },
+  content: {
+    id: "",
+    profileId: "",
+    profileName: "Maya Rodriguez",
+    profileBio: "Creating digital art that inspires and connects people worldwide.",
+    profilePicture: defaultImage.src,
+    coverImage: null,
+    profileVerified: false,
+  },
+  actionItems: [
+    {
+      id: "default",
+      order: 0,
+      type: "LINK_LIST",
+      config: {
+        title: "Creative Portfolio",
+        links: [
+          { title: "🎨 My Portfolio", url: "", icon: "palette" },
+          { title: "📸 Instagram", url: "", icon: "instagram" },
+          { title: "🎬 Creative Reel", url: "", icon: "video" },
+          { title: "💌 Commission Work", url: "", icon: "mail" },
+        ],
+      },
+    },
+  ],
+  socialLinks: [],
+};
+
+// Default data for Modern Music Template
+const modernMusicTemplateDefaults: TemplateDefaults = {
+  design: {
+    layout: "modernMusic",
+    buttonColor: "linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%)",
+    color: "#ffffff",
+    font: "Inter",
+    theme: "dark",
+    banner: {
+      type: "curve",
+      value: "",
+    },
+    bannerType: "curve",
+    curveShape: "wave-2",
+    curveColor: "linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%)",
+    curveAnimated: true,
+    customBackground: "linear-gradient(135deg, #667eea 0%, #764ba2 20%, #f093fb 40%, #f5576c 60%, #4facfe 80%, #00f2fe 100%)",
+    bottomStyles: "pill",
+  },
+  content: {
+    id: "",
+    profileId: "",
+    profileName: "DJ Alex Rivera",
+    profileBio: "Creating beats that move souls. Electronic music producer and live performer.",
+    profilePicture: defaultImage.src,
+    coverImage: null,
+    profileVerified: false,
+  },
+  actionItems: [
+    {
+      id: "music-player",
+      order: 0,
+      type: "MUSIC_PLAYER",
+      config: {
+        title: "My Music",
+        spotifyUrl: "https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd",
+      },
+    },
+    {
+      id: "music-links",
+      order: 1,
+      type: "LINK_LIST",
+      config: {
+        title: "Music Links",
+        links: [
+          { title: "🎵 Latest Track", url: "", icon: "music" },
+          { title: "🎧 Spotify Playlist", url: "", icon: "spotify" },
+          { title: "🎪 Upcoming Shows", url: "", icon: "calendar" },
+          { title: "💿 Buy My Album", url: "", icon: "shopping-bag" },
+        ],
+      },
+    },
+  ],
+  socialLinks: [],
+};
+
+// Default data for Traveler Template
+const travelerTemplateDefaults: TemplateDefaults = {
+  design: {
+    layout: "traveler",
+    buttonColor: "linear-gradient(135deg, #74b9ff 0%, #00b894 100%)",
+    color: "#ffffff",
+    font: "Inter",
+    theme: "light",
+    banner: {
+      type: "curve",
+      value: "",
+    },
+    bannerType: "curve",
+    curveShape: "wave-3",
+    curveColor: "linear-gradient(135deg, #74b9ff 0%, #00b894 100%)",
+    curveAnimated: true,
+    customBackground: "linear-gradient(135deg, #74b9ff 0%, #0984e3 25%, #00b894 50%, #00cec9 75%, #fdcb6e 100%)",
+    bottomStyles: "rounded",
+  },
+  content: {
+    id: "",
+    profileId: "",
+    profileName: "Emma Wanderlust",
+    profileBio: "Exploring the world one adventure at a time. Sharing stories from 50+ countries.",
+    profilePicture: defaultImage.src,
+    coverImage: null,
+    profileVerified: false,
+  },
+  actionItems: [
+    {
+      id: "travel-gallery",
+      order: 0,
+      type: "IMAGE_GALLERY",
+      config: {
+        title: "Travel Gallery",
+        layout: "grid",
+        images: [],
+      },
+    },
+    {
+      id: "travel-links",
+      order: 1,
+      type: "LINK_LIST",
+      config: {
+        title: "Travel Links",
+        links: [
+          { title: "📖 Travel Blog", url: "", icon: "book" },
+          { title: "📸 Photo Gallery", url: "", icon: "camera" },
+          { title: "🗺️ Travel Tips", url: "", icon: "map" },
+          { title: "✈️ Book a Trip", url: "", icon: "plane" },
+        ],
+      },
+    },
+  ],
+  socialLinks: [],
+};
+
 // Template defaults registry
 export const templateDefaults: Record<string, TemplateDefaults> = {
   minimal: minimalTemplateDefaults,
   modern: modernTemplateDefaults,
   professional: professionalTemplateDefaults,
+  creative: creativeTemplateDefaults,
+  modernMusic: modernMusicTemplateDefaults,
+  traveler: travelerTemplateDefaults,
   default: minimalTemplateDefaults,
-  // Add more templates as needed
 };
 
 // Function to get defaults for a specific template
