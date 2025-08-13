@@ -1,3 +1,4 @@
+"use client";
 import { ActionItemType } from "@/stores/useContentStore";
 import { Theme, getButtonStyle, getIcon } from "@/lib/themeSystem";
 import Link from "next/link";

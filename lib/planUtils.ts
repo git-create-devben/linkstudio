@@ -40,18 +40,18 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
     slaGuarantee: false,
   },
   starter: {
-    maxActions: 5,
-    analytics: true, // Standard analytics only
-    customDomain: true,
-    templates: ['minimal', 'standard', 'modern'],
+    maxActions: 8,
+    analytics: true, // Basic analytics
+    customDomain: false, // Removed - too complex for solo dev
+    templates: ['minimal', 'professional', 'creative'], // 3 templates
     socialLinks: 10,
-    emailCapture: true,
+    emailCapture: false, // Removed - focus on core features
     whatsappIntegration: false,
     removeBranding: false,
     customCSS: false,
     advancedCustomization: false,
-    verifiedBadge: true,
-    prioritySupport: true,
+    verifiedBadge: true, // ✅ Already in schema
+    prioritySupport: false, // Removed - solo dev can't provide this
     miniShop: false,
     customFavicon: false,
     customDevelopment: false,
@@ -59,17 +59,17 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
   },
   pro: {
     maxActions: -1, // Unlimited
-    analytics: true, // Advanced analytics
-    customDomain: true,
-    templates: ['minimal', 'standard', 'modern', 'premium'],
+    analytics: true, // Enhanced analytics
+    customDomain: false, // Removed - too complex
+    templates: ['minimal', 'professional', 'creative', 'modernMusic', 'traveler'], // 5 templates
     socialLinks: -1, // Unlimited
-    emailCapture: true,
-    whatsappIntegration: true,
+    emailCapture: false, // Removed
+    whatsappIntegration: false, // Removed - too complex
     removeBranding: true,
-    customCSS: true,
-    advancedCustomization: true,
+    customCSS: false, // Removed - security concerns
+    advancedCustomization: true, // ✅ Already implemented
     verifiedBadge: true,
-    prioritySupport: true,
+    prioritySupport: false,
     miniShop: false,
     customFavicon: false,
     customDevelopment: false,
@@ -77,21 +77,21 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
   },
   premium: {
     maxActions: -1, // Unlimited
-    analytics: true, // Advanced analytics with custom reports
-    customDomain: true,
-    templates: ['minimal', 'standard', 'modern', 'premium', 'enterprise'],
+    analytics: true, // Full analytics
+    customDomain: false, // Removed
+    templates: ['minimal', 'professional', 'creative', 'modernMusic', 'traveler', 'default'], // All 6 templates
     socialLinks: -1, // Unlimited
-    emailCapture: true,
-    whatsappIntegration: true,
+    emailCapture: false, // Removed
+    whatsappIntegration: false, // Removed
     removeBranding: true,
-    customCSS: true,
+    customCSS: false, // Removed
     advancedCustomization: true,
     verifiedBadge: true,
-    prioritySupport: true,
-    miniShop: true,
-    customFavicon: true,
-    customDevelopment: true,
-    slaGuarantee: true,
+    prioritySupport: false, // Removed
+    miniShop: false, // Removed
+    customFavicon: false, // Removed
+    customDevelopment: false, // Removed
+    slaGuarantee: false, // Removed
   },
 };
 

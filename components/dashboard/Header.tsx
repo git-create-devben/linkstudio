@@ -10,19 +10,13 @@ import { toast } from 'sonner'
 
 const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle: () => void }) => {
     const pathname = usePathname()
-
     const isEditorPage = pathname === '/dashboard/editor'
     const isDashboardPage = pathname === '/dashboard'
     const isOtherPage = pathname.startsWith('/dashboard') && pathname !== '/dashboard' && pathname !== '/dashboard/editor'
-    console.log(pathname, isEditorPage, isDashboardPage, isOtherPage, pathname.startsWith("/dashboard"), pathname !== '/dashboard/editor')
-
-
-    //if it dashboard show upgradebutton and profile button
-    //if it editor show multi button and upgrade button
-    //if it other page show profile alone
 
     const [user, setUser] = useState<UserProps | null>(null)
-    console.log("user", user)
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -30,11 +24,29 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                 setUser(userData as any)
             } catch (error) {
                 toast.error('Failed to load user profile')
+            } finally {
+                setLoading(false)
             }
         }
-
         fetchUser()
     }, [])
+
+    if (loading) {
+        return (
+            <header className='sticky top-0 shadow-sm bg-gradient-to-br from-purple-50 via-white to-blue-50 z-10'>
+                <nav className='flex justify-between items-center py-2.5 px-5'>
+                    <div className='flex gap-4 items-center'>
+                        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                        <div className="w-20 h-6 bg-gray-200 rounded animate-pulse" />
+                    </div>
+                    <div className='flex gap-6'>
+                        <div className="w-24 h-8 bg-gray-200 rounded animate-pulse" />
+                        <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />
+                    </div>
+                </nav>
+            </header>
+        )
+    }
 
     if (!user) return null
 
@@ -50,8 +62,6 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                     <LogoApple />
                 </div>
                 <div className='flex gap-6'>
-
-
                     {isEditorPage ?
                         <>
                             <MultiButton username={user.username} />
@@ -65,7 +75,6 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                             :
                             <Profile />
                     }
-
                 </div>
             </nav>
         </header>

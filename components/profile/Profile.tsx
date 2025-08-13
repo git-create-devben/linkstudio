@@ -20,7 +20,8 @@ const Profile = () => {
     const language = "english"
 
     const [user, setUser] = useState<UserProps | null>(null)
-    console.log("user", user)
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -28,11 +29,21 @@ const Profile = () => {
                 setUser(userData as any)
             } catch (error) {
                 toast.error('Failed to load user profile')
+            } finally {
+                setLoading(false)
             }
         }
-
         fetchUser()
     }, [])
+
+    if (loading) {
+        return (
+            <div className="flex items-center gap-2">
+                <div className="rounded-full bg-gray-200 w-10 h-10 animate-pulse" />
+                <div className="w-20 h-4 bg-gray-200 rounded animate-pulse" />
+            </div>
+        )
+    }
 
     if (!user) return null
 

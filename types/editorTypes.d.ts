@@ -6,7 +6,8 @@ export interface SocialLink {
 export interface SocialPlatform {
   id: string;
   name: string;
-  icon: string;
+  color: string;
+  baseUrl: string;
   placeholder: string;
 }
 
@@ -70,6 +71,3 @@ interface ActionEvent {
   metadata?: Record<string, any>;
 }
 
-interface SocialPlatform {
-  id: string, name: string; baseUrl: string; icon: any, placeholder: string
-}

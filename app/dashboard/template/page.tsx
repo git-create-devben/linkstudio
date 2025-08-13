@@ -15,7 +15,7 @@ const TemplateComingSoon = () => {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Link-in-Bio Template</h1>
           <p className="text-lg text-gray-700 mb-8 max-w-md mx-auto">
             Our first beautiful template is launching soon.<br />
-            We’re crafting something special for you—stay tuned!
+            We're crafting something special for you—stay tuned!
           </p>
           <Button size="lg" variant="outline" className="text-gray-500 border-gray-300 cursor-not-allowed opacity-70" disabled>
             Coming Soon

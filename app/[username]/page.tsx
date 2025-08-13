@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 
 const PreviewPage = async ({ params }: { params: { username: string } }) => {
   const profile = await getUserByUsername(params.username);
-  console.log("🚀 ~ PreviewPage ~ profile:", profile)
   if (!profile.profile?.id){
     redirect("/")
   } ;

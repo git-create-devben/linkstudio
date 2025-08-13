@@ -5,17 +5,13 @@ import {
   ThumbsUp,
   FileText,
   Palette,
-  Search,
-  Settings,
-  X,
-  Plus,
-  MoreHorizontal
+  X
 } from 'lucide-react';
 import ContentPanel from './panels/contentPanel';
 import SocialLinksPanel from './panels/socialLink';
-import ActionsPanel from './panels/actionsPanel';
 import DesignPanel from './panels/designPanel';
 import { IconRobot } from '@tabler/icons-react';
+import EnhancedActionsPanel from './panels/enhancedActionsPanel';
 
 type ActionType = "actions" | "social" | "content" | "design" | "AI" | "settings";
 
@@ -38,7 +34,7 @@ const EditorSidebar = () => {
   const renderPanelContent = () => {
     switch (activePanel) {
       case 'actions':
-        return <ActionsPanel onClose={() => setActivePanel(null)} />;
+        return <EnhancedActionsPanel onClose={() => setActivePanel(null)} />;
 
       case 'social':
         return <SocialLinksPanel onClose={() => setActivePanel(null)} />
@@ -46,7 +42,7 @@ const EditorSidebar = () => {
       case 'content':
         return <ContentPanel onClose={() => setActivePanel(null)} />;
       case 'design':
-        return  <DesignPanel onClose={() => setActivePanel(null)} />;
+        return <DesignPanel onClose={() => setActivePanel(null)} />;
 
       case 'AI':
         return (
@@ -99,26 +95,26 @@ const EditorSidebar = () => {
     <div className="absolut left-0 top-0 p-2 flex h-[calc(75vh-1rem)]">
       {/* Sidebar */}
       <div className="pl-2 w-25 h-[calc(50vh-1rem)] rounded-2xl bg-white border-r border-gray-200 flex flex-col py-2 overflow-y-scroll">
-        {sidebarItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activePanel === item.id;
+          {sidebarItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activePanel === item.id;
 
-          return (
-            <button
-              key={item.id}
-              onClick={() => handleItemClick(item.id as ActionType)}
-              className={`flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
-                }`}
-            >
-              <Icon size={18} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
-              <span className={`text-xs text-center leading-tight font-medium ${isActive ? 'text-blue-500 font-medium' : 'text-gray-600'
-                }`}>
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleItemClick(item.id as ActionType)}
+                className={`flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
+                  }`}
+              >
+                <Icon size={18} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
+                <span className={`text-xs text-center leading-tight font-medium ${isActive ? 'text-blue-500 font-medium' : 'text-gray-600'
+                  }`}>
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
       {/* Expandable Panel */}
       {activePanel && (

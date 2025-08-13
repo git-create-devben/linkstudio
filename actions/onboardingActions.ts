@@ -30,7 +30,15 @@ export async function saveUserTemplate(supabaseId: string, templateId: string) {
   if (!userId) throw new Error('No user found for supabaseId');
 
   try {
-    // Check if the template exists
+    // Import template data
+    const { templates } = await import('@/components/template/templateData');
+    const templateData = templates.find(t => t.id === templateId);
+    
+    if (!templateData) {
+      throw new Error('Template not found');
+    }
+
+    // Check if the template exists in DB
     let template = await prisma.template.findUnique({
       where: { id: templateId },
     });
@@ -40,23 +48,111 @@ export async function saveUserTemplate(supabaseId: string, templateId: string) {
       template = await prisma.template.create({
         data: {
           id: templateId,
-          name: 'Untitled',
+          name: templateData.name,
+          description: templateData.description,
         },
       });
     }
 
-    // Now update the profile with the template
-    await prisma.profile.update({
-      where: {
-        userId: userId,
-      },
-      data: {
-        templateId: template.id,
-      },
+    // Get or create profile
+    let profile = await prisma.profile.findUnique({
+      where: { userId },
+      include: { content: true, design: true }
     });
 
+    if (!profile) {
+      // Create profile with template data
+      profile = await prisma.profile.create({
+        data: {
+          userId,
+          templateId: template.id,
+          content: {
+            create: {
+              profileName: templateData.defaultContent.profileName,
+              profileBio: templateData.defaultContent.profileBio,
+              profileVerified: templateData.defaultContent.profileVerified,
+            }
+          },
+          design: {
+            create: {
+              theme: templateData.defaultDesign.theme,
+              font: templateData.defaultDesign.font,
+              buttonColor: templateData.defaultDesign.buttonColor,
+              buttonTextColor: templateData.defaultDesign.buttonTextColor,
+              buttonStyle: templateData.defaultDesign.buttonStyle,
+              customBackground: templateData.defaultDesign.customBackground,
+            }
+          }
+        },
+        include: { content: true, design: true }
+      });
+    } else {
+      // Update existing profile with template data
+      await prisma.profile.update({
+        where: { userId },
+        data: {
+          templateId: template.id,
+          content: {
+            upsert: {
+              create: {
+                profileName: templateData.defaultContent.profileName,
+                profileBio: templateData.defaultContent.profileBio,
+                profileVerified: templateData.defaultContent.profileVerified,
+              },
+              update: {
+                profileName: templateData.defaultContent.profileName,
+                profileBio: templateData.defaultContent.profileBio,
+                profileVerified: templateData.defaultContent.profileVerified,
+              }
+            }
+          },
+          design: {
+            upsert: {
+              create: {
+                theme: templateData.defaultDesign.theme,
+                font: templateData.defaultDesign.font,
+                buttonColor: templateData.defaultDesign.buttonColor,
+                buttonTextColor: templateData.defaultDesign.buttonTextColor,
+                buttonStyle: templateData.defaultDesign.buttonStyle,
+                customBackground: templateData.defaultDesign.customBackground,
+              },
+              update: {
+                theme: templateData.defaultDesign.theme,
+                font: templateData.defaultDesign.font,
+                buttonColor: templateData.defaultDesign.buttonColor,
+                buttonTextColor: templateData.defaultDesign.buttonTextColor,
+                buttonStyle: templateData.defaultDesign.buttonStyle,
+                customBackground: templateData.defaultDesign.customBackground,
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create default actions for the template
+    if (templateData.defaultActions && templateData.defaultActions.length > 0) {
+      // First, delete existing actions
+      await prisma.actionItem.deleteMany({
+        where: { profileId: profile.id }
+      });
+
+      // Create new actions from template
+      for (let i = 0; i < templateData.defaultActions.length; i++) {
+        const action = templateData.defaultActions[i];
+        await prisma.actionItem.create({
+          data: {
+            profileId: profile.id,
+            type: action.type,
+            config: action.config,
+            order: i,
+          }
+        });
+      }
+    }
+
     // Update onboarding status
-    await updateOnboardingStatus(userId, 3);
+    await updateOnboardingStatus(supabaseId, 3);
 
     return { success: true };
   } catch (error) {

@@ -5,14 +5,32 @@ export type TemplateType = {
     id: string;
     name: string;
     description: string;
+    category: string;
     preview: JSX.Element;
-     toggles: {
-    profileImage: boolean;
-    profileName: boolean;
-    verifiedBadge: boolean;
-    bio: boolean;
-    heading: boolean;
-  };
+    defaultContent: {
+      profileName: string;
+      profileBio: string;
+      profileVerified: boolean;
+    };
+    defaultDesign: {
+      theme: string;
+      font: string;
+      buttonColor: string;
+      buttonTextColor: string;
+      buttonStyle?: string;
+      customBackground?: string;
+    };
+    defaultActions: Array<{
+      type: string;
+      config: any;
+    }>;
+    toggles: {
+      profileImage: boolean;
+      profileName: boolean;
+      verifiedBadge: boolean;
+      bio: boolean;
+      heading: boolean;
+    };
   };
 export type LinkItem = {
     label: string;

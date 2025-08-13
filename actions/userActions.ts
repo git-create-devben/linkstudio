@@ -127,6 +127,7 @@ export async function getUserSubscription() {
       plan: true,
     },
   });
+  console.log("🚀 ~ getUserSubscription ~ subscription:", subscription)
 
   if (!subscription) return { error: 'No subscription found', data: null };
 

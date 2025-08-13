@@ -94,10 +94,54 @@ const modernTemplateDefaults: TemplateDefaults = {
   socialLinks: [],
 };
 
+// Default data for Professional Template
+const professionalTemplateDefaults: TemplateDefaults = {
+  design: {
+    layout: "professional",
+    buttonColor: "#3b82f6",
+    color: "#1f2937",
+    font: "Inter",
+    theme: "light",
+    banner: {
+      type: "none",
+      value: "",
+    },
+    customBackground: "#f8fafc",
+    bottomStyles: "default",
+  },
+  content: {
+    id: "",
+    profileId: "",
+    profileName: "Professional",
+    profileBio: "Business professional & consultant",
+    profilePicture: defaultImage.src,
+    coverImage: null,
+    profileVerified: true,
+  },
+  actionItems: [
+    {
+      id: "default",
+      order: 0,
+      type: "LINK_LIST",
+      config: {
+        links: [
+          { title: "LinkedIn Profile", url: "" },
+          { title: "Schedule Meeting", url: "" },
+          { title: "Business Website", url: "" },
+          { title: "Contact Info", url: "" },
+        ],
+      },
+    },
+  ],
+  socialLinks: [],
+};
+
 // Template defaults registry
 export const templateDefaults: Record<string, TemplateDefaults> = {
   minimal: minimalTemplateDefaults,
   modern: modernTemplateDefaults,
+  professional: professionalTemplateDefaults,
+  default: minimalTemplateDefaults,
   // Add more templates as needed
 };
 

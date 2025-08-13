@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import defaultImage from "@/public/Devben Portfolio.webp";
-import { SocialLink } from "@/types/editorTypes";
 import { deepmerge } from "deepmerge-ts";
-import { ThemeMode, BannerConfig, defaultBannerConfig } from "@/lib/themeSystem";
 import { saveAll } from "@/actions/editorActions";
+import { SocialLink } from "@/types/editorTypes";
+import { ThemeMode, BannerConfig, defaultBannerConfig } from "@/lib/themeSystem";
+import defaultImage from "@/public/Devben Portfolio.webp";
 
 // === Types ===
 export type DesignType = {
@@ -53,10 +53,25 @@ export type ContentType = {
 
 export type ActionItemType = {
   id: string;
-  type: "LINK_LIST" | "OTHER_ACTION";
+  type: "LINK_LIST" | "CONTACT_FORM" | "TEXT_BLOCK" | "IMAGE_GALLERY" | "CALENDAR_BOOKING" | "MUSIC_PLAYER" | "VIDEO_SHOWCASE" | "PRODUCT_SHOWCASE" | "LOCATION_MAP" | "PHONE_CALL";
   config: {
     title?: string;
     links?: { title: string; url: string; icon?: string }[];
+    email?: string;
+    content?: string;
+    images?: { url: string; caption?: string }[];
+    calendarUrl?: string;
+    phoneNumber?: string;
+    address?: string;
+    products?: any[];
+    spotifyUrl?: string;
+    soundcloudUrl?: string;
+    youtubeUrl?: string;
+    vimeoUrl?: string;
+    showMap?: boolean;
+    description?: string;
+    successMessage?: string;
+    [key: string]: any;
   };
   order: number;
 };
@@ -149,9 +164,6 @@ export const useUserContentStore = create<UserContentStore>()(
           config: {
             links: [
               { title: "Link 1", url: "" },
-              { title: "Link 2", url: "" },
-              { title: "Link 3", url: "" },
-              { title: "Link 4", url: "" },
             ],
           },
         },

@@ -1,6 +1,15 @@
 import React from "react";
 import { TemplateProps } from "@/types/editorTypes";
 import LinkListAction from "../actions/LinkListAction";
+import ContactFormAction from "../actions/ContactFormAction";
+import TextBlockAction from "../actions/TextBlockAction";
+import ImageGalleryAction from "../actions/ImageGalleryAction";
+import MusicPlayerAction from "../actions/MusicPlayerAction";
+import LocationMapAction from "../actions/LocationMapAction";
+import VideoShowcaseAction from "../actions/VideoShowcaseAction";
+import ProductShowcaseAction from "../actions/ProductShowcaseAction";
+import CalendarBookingAction from "../actions/CalendarBookingAction";
+import PhoneCallAction from "../actions/PhoneCallAction";
 import { getPlatformIcon } from "@/lib/getPlatformIcons";
 import { getTheme, curveShapes, curveColors } from "@/lib/themeSystem";
 import defaultProfilePicture from "@/public/Devben Portfolio.webp"
@@ -255,6 +264,96 @@ const MinimalTemplate: React.FC<TemplateProps> = ({
                     className="animate-fade-in-up"
                   >
                     <LinkListAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "CONTACT_FORM":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <ContactFormAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "TEXT_BLOCK":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <TextBlockAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "IMAGE_GALLERY":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <ImageGalleryAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "MUSIC_PLAYER":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <MusicPlayerAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "LOCATION_MAP":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <LocationMapAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "VIDEO_SHOWCASE":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <VideoShowcaseAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "PRODUCT_SHOWCASE":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <ProductShowcaseAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "CALENDAR_BOOKING":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <CalendarBookingAction action={action} theme={themeConfig} />
+                  </div>
+                );
+              case "PHONE_CALL":
+                return (
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 150}ms` }}
+                    className="animate-fade-in-up"
+                  >
+                    <PhoneCallAction action={action} theme={themeConfig} />
                   </div>
                 );
               default:

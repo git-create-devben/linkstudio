@@ -1,6 +1,6 @@
 // pages/components/TemplateStep.tsx or wherever you're using it
 import { saveUserTemplate } from '@/actions/onboardingActions';
-import TemplateSelector from '@/components/template/templateSelector';
+import TemplateGrid from './TemplateGrid';
 import { getSupabaseId } from '@/lib/user/getUser';
 import { useState } from 'react';
 
@@ -19,46 +19,48 @@ const TemplateStep = ({
 
   if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
 
+  const handleTemplateSelect = async (templateId: string) => {
+    updateFormData('template', templateId);
 
-  const saveTemplateAndProceed = async () => {
     setIsSaving(true);
     setError('');
 
     try {
-      const result = await saveUserTemplate(userId, formData.template);
+      const result = await saveUserTemplate(userId, templateId);
 
       if (result.success) {
-        nextStep(); // Proceed to the next step if the goal is saved successfully
+        nextStep(); // Proceed to the next step if the template is saved successfully
       } else {
-        setError(result.message || 'Failed to save goal');
+        setError(result.message || 'Failed to save template');
       }
     } catch (error) {
-      setError('An error occurred while saving the goal');
+      setError('An error occurred while saving the template');
     } finally {
       setIsSaving(false);
     }
   };
-  return (
-    <div className="text-center max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">Select a template</h2>
-      <p className="text-gray-600 mb-8">
-        Pick the style that feels right - you can add your content later
-      </p>
 
-      <TemplateSelector
+  return (
+    <div className="max-w-7xl mx-auto px-4">
+      <TemplateGrid
         selectedTemplate={formData.template}
-        onSelect={(id) => updateFormData('template', id)}
+        onSelect={handleTemplateSelect}
       />
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && (
+        <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-center">{error}</p>
+        </div>
+      )}
 
-      <button
-        onClick={saveTemplateAndProceed}
-        disabled={!formData.template || isSaving}
-        className="w-full bg-gray-900 text-white py-4 px-8 rounded-2xl font-semibold hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-      >
-        {isSaving ? 'Saving...' : 'Continue'}
-      </button>
+      {isSaving && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 flex flex-col items-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-900 font-medium">Setting up your template...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

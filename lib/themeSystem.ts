@@ -1,6 +1,21 @@
 // Theme System for LinkStudio
 export type ThemeMode = 'light' | 'dark' | 'glassmorphic';
 
+export interface BannerConfig {
+  type: 'none' | 'image' | 'curve';
+  value?: string;
+  height?: number;
+  opacity?: number;
+  blur?: boolean;
+}
+
+export const defaultBannerConfig: BannerConfig = {
+  type: 'none',
+  height: 200,
+  opacity: 1,
+  blur: false,
+};
+
 export interface ThemeColors {
   background: string;
   cardBackground: string;

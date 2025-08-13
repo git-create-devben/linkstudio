@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserContentStore } from "@/stores/useContentStore";
-import { Save, Eye, Upload, ChevronDown, Check, X } from "lucide-react";
+import { Save, Eye, Upload, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface MultiButtonProps {
@@ -10,6 +10,7 @@ interface MultiButtonProps {
   isPublishing?: boolean;
   isDisabled?: boolean;
   className?: string;
+  loading?: boolean; // <-- Add loading prop
 }
 
 const MultiButton: React.FC<MultiButtonProps> = ({
@@ -18,8 +19,9 @@ const MultiButton: React.FC<MultiButtonProps> = ({
   isPublishing = false,
   isDisabled = false,
   className = "",
+  loading = false,
 }) => {
-  const { isDirty, isSaving, saveError, lastSaved, saveAllChanges } = useUserContentStore();
+  const { isDirty, isSaving, saveAllChanges } = useUserContentStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const handlePreview = () => {
@@ -45,6 +47,15 @@ const MultiButton: React.FC<MultiButtonProps> = ({
       toast.success("🚀 Profile published successfully!");
     }
   };
+
+  if (loading) {
+    return (
+      <div className={`flex gap-2 ${className}`}>
+        <div className="w-24 h-8 bg-gray-200 rounded animate-pulse" />
+        <div className="w-10 h-8 bg-gray-200 rounded animate-pulse" />
+      </div>
+    );
+  }
 
   const menuItems = [
     {
@@ -81,7 +92,6 @@ const MultiButton: React.FC<MultiButtonProps> = ({
         >
           {isSaving ? "Saving..." : "Save Changes"}
         </button>
-        
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
@@ -96,7 +106,6 @@ const MultiButton: React.FC<MultiButtonProps> = ({
           <ChevronDown className="w-5 h-5" />
         </button>
       </div>
-
       <AnimatePresence>
         {isOpen && (
           <motion.div

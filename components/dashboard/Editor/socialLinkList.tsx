@@ -7,21 +7,24 @@ interface SocialLinksListProps {
   links: SocialLink[];
   onEdit: (linkId: string) => void;
   onDelete: (linkId: string) => void;
+  deletingId?: string | null;
 }
 
 const SocialLinksList: React.FC<SocialLinksListProps> = ({ 
   links, 
   onEdit, 
-  onDelete 
+  onDelete,
+  deletingId 
 }) => {
   return (
-    <div className="space-y-3 ">
+    <div className="space-y-4">
       {links?.map((link) => (
         <SocialLinkItem
           key={link.id}
           link={link}
           onEdit={onEdit}
           onDelete={onDelete}
+          isDeleting={deletingId === link.id}
         />
       ))}
     </div>
