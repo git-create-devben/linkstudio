@@ -12,12 +12,12 @@ import { toast } from "sonner";
 import { DesignType, ActionItemType } from "@/stores/useContentStore";
 
 const TemplateInitializer = () => {
-  const { loading, initializeStore, resetStoreWithTemplate, templateId } = useUserContentStore();
+  const { initializeStore, resetStoreWithTemplate, templateId } = useUserContentStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     // Prevent multiple initializations
-    if (isInitialized || !loading) {
+    if (isInitialized) {
       return;
     }
 
@@ -37,7 +37,28 @@ const TemplateInitializer = () => {
 
         // Add design data if available
         if (profileData?.design) {
-          userData.design = profileData.design as DesignType;
+          const d = profileData.design as any;
+          const mappedDesign: any = { ...d };
+
+          // Map flat banner fields from DB into nested banner object used by the editor
+          if (d?.bannerType === 'image' && d?.bannerValue) {
+            mappedDesign.banner = {
+              type: 'image',
+              value: d.bannerValue,
+              height: d.bannerHeight ?? 160,
+              opacity: d.bannerOpacity ?? 1,
+              blur: Boolean(d.bannerBlur),
+            };
+          } else if (d?.bannerType === 'none') {
+            mappedDesign.banner = { type: 'none', value: '' };
+          }
+
+          // Ensure curve flags are preserved (already flat in DB schema)
+          if (d?.bannerType === 'curve') {
+            mappedDesign.bannerType = 'curve';
+          }
+
+          userData.design = mappedDesign as DesignType;
         }
 
         // Add content data if available (only non-empty values)
@@ -103,18 +124,18 @@ const TemplateInitializer = () => {
 
         console.log("Final initialization data:", initData);
         
-        // Always prioritize database template ID over localStorage
-        const currentTemplateId = useUserContentStore.getState().templateId;
+        // Always use the database template ID as the source of truth
+        console.log("Database template ID:", selectedTemplateId);
+        console.log("Initializing store with database data");
+        console.log("initData.templateId:", initData.templateId);
+        console.log("Full initData:", initData);
         
-        // If database has a different template than localStorage, always use database version
-        if (currentTemplateId !== selectedTemplateId) {
-          console.log("Database template ID:", selectedTemplateId, "differs from localStorage:", currentTemplateId);
-          console.log("Resetting store to match database template");
-          resetStoreWithTemplate(initData);
-        } else {
-          // Only merge if templates match
-          initializeStore(initData);
-        }
+        // Clear localStorage first to prevent conflicts with persisted data
+        const { clearLocalStorage } = useUserContentStore.getState();
+        clearLocalStorage();
+        
+        // Always initialize with database data (database is source of truth)
+        resetStoreWithTemplate(initData);
 
         // Sync any template action items to database to prevent update errors
         if (mergedData.actionItems && mergedData.actionItems.length > 0) {
@@ -153,14 +174,20 @@ const TemplateInitializer = () => {
     };
 
     fetchDataAndInitStore();
-  }, [loading, initializeStore, isInitialized]);
+  }, [isInitialized, initializeStore]);
 
   // Show loading spinner during initialization
   // if (loading || !isInitialized) {
   //   return <LoadingSpinner />;
   // }
 
+  // Track templateId changes
+  useEffect(() => {
+    console.log("TemplateInitializer - templateId changed to:", templateId);
+  }, [templateId]);
+
   // Render the template once initialized
+  console.log("TemplateInitializer - Current Template ID:", templateId);
   return <TemplateRenderer templateId={templateId} />;
 };
 

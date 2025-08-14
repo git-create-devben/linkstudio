@@ -16,13 +16,12 @@ const VerifiedBadgeSection = () => {
     const hasVerifiedBadge = canUserAccessFeature(user, 'verifiedBadge');
 
     const handleVerifiedToggle = () => {
-        if (!hasVerifiedBadge) {
-            toast.error('Upgrade to Starter plan or higher to get a verified badge');
-            router.push('/payment');
-            return;
-        }
         setContent({ profileVerified: !content.profileVerified });
         toast.success(content.profileVerified ? 'Verified badge removed' : 'Verified badge added!');
+        
+        if (!hasVerifiedBadge) {
+            toast.info('Pro feature - upgrade to save verified badge changes');
+        }
     };
 
     return (
@@ -30,59 +29,54 @@ const VerifiedBadgeSection = () => {
             <label className="block text-sm font-medium text-slate-700 mb-3">
                 Verified Badge
             </label>
-            <div className={`p-4 rounded-lg border-2 transition-all ${hasVerifiedBadge ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-gray-50'}`}>
+            <div className="p-4 rounded-lg border-2 transition-all border-blue-200 bg-blue-50">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${hasVerifiedBadge ? 'bg-blue-100' : 'bg-gray-100'}`}>
-                            {hasVerifiedBadge ? (
-                                <Shield className="w-5 h-5 text-blue-600" />
-                            ) : (
-                                <Lock className="w-5 h-5 text-gray-500" />
-                            )}
+                        <div className="p-2 rounded-lg bg-blue-100">
+                            <Shield className="w-5 h-5 text-blue-600" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="font-medium text-slate-800">Verified Badge</span>
-                                {hasVerifiedBadge && content.profileVerified && (
+                                {!hasVerifiedBadge && <Crown className="w-4 h-4 text-amber-500" />}
+                                {content.profileVerified && (
                                     <Shield className="w-4 h-4 text-blue-600 fill-current" />
                                 )}
                             </div>
                             <p className="text-sm text-slate-600">
-                                {hasVerifiedBadge 
-                                    ? 'Show a verification checkmark on your profile' 
-                                    : 'Available on Starter plan and above'
-                                }
+                                Show a verification checkmark on your profile
+                                {!hasVerifiedBadge && (
+                                    <span className="text-amber-600 ml-2">
+                                        (Pro feature - upgrade to save)
+                                    </span>
+                                )}
                             </p>
                         </div>
                     </div>
                     
-                    {hasVerifiedBadge ? (
-                        <button
-                            onClick={handleVerifiedToggle}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                                content.profileVerified ? 'bg-blue-600' : 'bg-gray-300'
+                    <button
+                        onClick={handleVerifiedToggle}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                            content.profileVerified ? 'bg-blue-600' : 'bg-gray-300'
+                        }`}
+                    >
+                        <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                content.profileVerified ? 'translate-x-6' : 'translate-x-1'
                             }`}
-                        >
-                            <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                    content.profileVerified ? 'translate-x-6' : 'translate-x-1'
-                                }`}
-                            />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => router.push('/payment')}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all"
-                        >
-                            <Crown className="w-3 h-3" />
-                            Upgrade
-                        </button>
-                    )}
+                        />
+                    </button>
                 </div>
                 
                 {!hasVerifiedBadge && (
-                    <div className="mt-3 text-xs text-gray-600">
-                        <span className="font-medium">Current plan:</span> {userPlan.charAt(0).toUpperCase() + userPlan.slice(1)}
+                    <div className="mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                        <div className="flex items-center gap-2 text-amber-800">
+                            <Crown className="w-3 h-3" />
+                            <span className="text-xs font-medium">Pro Feature</span>
+                        </div>
+                        <p className="text-xs text-amber-700 mt-1">
+                            You can try the verified badge now, but upgrade to save your changes.
+                        </p>
                     </div>
                 )}
             </div>

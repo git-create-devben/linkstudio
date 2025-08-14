@@ -1,5 +1,4 @@
 import React from "react";
-import { TemplateProps } from "@/types/editorTypes";
 import LinkListAction from "../actions/LinkListAction";
 import ContactFormAction from "../actions/ContactFormAction";
 import TextBlockAction from "../actions/TextBlockAction";
@@ -13,6 +12,7 @@ import PhoneCallAction from "../actions/PhoneCallAction";
 import { getPlatformIcon } from "@/lib/getPlatformIcons";
 import { getTheme, curveShapes, curveColors } from "@/lib/themeSystem";
 import defaultProfilePicture from "@/public/Devben Portfolio.webp"
+import { TemplateProps } from "@/types/editorTypes";
 
 // Helper function to get curve style from shape and color
 const getCurveStyle = (shapeId?: string, curveColor?: string, animated?: boolean) => {
@@ -168,9 +168,9 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
 
               <div className="relative">
                 <div
-                  className="p-1 rounded-full"
+                  className="-mt-10 p-3 rounded-full"
                   style={{
-                    background: 'linear-gradient(45deg, rgba(255,255,255,0.4), rgba(255,255,255,0.2))',
+                    background: musicBackground
                   }}
                 >
                   <img
@@ -178,7 +178,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                     alt={profileName || "Profile"}
                     className="relative w-36 h-36 rounded-full object-cover shadow-2xl transition-all duration-500 hover:scale-105"
                     style={{
-                      border: '3px solid rgba(255,255,255,0.4)',
+                      border: `6px solid ${musicBackground}`,
                       filter: 'brightness(1.1) contrast(1.1)'
                     }}
                   />
@@ -200,7 +200,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
 
           {/* Artist Name & Bio with music typography */}
           <div
-            className="mb-8 text-center max-w-sm"
+            className="mb-4 text-center max-w-sm"
             style={{ textAlign: design.textAlignment || 'center' }}
           >
             {toggles.profileName && (
@@ -231,7 +231,7 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
 
           {/* Music Social Links with beat-sync animation */}
           {socialLinks && socialLinks.length > 0 && (
-            <div className="flex gap-4 mb-8 flex-wrap justify-center">
+            <div className="flex gap-4 mb-4 flex-wrap justify-center">
               {socialLinks.map((link, index) => (
                 <a
                   key={link.id}
@@ -315,13 +315,13 @@ const ModernMusicTemplate: React.FC<TemplateProps> = ({
                 );
               case "MUSIC_PLAYER":
                 return (
-                  // <div 
-                  //   key={action.id}
-                  //   style={{ animationDelay: `${(index + 1) * 250}ms` }}
-                  //   className="animate-fade-in-up"
-                  // >
+                  <div 
+                    key={action.id}
+                    style={{ animationDelay: `${(index + 1) * 250}ms` }}
+                    className="animate-fade-in-up"
+                  >
                   <MusicPlayerAction action={action} theme={themeConfig} />
-                  // </div>
+                   </div>
                 );
               case "LOCATION_MAP":
                 return (

@@ -26,16 +26,98 @@ export async function saveAll(data: {
   const { id: designId, profileId: designProfileId, ...designData } = data.design as any;
   const { id: contentId, profileId: contentProfileId, ...contentData } = data.content as any;
 
-  // 1. Save Design
-  await prisma.design.update({
+  // Normalize editor design shape (nested banner) into flat DB fields
+  const normalizedDesign = (() => {
+    const d: any = { ...designData };
+
+    // Map nested banner to flat fields
+    if (d.banner && d.banner.type === 'image') {
+      d.bannerType = 'image';
+      d.bannerValue = d.banner.value;
+      d.bannerHeight = d.banner.height ?? d.bannerHeight;
+      d.bannerOpacity = d.banner.opacity ?? d.bannerOpacity;
+      d.bannerBlur = d.banner.blur ?? d.bannerBlur;
+    } else if (d.banner && d.banner.type === 'none') {
+      d.bannerType = 'none';
+      d.bannerValue = '';
+    }
+
+    // Preserve curve settings if user selected curve banner
+    if (d.bannerType === 'curve') {
+      // curveShape/curveColor/curveAnimated already live at root in state
+    }
+
+    return d;
+  })();
+
+  // Filter out invalid design fields that don't exist in the Prisma schema
+  const validDesignFields = {
+    theme: normalizedDesign.theme,
+    layout: normalizedDesign.layout,
+    font: normalizedDesign.font,
+    customBackground: normalizedDesign.customBackground,
+    bannerType: normalizedDesign.bannerType,
+    bannerValue: normalizedDesign.bannerValue,
+    bannerHeight: normalizedDesign.bannerHeight,
+    bannerOpacity: normalizedDesign.bannerOpacity,
+    bannerBlur: normalizedDesign.bannerBlur,
+    curveShape: normalizedDesign.curveShape,
+    curveColor: normalizedDesign.curveColor,
+    curveAnimated: normalizedDesign.curveAnimated,
+    textPrimaryColor: normalizedDesign.textPrimaryColor,
+    textSecondaryColor: normalizedDesign.textSecondaryColor,
+    textAlignment: normalizedDesign.textAlignment,
+    buttonStyle: normalizedDesign.buttonStyle,
+    buttonColor: normalizedDesign.buttonColor,
+    buttonTextColor: normalizedDesign.buttonTextColor,
+    buttonBorderColor: normalizedDesign.buttonBorderColor,
+    buttonHoverColor: normalizedDesign.buttonHoverColor,
+    buttonShadow: normalizedDesign.buttonShadow,
+    buttonAnimation: normalizedDesign.buttonAnimation,
+    cardStyle: normalizedDesign.cardStyle,
+    cardBorderRadius: normalizedDesign.cardBorderRadius,
+    cardShadow: normalizedDesign.cardShadow,
+    cardBlur: normalizedDesign.cardBlur,
+    reducedMotion: normalizedDesign.reducedMotion,
+    animationSpeed: normalizedDesign.animationSpeed,
+    profileImageStyle: normalizedDesign.profileImageStyle,
+    profileImageBorder: normalizedDesign.profileImageBorder,
+    profileImageShadow: normalizedDesign.profileImageShadow,
+    socialLinksStyle: normalizedDesign.socialLinksStyle,
+    socialLinksAnimation: normalizedDesign.socialLinksAnimation,
+    spacing: normalizedDesign.spacing,
+    borderRadius: normalizedDesign.borderRadius,
+    shadowIntensity: normalizedDesign.shadowIntensity,
+    background: normalizedDesign.background,
+    color: normalizedDesign.color,
+    bottomStyles: normalizedDesign.bottomStyles,
+  };
+
+  // Remove undefined values to avoid Prisma issues
+  const filteredDesignData = Object.fromEntries(
+    Object.entries(validDesignFields).filter(([_, value]) => value !== undefined)
+  );
+
+  console.log("Filtered design data for Prisma:", filteredDesignData);
+
+  // 1. Save Design - upsert to handle missing records
+  await prisma.design.upsert({
     where: { profileId: profile.id },
-    data: designData,
+    update: filteredDesignData,
+    create: {
+      profileId: profile.id,
+      ...filteredDesignData,
+    },
   });
 
-  // 2. Save Content
-  await prisma.content.update({
+  // 2. Save Content - upsert to handle missing records
+  await prisma.content.upsert({
     where: { profileId: profile.id },
-    data: contentData,
+    update: contentData,
+    create: {
+      profileId: profile.id,
+      ...contentData,
+    },
   });
 
   // 3. Save Action Items
@@ -62,7 +144,18 @@ export async function saveAll(data: {
     }
   }
 
-  // 4. Save Template
+  // 4. Save Template - verify profile exists first
+  console.log("Updating profile with ID:", profile.id, "templateId:", data.templateId);
+  
+  const existingProfile = await prisma.profile.findUnique({
+    where: { id: profile.id },
+  });
+  
+  if (!existingProfile) {
+    console.error("Profile not found for ID:", profile.id);
+    throw new Error(`Profile not found for ID: ${profile.id}`);
+  }
+  
   await prisma.profile.update({
     where: { id: profile.id },
     data: { templateId: data.templateId },

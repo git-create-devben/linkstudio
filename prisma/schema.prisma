@@ -131,6 +131,16 @@ model Design {
   reducedMotion      Boolean @default(false)
   animationSpeed     String? @default("normal") // slow, normal, fast
   
+  // Enhanced styling options
+  profileImageStyle  String? @default("circle") // circle, rounded, square
+  profileImageBorder Boolean @default(false)
+  profileImageShadow Boolean @default(true)
+  socialLinksStyle   String? @default("pills") // pills, circles, squares, minimal
+  socialLinksAnimation String? @default("hover") // hover, pulse, bounce, none
+  spacing            String? @default("normal") // compact, normal, relaxed
+  borderRadius       String? @default("medium") // none, small, medium, large
+  shadowIntensity    String? @default("medium") // none, subtle, medium, strong
+  
   // Legacy fields (for backward compatibility)
   background         String?
   color              String?

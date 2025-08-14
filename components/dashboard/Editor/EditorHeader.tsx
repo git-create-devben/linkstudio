@@ -11,8 +11,13 @@ import {
   Clock, 
   Loader2,
   Eye,
-  ExternalLink 
+  ExternalLink,
+  Crown 
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/context/userContext";
+import { canUserAccessFeature } from "@/lib/planUtils";
 
 const EditorHeader = () => {
   const { 
@@ -21,10 +26,34 @@ const EditorHeader = () => {
     saveError, 
     lastSaved, 
     saveAllChanges,
-    content 
+    content,
+    design 
   } = useUserContentStore();
+  const user = useUser();
   
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+
+  // Determine if current edits require upgrade
+  const requiresUpgrade = () => {
+    const hasAdvanced = canUserAccessFeature(user, 'advancedCustomization');
+    const hasVerified = canUserAccessFeature(user, 'verifiedBadge');
+
+    const usingAdvancedDesign = Boolean(
+      // custom solid color (non-gradient) or image background
+      (design.customBackground && !design.customBackground.includes('gradient')) ||
+      // banner image
+      (design as any).banner?.type === 'image' ||
+      // curves
+      (design as any).bannerType === 'curve' || (design as any).curveShape
+    );
+
+    const usingVerified = content.profileVerified === true;
+
+    if (!hasAdvanced && usingAdvancedDesign) return true;
+    if (!hasVerified && usingVerified) return true;
+    return false;
+  };
 
   // Show unsaved changes indicator
   useEffect(() => {
@@ -37,6 +66,10 @@ const EditorHeader = () => {
 
   const handleSave = async () => {
     try {
+      if (requiresUpgrade()) {
+        setShowUpgrade(true);
+        return;
+      }
       await saveAllChanges();
       toast.success("✨ Changes saved successfully!");
     } catch (error) {
@@ -46,6 +79,10 @@ const EditorHeader = () => {
 
   const handlePublish = async () => {
     try {
+      if (requiresUpgrade()) {
+        setShowUpgrade(true);
+        return;
+      }
       await saveAllChanges();
       toast.success("🚀 Profile published successfully!");
       // Here you could also trigger any publish-specific logic
@@ -175,6 +212,27 @@ const EditorHeader = () => {
           </button>
         </div>
       </div>
+    </div>
+
+      {/* Upgrade Modal */}
+      <Dialog open={showUpgrade} onOpenChange={setShowUpgrade}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Crown className="w-5 h-5 text-yellow-500" /> Upgrade required
+            </DialogTitle>
+            <DialogDescription>
+              You’re using Pro design features. Upgrade your plan to save or publish these changes.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 justify-end mt-4">
+            <Button variant="outline" onClick={() => setShowUpgrade(false)}>Cancel</Button>
+            <Button onClick={() => { setShowUpgrade(false); window.location.href = '/payment'; }} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+              Upgrade now
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

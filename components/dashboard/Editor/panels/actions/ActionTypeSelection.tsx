@@ -127,7 +127,7 @@ const ActionTypeSelection: React.FC<ActionTypeSelectionProps> = ({
           // Category View
           <div className="space-y-4">
             {categories.map((category) => {
-              const categoryStyle = categoryConfig[category];
+const categoryStyle = categoryConfig[category as keyof typeof categoryConfig];
               const categoryActions = getActionTypesByCategory(category);
               
               return (

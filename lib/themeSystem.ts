@@ -135,7 +135,8 @@ export const curveShapes = [
     description: 'Flowing ocean waves',
     clipPath: 'polygon(0 0, 100% 0, 100% 75%, 0 100%)',
     animationClass: 'animate-wave',
-    category: 'flowing'
+    category: 'flowing',
+    tier: 'free'
   },
   {
     id: 'wave-2',
@@ -143,7 +144,8 @@ export const curveShapes = [
     description: 'Dynamic music waves',
     clipPath: 'polygon(0 0, 100% 0, 100% 80%, 75% 85%, 50% 80%, 25% 85%, 0 80%)',
     animationClass: 'animate-wave',
-    category: 'flowing'
+    category: 'flowing',
+    tier: 'free'
   },
   {
     id: 'wave-3',
@@ -151,7 +153,8 @@ export const curveShapes = [
     description: 'Adventure waves',
     clipPath: 'polygon(0 0, 100% 0, 100% 85%, 85% 90%, 70% 85%, 50% 90%, 30% 85%, 15% 90%, 0 85%)',
     animationClass: 'animate-wave',
-    category: 'flowing'
+    category: 'flowing',
+    tier: 'premium'
   },
   {
     id: 'wave-reverse',
@@ -159,7 +162,8 @@ export const curveShapes = [
     description: 'Reverse flowing motion',
     clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 75%)',
     animationClass: 'animate-wave-reverse',
-    category: 'flowing'
+    category: 'flowing',
+    tier: 'free'
   },
   {
     id: 'mountains',
@@ -167,7 +171,8 @@ export const curveShapes = [
     description: 'Sharp mountain silhouette',
     clipPath: 'polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%)',
     animationClass: 'animate-mountain-drift',
-    category: 'geometric'
+    category: 'geometric',
+    tier: 'premium'
   },
   {
     id: 'arch',
@@ -176,7 +181,8 @@ export const curveShapes = [
     clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%)',
     borderRadius: '0 0 50% 50% / 0 0 30px 30px',
     animationClass: 'animate-arch-expand',
-    category: 'architectural'
+    category: 'architectural',
+    tier: 'premium'
   },
   {
     id: 'clouds',
@@ -184,7 +190,8 @@ export const curveShapes = [
     description: 'Soft cloud-like edges',
     clipPath: 'polygon(0 0, 100% 0, 100% 90%, 85% 95%, 70% 90%, 50% 95%, 30% 90%, 15% 95%, 0 90%)',
     animationClass: 'animate-cloud-drift',
-    category: 'organic'
+    category: 'organic',
+    tier: 'premium'
   },
   {
     id: 'curve-bottom',
@@ -193,7 +200,8 @@ export const curveShapes = [
     clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 100%)',
     borderRadius: '0 0 50% 50% / 0 0 20px 20px',
     animationClass: 'animate-breathe',
-    category: 'simple'
+    category: 'simple',
+    tier: 'free'
   },
   {
     id: 'petal',
@@ -202,7 +210,8 @@ export const curveShapes = [
     clipPath: 'polygon(0 0, 100% 0, 90% 100%, 10% 100%)',
     borderRadius: '0 0 30px 30px',
     animationClass: 'animate-petal-sway',
-    category: 'organic'
+    category: 'organic',
+    tier: 'premium'
   },
   {
     id: 'dunes',
@@ -210,7 +219,8 @@ export const curveShapes = [
     description: 'Rolling desert dunes',
     clipPath: 'polygon(0 0, 100% 0, 100% 85%, 75% 90%, 50% 85%, 25% 90%, 0 85%)',
     animationClass: 'animate-dune-shift',
-    category: 'flowing'
+    category: 'flowing',
+    tier: 'premium'
   },
   {
     id: 'aurora',
@@ -219,7 +229,8 @@ export const curveShapes = [
     clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)',
     background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.1) 0%, transparent 70%)',
     animationClass: 'animate-aurora',
-    category: 'mystical'
+    category: 'mystical',
+    tier: 'premium'
   },
   {
     id: 'blossom',
@@ -229,7 +240,8 @@ export const curveShapes = [
     borderRadius: '0 0 40px 40px',
     background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%)',
     animationClass: 'animate-bloom',
-    category: 'organic'
+    category: 'organic',
+    tier: 'premium'
   },
   {
     id: 'liquid',
@@ -237,7 +249,8 @@ export const curveShapes = [
     description: 'Smooth liquid motion',
     clipPath: 'polygon(0 0, 100% 0, 100% 88%, 90% 92%, 80% 88%, 70% 92%, 60% 88%, 50% 92%, 40% 88%, 30% 92%, 20% 88%, 10% 92%, 0 88%)',
     animationClass: 'animate-liquid-flow',
-    category: 'flowing'
+    category: 'flowing',
+    tier: 'premium'
   },
   {
     id: 'geometric-cut',
@@ -245,7 +258,8 @@ export const curveShapes = [
     description: 'Sharp geometric angles',
     clipPath: 'polygon(0 0, 100% 0, 100% 70%, 80% 100%, 20% 100%, 0 70%)',
     animationClass: 'animate-geometric-shift',
-    category: 'geometric'
+    category: 'geometric',
+    tier: 'premium'
   },
   {
     id: 'music-wave',
@@ -253,7 +267,26 @@ export const curveShapes = [
     description: 'Dynamic music equalizer bars',
     clipPath: 'polygon(0 0, 100% 0, 100% 85%, 95% 90%, 90% 85%, 85% 95%, 80% 85%, 75% 90%, 70% 85%, 65% 95%, 60% 85%, 55% 90%, 50% 85%, 45% 95%, 40% 85%, 35% 90%, 30% 85%, 25% 95%, 20% 85%, 15% 90%, 10% 85%, 5% 95%, 0 85%)',
     animationClass: 'animate-equalizer',
-    category: 'music'
+    category: 'music',
+    tier: 'premium'
+  },
+  {
+    id: 'gentle-slope',
+    name: 'Gentle Slope',
+    description: 'Soft diagonal slope',
+    clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0 100%)',
+    animationClass: 'animate-breathe',
+    category: 'simple',
+    tier: 'free'
+  },
+  {
+    id: 'double-wave',
+    name: 'Double Wave',
+    description: 'Two gentle waves',
+    clipPath: 'polygon(0 0, 100% 0, 100% 85%, 75% 90%, 50% 85%, 25% 90%, 0 85%)',
+    animationClass: 'animate-wave',
+    category: 'flowing',
+    tier: 'free'
   }
 ];
 
@@ -281,16 +314,16 @@ export const animationUtilities = [
 ];
 
 export const curveColors = [
-  { id: 'ocean-blue', name: 'Ocean Blue', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', category: 'cool' },
-  { id: 'sunset-pink', name: 'Sunset Pink', value: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', category: 'warm' },
-  { id: 'crystal-cyan', name: 'Crystal Cyan', value: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', category: 'cool' },
-  { id: 'emerald-green', name: 'Emerald Green', value: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', category: 'nature' },
-  { id: 'golden-yellow', name: 'Golden Yellow', value: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', category: 'warm' },
-  { id: 'lavender-dream', name: 'Lavender Dream', value: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', category: 'soft' },
-  { id: 'rose-quartz', name: 'Rose Quartz', value: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)', category: 'soft' },
-  { id: 'desert-sand', name: 'Desert Sand', value: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', category: 'warm' },
-  { id: 'aurora-purple', name: 'Aurora Purple', value: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)', category: 'mystical' },
-  { id: 'cherry-blossom', name: 'Cherry Blossom', value: 'linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)', category: 'soft' }
+  { id: 'ocean-blue', name: 'Ocean Blue', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', category: 'cool', tier: 'free' },
+  { id: 'sunset-pink', name: 'Sunset Pink', value: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', category: 'warm', tier: 'free' },
+  { id: 'crystal-cyan', name: 'Crystal Cyan', value: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', category: 'cool', tier: 'free' },
+  { id: 'emerald-green', name: 'Emerald Green', value: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', category: 'nature', tier: 'premium' },
+  { id: 'golden-yellow', name: 'Golden Yellow', value: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', category: 'warm', tier: 'premium' },
+  { id: 'lavender-dream', name: 'Lavender Dream', value: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', category: 'soft', tier: 'premium' },
+  { id: 'rose-quartz', name: 'Rose Quartz', value: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)', category: 'soft', tier: 'premium' },
+  { id: 'desert-sand', name: 'Desert Sand', value: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)', category: 'warm', tier: 'premium' },
+  { id: 'aurora-purple', name: 'Aurora Purple', value: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)', category: 'mystical', tier: 'premium' },
+  { id: 'cherry-blossom', name: 'Cherry Blossom', value: 'linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)', category: 'soft', tier: 'premium' }
 ];
 
 export const buttonStyles = [

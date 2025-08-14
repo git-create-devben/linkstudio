@@ -1,4 +1,6 @@
 import { ContentType, DesignType, ActionItemType } from "@/stores/useContentStore";
+
+export { ActionItemType };
 export interface SocialLink {
   id: string; name: string; userId: string; url: string;
 }
@@ -71,3 +73,5 @@ interface ActionEvent {
   metadata?: Record<string, any>;
 }
 
+
+export { ContentType, DesignType };

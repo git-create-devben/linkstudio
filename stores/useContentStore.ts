@@ -6,6 +6,11 @@ import { SocialLink } from "@/types/editorTypes";
 import { ThemeMode, BannerConfig, defaultBannerConfig } from "@/lib/themeSystem";
 import defaultImage from "@/public/Devben Portfolio.webp";
 
+// Helper function for type-safe object merging
+const safeMerge = <T>(target: T, source: Partial<T>): T => {
+  return Object.assign({}, target, source) as T;
+};
+
 // === Types ===
 export type DesignType = {
   theme: ThemeMode;
@@ -39,6 +44,22 @@ export type DesignType = {
   banner?: BannerConfig;
   color?: string;
   bottomStyles?: string;
+  // Enhanced styling options
+  profileImageStyle?: 'circle' | 'rounded' | 'square';
+  profileImageBorder?: boolean;
+  profileImageShadow?: boolean;
+  socialLinksStyle?: 'pills' | 'circles' | 'squares' | 'minimal';
+  socialLinksAnimation?: 'hover' | 'pulse' | 'bounce' | 'none';
+  spacing?: 'compact' | 'normal' | 'spacious';
+  borderRadius?: 'none' | 'small' | 'medium' | 'large';
+  shadowIntensity?: 'none' | 'subtle' | 'medium' | 'strong';
+  // New template system properties
+  profileStyle?: 'minimal' | 'featured' | 'artistic';
+  actionStyle?: 'buttons' | 'cards' | 'list';
+  effects?: string[];
+  removeBranding?: boolean;
+  customFooter?: string;
+  customFooterUrl?: string;
 };
 
 export type ContentType = {
@@ -147,8 +168,11 @@ export const useUserContentStore = create<UserContentStore>()(
         color: "#FFFFFF",
         font: "Inter",
       },
-      setDesign: (data) =>
-        set((state) => ({ design: deepmerge(state.design, data), isDirty: true })),
+      setDesign: (data: Partial<DesignType>) =>
+        set((state) => ({
+          design: safeMerge(state.design, data),
+          isDirty: true
+        })),
       content: {
         id: "",
         profileId: "",
@@ -158,8 +182,11 @@ export const useUserContentStore = create<UserContentStore>()(
         coverImage: null,
         profileVerified: false,
       },
-      setContent: (data) =>
-        set((state) => ({ content: deepmerge(state.content, data), isDirty: true })),
+      setContent: (data: Partial<ContentType>) =>
+        set((state) => ({
+          content: safeMerge(state.content, data),
+          isDirty: true
+        })),
       actionItems: [
         {
           id: "default",
@@ -195,9 +222,9 @@ export const useUserContentStore = create<UserContentStore>()(
             item.id === oldId ? { ...item, id: newId } : item
           ),
         })),
-      isTemporaryId: (id) => id === "default" || id === "music-player" || id === "music-links" || 
-                       id === "travel-gallery" || id === "travel-links" || id === "creative-portfolio" ||
-                       id.startsWith("temp_") || id.length < 10,
+      isTemporaryId: (id) => id === "default" || id === "music-player" || id === "music-links" ||
+        id === "travel-gallery" || id === "travel-links" || id === "creative-portfolio" ||
+        id.startsWith("temp_") || id.length < 10,
       updateActionItemWithNewId: (oldId, newId, updates) =>
         set((state) => ({
           actionItems: state.actionItems.map((item) =>
@@ -230,39 +257,50 @@ export const useUserContentStore = create<UserContentStore>()(
           isDirty: false,
           lastSaved: new Date(),
           templateId: data.templateId ?? state.templateId,
-          design: data.design ? deepmerge(state.design, data.design) : state.design,
-          content: data.content ? deepmerge(state.content, data.content) : state.content,
+          design: data.design ? safeMerge(state.design, data.design) : state.design,
+          content: data.content ? safeMerge(state.content, data.content) : state.content,
           actionItems: data.actionItems ?? state.actionItems,
           socialLinks: data.socialLinks ?? state.socialLinks,
         }));
       },
       resetStoreWithTemplate: (data: StoreUpdateData) => {
+        console.log("resetStoreWithTemplate called with:", data);
+        console.log("data.templateId:", data.templateId);
+        
+        // Create complete default objects
+        const defaultDesign: DesignType = {
+          layout: "minimal",
+          theme: 'dark' as ThemeMode,
+          customBackground: undefined,
+          banner: defaultBannerConfig,
+          buttonColor: "rgba(255, 255, 255, 0.2)",
+          color: "#FFFFFF",
+          font: "Inter",
+        };
+
+        const defaultContent: ContentType = {
+          id: "",
+          profileId: "",
+          profileName: "Ben",
+          profileBio: "Content Creator",
+          profilePicture: defaultImage.src,
+          coverImage: null,
+          profileVerified: false,
+        };
+
         // Completely replace store data with new template data
+        const newTemplateId = data.templateId || "minimal";
+        console.log("Setting templateId to:", newTemplateId);
+        
         set({
           loading: false,
           isDirty: false,
           lastSaved: new Date(),
           isSaving: false,
           saveError: null,
-          templateId: data.templateId || "minimal",
-          design: data.design || {
-            layout: "minimal",
-            theme: 'dark' as ThemeMode,
-            customBackground: undefined,
-            banner: defaultBannerConfig,
-            buttonColor: "rgba(255, 255, 255, 0.2)",
-            color: "#FFFFFF",
-            font: "Inter",
-          },
-          content: data.content || {
-            id: "",
-            profileId: "",
-            profileName: "Ben",
-            profileBio: "Content Creator",
-            profilePicture: defaultImage.src,
-            coverImage: null,
-            profileVerified: false,
-          },
+          templateId: newTemplateId,
+          design: data.design ? safeMerge(defaultDesign, data.design) : defaultDesign,
+          content: data.content ? safeMerge(defaultContent, data.content) : defaultContent,
           actionItems: data.actionItems || [
             {
               id: "default",
@@ -277,6 +315,8 @@ export const useUserContentStore = create<UserContentStore>()(
           ],
           socialLinks: data.socialLinks || [],
         });
+        
+        console.log("Store updated. New templateId:", get().templateId);
       },
       clearLocalStorage: () => {
         // Clear the persisted localStorage data
@@ -286,18 +326,18 @@ export const useUserContentStore = create<UserContentStore>()(
       },
       forceResetToTemplate: (templateId: string) => {
         console.log('Force resetting to template:', templateId);
-        
+
         // Clear localStorage and reset to template defaults
         if (typeof window !== 'undefined') {
           localStorage.removeItem('user-content-storage');
           console.log('Cleared localStorage');
         }
-        
+
         // Import and apply template defaults
         import('@/components/template/templateDefault').then(({ getTemplateDefaults }) => {
           const templateDefaults = getTemplateDefaults(templateId);
           console.log('Applying template defaults for:', templateId, templateDefaults);
-          
+
           set({
             loading: false,
             isDirty: true,
@@ -310,7 +350,7 @@ export const useUserContentStore = create<UserContentStore>()(
             actionItems: templateDefaults.actionItems,
             socialLinks: templateDefaults.socialLinks,
           });
-          
+
           console.log('Store reset complete for template:', templateId);
         });
       },

@@ -1,8 +1,8 @@
-import MinimalTemplate from "./templates/minmalTemplate";
-import ProfessionalTemplate from "./templates/professionalTemplate";
-import CreativeTemplate from "./templates/creativeTemplate";
-import ModernMusicTemplate from "./templates/modernMusicTemplate";
-import TravelerTemplate from "./templates/travelerTemplate";
+import MinimalTemplate from "./templates/minimal";
+import ProfessionalTemplate from "./templates/professional";
+import CreativeTemplate from "./templates/creative";
+import ModernMusicTemplate from "./templates/modernMusic";
+import TravelerTemplate from "./templates/traveler";
 import { TemplateType } from "@/types/templateTypes";
 import defaultImage from "@/public/Devben Portfolio.webp";
 

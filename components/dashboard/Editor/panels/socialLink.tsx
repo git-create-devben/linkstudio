@@ -237,14 +237,15 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
 
       {/* Stats Bar */}
       <div className="px-6 py-4 bg-white border-b border-gray-100">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-gray-900">{socialLinks?.length || 0}</span>
-              <span className="text-sm text-gray-600">
+              <span className="text-xs text-gray-600">
                 {socialLinks?.length === 1 ? 'profile connected' : 'profiles connected'}
               </span>
             </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+           
             {maxSocialLinks !== -1 && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-purple-50 rounded-full border border-blue-100">
                 <Sparkles size={14} className="text-blue-600" />
@@ -264,7 +265,7 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
               }
               handleAddClick();
             }}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200 shadow-sm ${
+            className={`flex items-center gap-2 p-4 rounded-xl text-xs font-medium transition-all duration-200 shadow-sm ${
               canAddMoreLinks 
                 ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-blue-200/50 hover:shadow-lg hover:shadow-blue-300/50 transform hover:scale-105 active:scale-95' 
                 : 'bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-200'

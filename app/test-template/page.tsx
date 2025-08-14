@@ -1,4 +1,4 @@
-import ModernMusicTemplate from "@/components/template/templates/modernMusicTemplate";
+import ModernMusicTemplate from "@/components/template/templates/modernMusic";
 import { templates } from "@/components/template/templateData";
 
 export default function TestTemplatePage() {
