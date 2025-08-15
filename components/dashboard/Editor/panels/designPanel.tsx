@@ -158,9 +158,9 @@ const DesignPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
+    <div className="flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800">
       <DesignPanelHeader onClose={onClose} />
-      <main className="flex-1 p-4 overflow-y-auto">
+      <main className="flex-1 p-4 overflow-y-auto min-h-0">
         {renderCurrentView()}
       </main>
     </div>

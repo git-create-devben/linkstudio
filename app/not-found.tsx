@@ -95,7 +95,7 @@ export default function NotFound() {
               <div className="grid md:grid-cols-3 gap-4">
                 {[
                   { name: "About Us", href: "/about", description: "Learn about our mission" },
-                  { name: "Pricing", href: "/pricing", description: "View our subscription plans" },
+                  { name: "Pricing", href: "/payment", description: "View our subscription plans" },
                   { name: "Templates", href: "/dashboard/template", description: "Browse our templates" }
                 ].map((item) => (
                   <Link

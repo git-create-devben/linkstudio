@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Trash2, AlertTriangle, Download, Loader2 } from 'lucide-react'
-import { exportUserData, deleteUserAccount } from '@/actions/settingsActions'
+import { exportUserData, deleteUserAccount, deactivateUserAccount } from '@/actions/settingsActions'
 import { toast } from 'sonner'
 
 const DangerZone = () => {
@@ -112,7 +112,22 @@ const DangerZone = () => {
               Temporarily deactivate your account. Your profile will be hidden but your data will be preserved. 
               You can reactivate anytime by logging in.
             </p>
-            <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+            <button
+              onClick={async () => {
+                try {
+                  const res = await deactivateUserAccount()
+                  if (res.error) {
+                    toast.error(res.error)
+                  } else {
+                    toast.success('Account deactivated. Contact support to reactivate.')
+                    window.location.href = '/'
+                  }
+                } catch {
+                  toast.error('Failed to deactivate account')
+                }
+              }}
+              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+            >
               Deactivate Account
             </button>
           </div>
@@ -204,12 +219,15 @@ const DangerZone = () => {
           If you're having issues with your account or need assistance with any of these actions, 
           our support team is here to help.
         </p>
-        <button
-          onClick={() => window.open('/contact', '_blank')}
-          className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-        >
-          Contact Support
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.open('/contact', '_blank')}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Contact Support
+          </button>
+          <span className="text-sm text-gray-600">or email <a href="mailto:benlad636@gmail.com" className="text-blue-600 hover:underline">benlad636@gmail.com</a></span>
+        </div>
       </div>
     </div>
   )

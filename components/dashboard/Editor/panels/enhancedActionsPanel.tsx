@@ -579,43 +579,43 @@ const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
     );
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-            <div className="relative w-full max-w-2xl h-[85vh] bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+        <div className="flex flex-col bg-white">
+            <div className="flex-1 overflow-y-auto min-h-0">
                 {currentView === 'main' && renderMainView()}
                 {currentView === 'select-type' && renderActionTypeSelection()}
                 {currentView === 'configure' && renderConfigurationForm()}
 
-                {deleteCandidateId && (
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-20">
-                        <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm m-4 border border-gray-200">
-                            <div className="text-center mb-4">
-                                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 flex items-center justify-center">
-                                    <Trash2 size={20} className="text-red-600" />
-                                </div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Action</h3>
-                                <p className="text-sm text-gray-600">Are you sure? This cannot be undone.</p>
+            </div>
+            
+            {deleteCandidateId && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm m-4 border border-gray-200">
+                        <div className="text-center mb-4">
+                            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 flex items-center justify-center">
+                                <Trash2 size={20} className="text-red-600" />
                             </div>
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => setDeleteCandidateId(null)}
-                                    disabled={isSubmitting}
-                                    className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors text-sm"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleDeleteAction}
-                                    disabled={isSubmitting}
-                                    className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:bg-red-400 font-medium transition-colors text-sm"
-                                >
-                                    {isSubmitting ? 'Deleting...' : 'Delete'}
-                                </button>
-                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Action</h3>
+                            <p className="text-sm text-gray-600">Are you sure? This cannot be undone.</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setDeleteCandidateId(null)}
+                                disabled={isSubmitting}
+                                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors text-sm"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDeleteAction}
+                                disabled={isSubmitting}
+                                className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:bg-red-400 font-medium transition-colors text-sm"
+                            >
+                                {isSubmitting ? 'Deleting...' : 'Delete'}
+                            </button>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };

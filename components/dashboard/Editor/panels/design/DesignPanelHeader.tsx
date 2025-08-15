@@ -14,7 +14,7 @@ export const DesignPanelHeader: React.FC<DesignPanelHeaderProps> = ({ onClose })
       </div>
       <button 
         onClick={onClose} 
-        className="p-2 hover:bg-slate-200 rounded-lg transition-colors duration-200"
+        className="p-2 hover:bg-slate-200 rounded-lg transition-colors duration-200 lg:block hidden"
       >
         <X size={18} />
       </button>

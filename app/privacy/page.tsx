@@ -28,33 +28,6 @@ const Section = ({
 export default function PrivacyPage() {
   return (
     <div className="bg-white min-h-screen">
-      {/* Header */}
-      <AnimatedWrapper
-        elementType="header"
-        className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200"
-        initial="hidden"
-        animate="visible"
-      >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[72px]">
-            <Link href="/">
-              <LogoApple />
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/auth"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Sign In
-              </Link>
-              <Button asChild size="sm">
-                <Link href="/auth">Get Started</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </AnimatedWrapper>
-
       <main className="py-16 sm:py-24">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           {/* Hero Section */}

@@ -157,9 +157,9 @@ const ContentPanel = ({ onClose }: { onClose: () => void }) => {
     }
 
     return (
-        <div className="flex flex-col h-full bg-transparent rounded-lg shadow-lg overflow-hidden">
+        <div className="flex flex-col bg-transparent">
             {/* Header */}
-            <header className="flex items-center justify-between p-4 border-b border-slate-200 bg-white/50 backdrop-blur-sm">
+            <header className="flex items-center justify-between p-4 border-b border-slate-200 bg-white/50 backdrop-blur-sm flex-shrink-0">
                 <div className="flex items-center gap-2">
                     <h2 className="text-lg font-bold text-slate-800">Profile Content</h2>
                 </div>
@@ -172,14 +172,14 @@ const ContentPanel = ({ onClose }: { onClose: () => void }) => {
                     )}
                     <button 
                         onClick={onClose} 
-                        className="p-2 hover:bg-slate-200 text-black rounded-lg transition-colors duration-200"
+                        className="p-2 hover:bg-slate-200 text-black rounded-lg transition-colors duration-200 lg:block hidden"
                     > 
                         <X size={18} /> 
                     </button>
                 </div>
             </header>
             
-            <main className="flex-1  space-y-6 overflow-y-auto text-black">
+            <main className="flex-1 space-y-6 p-4 text-black min-h-0 overflow-y-auto">
                 {/* Profile Preview Card */}
                 <div className="p-2">
                     <div className="flex flex-col items-center">

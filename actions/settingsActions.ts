@@ -4,6 +4,17 @@ import prisma from "@/lib/prismaClient";
 import { getUser } from "./authActions";
 import { revalidatePath } from "next/cache";
 
+export async function deactivateUserAccount() {
+  try {
+    const user = await getUser();
+    if (!user) return { error: 'User not authenticated', data: null };
+    await prisma.user.update({ where: { email: user.email }, data: { isActive: false } });
+    return { error: null, data: { success: true } };
+  } catch (error: any) {
+    return { error: error.message, data: null };
+  }
+}
+
 export async function updateUserProfile(data: {
   displayName?: string;
   bio?: string;

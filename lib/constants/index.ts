@@ -13,7 +13,7 @@ export const ROUTES = {
   EDITOR: "/dashboard/editor",
   TEMPLATE: "/dashboard/template",
   ANALYTICS: "/dashboard/analytics",
-  PRICING: "/pricing",
+  PRICING: "/payment",
   ABOUT: "/about",
   CONTACT: "/contact",
   PRIVACY: "/privacy",

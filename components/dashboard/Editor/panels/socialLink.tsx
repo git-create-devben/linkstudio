@@ -215,9 +215,9 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
   );
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-white to-gray-50/50 text-black">
+    <div className="flex flex-col bg-gradient-to-br from-white to-gray-50/50 text-black">
       {/* Header */}
-      <header className="flex items-center justify-between p-6 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+      <header className="flex items-center justify-between p-6 border-b border-gray-100 bg-white/80 backdrop-blur-sm flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-sm">
             <Users className="w-5 h-5 text-white" />
@@ -229,14 +229,14 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
         </div>
         <button 
           onClick={onClose} 
-          className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+          className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 lg:block hidden"
         >
           <X size={20} className="text-gray-500" />
         </button>
       </header>
 
       {/* Stats Bar */}
-      <div className="px-6 py-4 bg-white border-b border-gray-100">
+      <div className="px-6 py-4 bg-white border-b border-gray-100 flex-shrink-0">
       <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-gray-900">{socialLinks?.length || 0}</span>
               <span className="text-xs text-gray-600">
@@ -318,7 +318,7 @@ const SocialLinksPanel = ({ onClose }: { onClose: () => void }) => {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 p-6 overflow-y-auto min-h-0">
         {socialLinks?.length === 0 ? (
           <EmptyState />
         ) : (

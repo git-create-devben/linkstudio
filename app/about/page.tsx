@@ -274,7 +274,7 @@ export default function AboutPage() {
               {[
                 { name: "About", href: "/about" },
                 { name: "Templates", href: "/dashboard/template" },
-                { name: "Pricing", href: "/pricing" },
+                { name: "Pricing", href: "/payment" },
                 { name: "Contact", href: "/contact" },
                 { name: "Privacy", href: "/privacy" },
                 { name: "Terms", href: "/terms" }
