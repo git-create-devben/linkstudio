@@ -76,7 +76,7 @@ export default function AboutPage() {
               >
                 Sign In
               </Link>
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 <Link href="/auth">Get Started</Link>
               </Button>
             </div>

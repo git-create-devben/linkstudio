@@ -203,7 +203,7 @@ export default function ServiceBookingEditor({ config, onUpdate }: ServiceBookin
             </div>
             <Switch
               checked={config.showAdditionalDetails ?? true}
-              onCheckedChange={(checked) => handleInputChange('showAdditionalDetails', checked)}
+              onCheckedChange={(checked: boolean) => handleInputChange('showAdditionalDetails', checked)}
             />
           </div>
 
@@ -228,7 +228,7 @@ export default function ServiceBookingEditor({ config, onUpdate }: ServiceBookin
                   </div>
                   <Switch
                     checked={config.isCollapsible ?? true}
-                    onCheckedChange={(checked) => handleInputChange('isCollapsible', checked)}
+                    onCheckedChange={(checked: boolean) => handleInputChange('isCollapsible', checked)}
                   />
                 </div>
 
@@ -243,7 +243,7 @@ export default function ServiceBookingEditor({ config, onUpdate }: ServiceBookin
                     </div>
                     <Switch
                       checked={config.additionalDetailsExpanded ?? false}
-                      onCheckedChange={(checked) => handleInputChange('additionalDetailsExpanded', checked)}
+                      onCheckedChange={(checked: boolean) => handleInputChange('additionalDetailsExpanded', checked)}
                     />
                   </div>
                 )}

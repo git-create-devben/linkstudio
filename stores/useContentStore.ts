@@ -75,7 +75,7 @@ export type ContentType = {
 
 export type ActionItemType = {
   id: string;
-  type: "LINK_LIST" | "CONTACT_FORM" | "TEXT_BLOCK" | "IMAGE_GALLERY" | "CALENDAR_BOOKING" | "MUSIC_PLAYER" | "VIDEO_SHOWCASE" | "PRODUCT_SHOWCASE" | "LOCATION_MAP" | "PHONE_CALL" | "SERVICE_BOOKING";
+  type: "LINK_LIST" | "CONTACT_FORM" | "TEXT_BLOCK" | "IMAGE_GALLERY" | "CALENDAR_BOOKING" | "MUSIC_PLAYER" | "VIDEO_SHOWCASE" | "PRODUCT_SHOWCASE" | "LOCATION_MAP" | "PHONE_CALL" | "SERVICE_BOOKING" | "TIP_JAR" | "NEWSLETTER_SIGNUP" | "COUNTDOWN_BANNER" | "WHATSAPP_CHAT";
   config: {
     title?: string;
     links?: { title: string; url: string; icon?: string }[];

@@ -28,19 +28,19 @@ const PlatformSelector: React.FC<PlatformSelectorProps> = ({
   const filteredCategories = useMemo(() => {
     if (!searchTerm.trim()) return allCategories;
     
-    const filtered: typeof allCategories = {};
     const searchLower = searchTerm.toLowerCase();
-    
-    Object.entries(allCategories).forEach(([categoryName, platforms]) => {
+    const filtered = Object.entries(allCategories).reduce((acc, [categoryName, platforms]) => {
       const matchingPlatforms = platforms.filter(platform => 
         platform.name.toLowerCase().includes(searchLower) ||
         platform.id.toLowerCase().includes(searchLower)
       );
       
       if (matchingPlatforms.length > 0) {
-        filtered[categoryName] = matchingPlatforms;
+        acc[categoryName as keyof typeof allCategories] = matchingPlatforms;
       }
-    });
+
+      return acc;
+    }, {} as typeof allCategories);
     
     return filtered;
   }, [searchTerm, allCategories]);

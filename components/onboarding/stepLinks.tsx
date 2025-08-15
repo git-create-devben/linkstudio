@@ -1,4 +1,4 @@
-import { saveUserLinks } from "@/actions/onboardingActions";
+// import { saveUserLinks } from "@/actions/onboardingActions";
 import { getSupabaseId } from '@/lib/user/getUser';
 import { Globe } from "lucide-react";
 import { useState } from "react";
@@ -24,13 +24,13 @@ const StepLinks = ({
     setError('');
     const cleanedLinks = formData.links.filter(link => link.trim() !== '');
     try {
-      const result = await saveUserLinks(userId, cleanedLinks);
+      // const result = await saveUserLinks(userId, cleanedLinks);
 
-      if (result.success) {
-        nextStep();
-      } else {
-        setError(JSON.stringify(result.message) || 'Failed to save links');
-      }
+      // if (result.success) {
+      //   nextStep();
+      // } else {
+      //   setError(JSON.stringify(result.message) || 'Failed to save links');
+      // }
     } catch (error) {
       setError('An error occurred while saving the links, try again');
     } finally {

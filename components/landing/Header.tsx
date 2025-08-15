@@ -6,7 +6,7 @@ import { ROUTES, ANIMATION_DELAYS } from "@/lib/constants";
 
 const navLinks = [
   { name: "Overview", href: "#overview" },
-  { name: "Templates", href: "#templates" },
+  { name: "About", href: "/about" },
   { name: "Features", href: "#features" },
 ];
 

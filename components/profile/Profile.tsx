@@ -111,7 +111,7 @@ const Profile = () => {
                                     <Button
                                         variant="ghost"
                                         className='cursor-pointer hover:bg-gray-300'
-                                        onClick={() => router.push('/settings')}
+                                        onClick={() => router.push('/dashboard/settings')}
                                     >
                                         Settings
                                     </Button>

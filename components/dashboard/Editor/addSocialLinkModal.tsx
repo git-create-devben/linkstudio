@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SocialLink, SocialPlatform } from '@/types/editorTypes';
 import PlatformSelector from './platFormSelector';
 // import SocialLinkForm from './socialLinkForm';
-import { socialPlatforms } from './panels/socialLink';
+import { socialPlatforms } from '@/lib/getPlatformIcons';
 import { X } from 'lucide-react';
 
 interface AddSocialLinkModalProps {
@@ -20,10 +20,10 @@ const AddSocialLinkModal: React.FC<AddSocialLinkModalProps> = ({ isOpen, onClose
   useEffect(() => {
     if (isOpen && initialData) {
       const platformKey = initialData.name;
-      const platformData = socialPlatforms[platformKey];
+      const platformData = socialPlatforms.find(p => p.name.toLowerCase() === platformKey.toLowerCase() || p.id === platformKey.toLowerCase());
 
       if (platformData) {
-        setSelectedPlatform({ name: platformKey, baseUrl: platformData.baseUrl, icon: platformData.icon } as SocialPlatform);
+        setSelectedPlatform(platformData);
         const handleValue = initialData.url.replace(platformData.baseUrl, '');
         setHandle(handleValue);
       }

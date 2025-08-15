@@ -32,22 +32,45 @@ const ContentCard = ({ userPlan = 'free', hasFullAnalytics = false }: ContentCar
         },
     ];
 
+    // Mock data for launch - replace with real data later
     const MockLinksClick = [
         {
-            name: "portfolio",
-            clicksCount: 121
+            name: "Portfolio Website",
+            clicksCount: 121,
+            percentage: 55
         },
         {
-            name: "social",
-            clicksCount: 40
+            name: "Social Media",
+            clicksCount: 40,
+            percentage: 18
         },
         {
-            name: "shop",
-            clicksCount: 32
+            name: "Contact Form",
+            clicksCount: 32,
+            percentage: 15
         },
         {
-            name: "other",
-            clicksCount: 22
+            name: "Other Links",
+            clicksCount: 22,
+            percentage: 12
+        }
+    ]
+
+    const MockSocialStats = [
+        {
+            platform: "Instagram",
+            clicks: 85,
+            percentage: 45
+        },
+        {
+            platform: "Twitter",
+            clicks: 62,
+            percentage: 33
+        },
+        {
+            platform: "LinkedIn",
+            clicks: 41,
+            percentage: 22
         }
     ]
 
@@ -58,49 +81,55 @@ const ContentCard = ({ userPlan = 'free', hasFullAnalytics = false }: ContentCar
                     <div className="mt-4">
                         {/* Links Tab Content */}
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {
                                 MockLinksClick.slice(0, hasFullAnalytics ? 4 : 2).map((item, i) => (
-                                    <div key={i} className='bg-gray-50/10 p-4 rounded-lg shadow-sm flex items-center justify-between'>
-                                        <h3 className='text-font-medium'>{item.name}</h3>
-                                        <div className='flex items-center gap-5'>
-                                            <p className='text-font-bold text-gray-500'>{item.clicksCount} clicks</p>
-                                            <div className='bg-blue-200 h-3 w-24 rounded-full'>
-                                                <div className={cn(`bg-blue-400 transition-colors duration-300 w-[${item.clicksCount}px] h-3 rounded-full`)} />
+                                    <div key={i} className='bg-gray-50 p-4 rounded-lg border border-gray-100 flex items-center justify-between hover:bg-gray-100 transition-colors'>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                            <h3 className='font-medium text-gray-900'>{item.name}</h3>
+                                        </div>
+                                        <div className='flex items-center gap-4'>
+                                            <span className='text-sm font-semibold text-gray-700'>{item.clicksCount} clicks</span>
+                                            <div className='bg-gray-200 h-2 w-20 rounded-full overflow-hidden'>
+                                                <div 
+                                                    className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                                                    style={{ width: `${item.percentage}%` }}
+                                                />
                                             </div>
+                                            <span className='text-xs text-gray-500 w-8'>{item.percentage}%</span>
                                         </div>
                                     </div>
                                 ))
                             }
                             {!hasFullAnalytics && (
                                 <>
-                                    {/* Show blurred/locked content for free users */}
-                                    <div className='bg-gray-50/10 p-4 rounded-lg shadow-sm flex items-center justify-between opacity-50 relative'>
-                                        <div className='absolute inset-0 bg-gray-50/30 backdrop-blur-sm rounded-lg flex items-center justify-center'>
-                                            <div className='flex items-center gap-2 text-gray-600'>
-                                                <Lock className='w-4 h-4' />
-                                                <span className='text-sm'>Upgrade to see more</span>
-                                                <Crown className='w-4 h-4 text-yellow-500' />
+                                    {/* Show locked content for free users */}
+                                    {MockLinksClick.slice(2).map((item, i) => (
+                                        <div key={`locked-${i}`} className='bg-gray-50 p-4 rounded-lg border border-gray-100 flex items-center justify-between relative overflow-hidden'>
+                                            <div className='absolute inset-0 bg-gradient-to-r from-gray-100/80 to-gray-50/80 backdrop-blur-[1px] flex items-center justify-center z-10'>
+                                                <div className='flex items-center gap-2 text-gray-600 bg-white px-3 py-1 rounded-full shadow-sm border'>
+                                                    <Lock className='w-3 h-3' />
+                                                    <span className='text-xs font-medium'>Upgrade to unlock</span>
+                                                    <Crown className='w-3 h-3 text-yellow-500' />
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3 blur-[1px]">
+                                                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                                <h3 className='font-medium text-gray-600'>{item.name}</h3>
+                                            </div>
+                                            <div className='flex items-center gap-4 blur-[1px]'>
+                                                <span className='text-sm font-semibold text-gray-500'>{item.clicksCount} clicks</span>
+                                                <div className='bg-gray-200 h-2 w-20 rounded-full overflow-hidden'>
+                                                    <div 
+                                                        className="bg-gray-400 h-2 rounded-full"
+                                                        style={{ width: `${item.percentage}%` }}
+                                                    />
+                                                </div>
+                                                <span className='text-xs text-gray-400 w-8'>{item.percentage}%</span>
                                             </div>
                                         </div>
-                                        <h3 className='text-font-medium blur-sm'>••••••</h3>
-                                        <div className='flex items-center gap-5 blur-sm'>
-                                            <p className='text-font-bold text-gray-500'>••• clicks</p>
-                                            <div className='bg-blue-200 h-3 w-24 rounded-full'>
-                                                <div className='bg-blue-400 w-16 h-3 rounded-full' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='bg-gray-50/10 p-4 rounded-lg shadow-sm flex items-center justify-between opacity-30 relative'>
-                                        <div className='absolute inset-0 bg-gray-50/30 backdrop-blur-sm rounded-lg'></div>
-                                        <h3 className='text-font-medium blur-sm'>••••••</h3>
-                                        <div className='flex items-center gap-5 blur-sm'>
-                                            <p className='text-font-bold text-gray-500'>••• clicks</p>
-                                            <div className='bg-blue-200 h-3 w-24 rounded-full'>
-                                                <div className='bg-blue-400 w-10 h-3 rounded-full' />
-                                            </div>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </>
                             )}
                         </div>
@@ -109,23 +138,63 @@ const ContentCard = ({ userPlan = 'free', hasFullAnalytics = false }: ContentCar
             case "Social":
                 return (
                     <div className="mt-4">
-                        {/* Social Tab Content */}
-                        <div className="space-y-4">
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h3 className="font-medium">Social Media</h3>
-                                <p className="text-sm text-gray-500">Manage your social media links here</p>
-                            </div>
+                        <div className="space-y-3">
+                            {MockSocialStats.slice(0, hasFullAnalytics ? 3 : 2).map((item, i) => (
+                                <div key={i} className='bg-gray-50 p-4 rounded-lg border border-gray-100 flex items-center justify-between hover:bg-gray-100 transition-colors'>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                        <h3 className='font-medium text-gray-900'>{item.platform}</h3>
+                                    </div>
+                                    <div className='flex items-center gap-4'>
+                                        <span className='text-sm font-semibold text-gray-700'>{item.clicks} clicks</span>
+                                        <div className='bg-gray-200 h-2 w-20 rounded-full overflow-hidden'>
+                                            <div 
+                                                className="bg-purple-500 h-2 rounded-full transition-all duration-500"
+                                                style={{ width: `${item.percentage}%` }}
+                                            />
+                                        </div>
+                                        <span className='text-xs text-gray-500 w-8'>{item.percentage}%</span>
+                                    </div>
+                                </div>
+                            ))}
+                            
+                            {!hasFullAnalytics && (
+                                <div className='bg-gray-50 p-4 rounded-lg border border-gray-100 flex items-center justify-between relative overflow-hidden'>
+                                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100/80 to-gray-50/80 backdrop-blur-[1px] flex items-center justify-center z-10'>
+                                        <div className='flex items-center gap-2 text-gray-600 bg-white px-3 py-1 rounded-full shadow-sm border'>
+                                            <Lock className='w-3 h-3' />
+                                            <span className='text-xs font-medium'>Upgrade to unlock</span>
+                                            <Crown className='w-3 h-3 text-yellow-500' />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 blur-[1px]">
+                                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                        <h3 className='font-medium text-gray-600'>LinkedIn</h3>
+                                    </div>
+                                    <div className='flex items-center gap-4 blur-[1px]'>
+                                        <span className='text-sm font-semibold text-gray-500'>41 clicks</span>
+                                        <div className='bg-gray-200 h-2 w-20 rounded-full overflow-hidden'>
+                                            <div className="bg-gray-400 h-2 rounded-full" style={{ width: '22%' }} />
+                                        </div>
+                                        <span className='text-xs text-gray-400 w-8'>22%</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )
             case "Shop":
                 return (
                     <div className="mt-4">
-                        {/* Shop Tab Content */}
-                        <div className="space-y-4">
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h3 className="font-medium">Shop</h3>
-                                <p className="text-sm text-gray-500">Manage your shop settings here</p>
+                        <div className="text-center py-8">
+                            <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Crown className="w-8 h-8 text-green-600" />
+                            </div>
+                            <h3 className="font-semibold text-gray-900 mb-2">Shop Analytics Coming Soon</h3>
+                            <p className="text-sm text-gray-500 mb-4">Track your product performance and sales metrics</p>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-medium border border-green-200">
+                                <Crown className="w-4 h-4" />
+                                Premium Feature
                             </div>
                         </div>
                     </div>

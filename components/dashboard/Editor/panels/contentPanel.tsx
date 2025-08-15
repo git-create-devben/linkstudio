@@ -75,7 +75,7 @@ const VerifiedBadgeSection = () => {
                             ].map((style) => (
                                 <button
                                     key={style.id}
-                                    onClick={() => setContent({ verifiedBadgeStyle: style.id })}
+                                    onClick={() => setContent({ verifiedBadgeStyle: style.id as "premium" | "music" | "simple" })}
                                     className={`p-2 text-xs rounded-lg border-2 transition-all ${
                                         (content.verifiedBadgeStyle || 'music') === style.id
                                             ? 'border-blue-500 bg-blue-100 text-blue-700'

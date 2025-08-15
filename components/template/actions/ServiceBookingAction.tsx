@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActionItemType } from '@/types/editorTypes';
-import { ThemeConfig } from '@/lib/themeSystem';
+import { Theme as ThemeConfig } from '@/lib/themeSystem';
 import ServiceBooking from '@/components/dashboard/Editor/actions/ServiceBooking';
 import { useUserContentStore } from '@/stores/useContentStore';
 

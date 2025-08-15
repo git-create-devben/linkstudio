@@ -91,7 +91,7 @@ export default function StatsCard() {
           <h2 className="text-base md:text-lg font-semibold">Lifetime Stats</h2>
           <span className="text-muted-foreground text-sm cursor-pointer">?</span>
         </div>
-        <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto text-white">
+        {/* <div className="flex flex-wrap gap-2 sm:gap-4 w-full sm:w-auto text-white">
           <Button variant="outline" className="flex-1 sm:flex-none">
             Export
           </Button>
@@ -103,7 +103,7 @@ export default function StatsCard() {
           <Button className="flex-1 sm:flex-none text-black">
             View Details
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">

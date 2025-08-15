@@ -64,7 +64,7 @@ const PaymentPlansWithDualGateway = () => {
   };
 
   // DUAL GATEWAY STRIPE IMPLEMENTATION - ARCHIVED
-  const initiateStripePayment = async (plan) => {
+  const initiateStripePayment = async (plan: any) => {
     const response = await fetch('/api/stripe', {
       method: 'POST',
       headers: {
@@ -72,7 +72,7 @@ const PaymentPlansWithDualGateway = () => {
       },
       body: JSON.stringify({
         email: customerEmail,
-        amount: getCurrentPrice(plan),
+        // amount: getCurrentPrice(plan),
         planId: plan.id,
         billingCycle: billingCycle,
       }),

@@ -27,6 +27,7 @@ export interface ServiceConfig {
   showAdditionalDetails?: boolean;
   isCollapsible?: boolean;
   additionalDetailsExpanded?: boolean;
+  [key: string]: any;
 }
 
 export async function createServiceAction(serviceData: {

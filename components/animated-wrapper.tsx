@@ -17,7 +17,7 @@ interface AnimatedWrapperProps {
 }
 
 // Corrected easing values
-const smoothEase = [0.4, 0.0, 0.2, 1] satisfies number[]
+const smoothEase: any = [0.4, 0.0, 0.2, 1];
 
 const defaultVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -37,7 +37,7 @@ const AnimatedWrapper: React.FC<AnimatedWrapperProps> = ({
   staggerChildren,
   elementType = "div",
 }) => {
-  const MotionComponent = motion[elementType]
+  const MotionComponent = (motion as any)[elementType]
 
   return (
     <MotionComponent
