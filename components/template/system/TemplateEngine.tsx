@@ -66,30 +66,39 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
 
         {/* Branding Footer */}
         {!design.removeBranding && (
-          <div className="text-center py-4 mt-8">
-            {design.customFooter ? (
-              design.customFooterUrl ? (
+          <div className="text-center py-4 mt-8 border-t border-gray-200/50">
+            <div className="max-w-sm mx-auto">
+              {design.customFooter ? (
+                design.customFooterUrl ? (
+                  <a
+                    href={design.customFooterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium"
+                  >
+                    <span>{design.customFooter}</span>
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                ) : (
+                  <span className="text-xs text-gray-400 font-medium">{design.customFooter}</span>
+                )
+              ) : (
                 <a
-                  href={design.customFooterUrl}
+                  href="https://linkstudio.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium group"
                 >
-                  {design.customFooter}
+                  <span>Create your own bio with</span>
+                  <span className="font-semibold text-blue-500 group-hover:text-blue-600">LinkStudio</span>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
                 </a>
-              ) : (
-                <span className="text-xs text-gray-500">{design.customFooter}</span>
-              )
-            ) : (
-              <a
-                href="https://linkstudio.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                Powered by LinkStudio
-              </a>
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>

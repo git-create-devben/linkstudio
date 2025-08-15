@@ -7,9 +7,9 @@ interface TemplateLayoutProps {
 }
 
 const layoutStyles = {
-  centered: 'min-h-screen flex flex-col items-center justify-start',
-  card: 'min-h-screen flex items-center justify-center p-4',
-  fullscreen: 'min-h-screen w-full'
+  centered: 'flex flex-col items-center justify-start py-8',
+  card: 'flex items-start justify-center p-4 py-8',
+  fullscreen: 'w-full py-8'
 };
 
 const spacingStyles = {
@@ -24,7 +24,7 @@ export const TemplateLayout: React.FC<TemplateLayoutProps> = ({
   children
 }) => {
   return (
-    <div className={`${layoutStyles[layout]} ${spacingStyles[spacing]} relative overflow-hidden`}>
+    <div className={`${layoutStyles[layout]} ${spacingStyles[spacing]} relative`}>
       {children}
     </div>
   );

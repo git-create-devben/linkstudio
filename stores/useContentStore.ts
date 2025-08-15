@@ -70,11 +70,12 @@ export type ContentType = {
   profileName: string;
   profileBio: string;
   profileVerified: boolean;
+  verifiedBadgeStyle?: 'simple' | 'premium' | 'music';
 };
 
 export type ActionItemType = {
   id: string;
-  type: "LINK_LIST" | "CONTACT_FORM" | "TEXT_BLOCK" | "IMAGE_GALLERY" | "CALENDAR_BOOKING" | "MUSIC_PLAYER" | "VIDEO_SHOWCASE" | "PRODUCT_SHOWCASE" | "LOCATION_MAP" | "PHONE_CALL";
+  type: "LINK_LIST" | "CONTACT_FORM" | "TEXT_BLOCK" | "IMAGE_GALLERY" | "CALENDAR_BOOKING" | "MUSIC_PLAYER" | "VIDEO_SHOWCASE" | "PRODUCT_SHOWCASE" | "LOCATION_MAP" | "PHONE_CALL" | "SERVICE_BOOKING";
   config: {
     title?: string;
     links?: { title: string; url: string; icon?: string }[];
@@ -92,6 +93,18 @@ export type ActionItemType = {
     showMap?: boolean;
     description?: string;
     successMessage?: string;
+    // Service booking specific fields
+    serviceName?: string;
+    serviceImage?: string;
+    bookingUrl?: string;
+    schedule?: string;
+    location?: string;
+    coupon?: string;
+    price?: string;
+    duration?: string;
+    showAdditionalDetails?: boolean;
+    isCollapsible?: boolean;
+    additionalDetailsExpanded?: boolean;
     [key: string]: any;
   };
   order: number;

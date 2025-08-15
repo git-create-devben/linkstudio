@@ -110,16 +110,39 @@ const AccountSettings = () => {
               <User className="w-8 h-8 text-gray-400" />
             )}
           </div>
-          <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+          <label htmlFor="profile-upload" className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors cursor-pointer">
             <Camera className="w-4 h-4" />
-          </button>
+            <input
+              id="profile-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (!file) return
+                try {
+                  const form = new FormData()
+                  form.append('file', file)
+                  const res = await fetch('/api/upload/profile-picture', { method: 'POST', body: form })
+                  const data = await res.json()
+                  if (data.url) {
+                    toast.success('Profile picture updated')
+                    const updatedUser = await getUser()
+                    if (updatedUser) setUser(updatedUser)
+                  } else {
+                    toast.error(data.error || 'Upload failed')
+                  }
+                } catch (err) {
+                  toast.error('Upload failed')
+                }
+              }}
+            />
+          </label>
         </div>
         <div>
           <h3 className="font-medium text-gray-900">Profile Picture</h3>
           <p className="text-sm text-gray-600">Upload a new profile picture</p>
-          <button className="mt-2 text-sm text-blue-600 hover:text-blue-700">
-            Change picture
-          </button>
+          
         </div>
       </div>
 

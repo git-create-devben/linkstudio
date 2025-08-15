@@ -1,9 +1,10 @@
 "use client";
-import React from 'react';
-import { X, Plus, Sparkles } from 'lucide-react';
-import { ActionItemType } from '@/stores/useContentStore';
+import React, { useCallback, useMemo, useState } from 'react';
+import { X, Plus, Sparkles, GripVertical, ArrowUp, ArrowDown, CheckCircle2 } from 'lucide-react';
+import { ActionItemType, useUserContentStore } from '@/stores/useContentStore';
 import ActionCard from './ActionCard';
 import StatsOverview from './StatsOverview';
+import { toast } from 'sonner';
 
 interface MainViewProps {
   actionItems: ActionItemType[];
@@ -23,6 +24,38 @@ const MainView: React.FC<MainViewProps> = ({
   onDeleteAction
 }) => {
   const configuredActions = actionItems.filter(a => a.config.title).length;
+
+  const { setActionItems, saveAllChanges } = useUserContentStore();
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+  const [isSavingOrder, setIsSavingOrder] = useState(false);
+
+  const orderedItems = useMemo(() => {
+    return [...actionItems].sort((a, b) => a.order - b.order);
+  }, [actionItems]);
+
+  const handleReorder = useCallback(async (from: number, to: number) => {
+    if (from === to || from == null || to == null) return;
+    const items = [...orderedItems];
+    const [moved] = items.splice(from, 1);
+    items.splice(to, 0, moved);
+    const normalized = items.map((item, idx) => ({ ...item, order: idx }));
+    setActionItems(normalized);
+
+    // Fast, batched server update for order only
+    try {
+      setIsSavingOrder(true);
+      const payload = normalized.map(it => ({ id: it.id, order: it.order }));
+      const { reorderActionItems } = await import('@/actions/editorActions');
+      await reorderActionItems(payload);
+      toast.success('Order updated', { duration: 1200 });
+    } catch (e) {
+      console.error('Reorder failed', e);
+      toast.error('Could not update order');
+    } finally {
+      setIsSavingOrder(false);
+    }
+  }, [orderedItems, setActionItems]);
 
   return (
     <div className="flex flex-col h-full text-gray-900 bg-gray-50">
@@ -70,15 +103,57 @@ const MainView: React.FC<MainViewProps> = ({
             </button>
           </div>
           
-          {actionItems.length > 0 ? (
+          {orderedItems.length > 0 ? (
             <div className="grid gap-3">
-              {actionItems.map((action) => (
-                <ActionCard
+              {orderedItems.map((action, index) => (
+                <div
                   key={action.id}
-                  action={action}
-                  onEdit={onEditAction}
-                  onDelete={onDeleteAction}
-                />
+                  className={`relative rounded-lg transition-shadow ${overIndex === index ? 'ring-2 ring-blue-300 shadow-sm' : ''}`}
+                  onDragOver={(e) => { e.preventDefault(); setOverIndex(index); }}
+                  onDrop={(e) => { e.preventDefault(); if (dragIndex !== null) { handleReorder(dragIndex, index); } setDragIndex(null); setOverIndex(null); }}
+                  onDragLeave={() => setOverIndex(null)}
+                >
+                  <ActionCard
+                    action={action}
+                    onEdit={onEditAction}
+                    onDelete={onDeleteAction}
+                  />
+
+                  {/* Reorder toolbar (below card) */}
+                  <div className="mt-2 flex items-center justify-between px-2">
+                    <div
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-md border text-[11px] cursor-grab select-none
+                                  ${dragIndex === index ? 'cursor-grabbing' : ''}
+                                  ${overIndex === index ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-gray-200 text-gray-600'}`}
+                      title="Drag to reorder"
+                      draggable
+                      onDragStart={() => setDragIndex(index)}
+                      onDragEnd={() => { setDragIndex(null); setOverIndex(null); }}
+                    >
+                      <GripVertical size={14} className="opacity-80" />
+                      <span className="uppercase tracking-wide">Drag</span>
+                    </div>
+
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => index > 0 && handleReorder(index, index - 1)}
+                        className={`p-1.5 rounded-md border text-gray-600 hover:bg-gray-50 ${index === 0 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        title="Move up"
+                        disabled={index === 0}
+                      >
+                        <ArrowUp size={12} />
+                      </button>
+                      <button
+                        onClick={() => index < orderedItems.length - 1 && handleReorder(index, index + 1)}
+                        className={`p-1.5 rounded-md border text-gray-600 hover:bg-gray-50 ${index === orderedItems.length - 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        title="Move down"
+                        disabled={index === orderedItems.length - 1}
+                      >
+                        <ArrowDown size={12} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
@@ -101,6 +176,14 @@ const MainView: React.FC<MainViewProps> = ({
           )}
         </div>
       </main>
+
+      {/* Saving indicator (non-blocking) */}
+      {isSavingOrder && (
+        <div className="pointer-events-none fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-gray-200 shadow-sm text-xs text-gray-700">
+          <CheckCircle2 size={14} className="text-emerald-600" />
+          Updating order...
+        </div>
+      )}
     </div>
   );
 };

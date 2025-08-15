@@ -44,12 +44,7 @@ const VerifiedBadgeSection = () => {
                                 )}
                             </div>
                             <p className="text-sm text-slate-600">
-                                Show a verification checkmark on your profile
-                                {!hasVerifiedBadge && (
-                                    <span className="text-amber-600 ml-2">
-                                        (Pro feature - upgrade to save)
-                                    </span>
-                                )}
+                                Show verification checkmark
                             </p>
                         </div>
                     </div>
@@ -68,15 +63,41 @@ const VerifiedBadgeSection = () => {
                     </button>
                 </div>
                 
+                {/* Verified Badge Style Options */}
+                {content.profileVerified && (
+                    <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Badge Style</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {[
+                                { id: 'simple', name: 'Simple', preview: '✓' },
+                                { id: 'premium', name: 'Premium', preview: '★' },
+                                { id: 'music', name: 'Music', preview: '♪' }
+                            ].map((style) => (
+                                <button
+                                    key={style.id}
+                                    onClick={() => setContent({ verifiedBadgeStyle: style.id })}
+                                    className={`p-2 text-xs rounded-lg border-2 transition-all ${
+                                        (content.verifiedBadgeStyle || 'music') === style.id
+                                            ? 'border-blue-500 bg-blue-100 text-blue-700'
+                                            : 'border-gray-200 bg-white text-gray-600 hover:border-blue-300'
+                                    }`}
+                                >
+                                    <div className="text-center">
+                                        <div className="text-lg mb-1">{style.preview}</div>
+                                        <div className="font-medium">{style.name}</div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {!hasVerifiedBadge && (
                     <div className="mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
                         <div className="flex items-center gap-2 text-amber-800">
                             <Crown className="w-3 h-3" />
                             <span className="text-xs font-medium">Pro Feature</span>
                         </div>
-                        <p className="text-xs text-amber-700 mt-1">
-                            You can try the verified badge now, but upgrade to save your changes.
-                        </p>
                     </div>
                 )}
             </div>

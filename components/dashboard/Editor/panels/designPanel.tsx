@@ -28,7 +28,7 @@ const DesignPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const user = useUser();
   const router = useRouter();
   const hasAdvancedCustomization = canUserAccessFeature(user, 'advancedCustomization');
-
+  
   // Debug: Log user access
   console.log('DesignPanel - User:', user);
   console.log('DesignPanel - User plan:', user?.plan);

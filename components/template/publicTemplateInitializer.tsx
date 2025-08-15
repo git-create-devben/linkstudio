@@ -67,6 +67,10 @@ const PublicTemplateInitializer = ({ username }: PublicTemplateInitializerProps)
           if (profileData.content.profileVerified !== undefined && profileData.content.profileVerified !== null) {
             userData.content.profileVerified = profileData.content.profileVerified;
           }
+          
+          if (profileData.content.verifiedBadgeStyle && profileData.content.verifiedBadgeStyle.trim() !== '') {
+            userData.content.verifiedBadgeStyle = profileData.content.verifiedBadgeStyle;
+          }
         }
 
         // Add action items if available

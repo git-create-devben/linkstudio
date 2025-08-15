@@ -14,6 +14,10 @@ import VideoShowcaseAction from '../../actions/VideoShowcaseAction';
 import ProductShowcaseAction from '../../actions/ProductShowcaseAction';
 import CalendarBookingAction from '../../actions/CalendarBookingAction';
 import PhoneCallAction from '../../actions/PhoneCallAction';
+import TipJarAction from '../../actions/TipJarAction';
+import NewsletterSignupAction from '../../actions/NewsletterSignupAction';
+import CountdownBannerAction from '../../actions/CountdownBannerAction';
+import WhatsAppChatAction from '../../actions/WhatsAppChatAction';
 
 interface ActionsSectionProps {
   actions: ActionItemType[];
@@ -151,6 +155,30 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
             className={wrapperClass}
           >
             <PhoneCallAction {...actionProps} />
+          </div>
+        );
+      case "TIP_JAR":
+        return (
+          <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
+            <TipJarAction {...actionProps} />
+          </div>
+        );
+      case "NEWSLETTER_SIGNUP":
+        return (
+          <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
+            <NewsletterSignupAction {...actionProps} />
+          </div>
+        );
+      case "COUNTDOWN_BANNER":
+        return (
+          <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
+            <CountdownBannerAction {...actionProps} />
+          </div>
+        );
+      case "WHATSAPP_CHAT":
+        return (
+          <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
+            <WhatsAppChatAction {...actionProps} />
           </div>
         );
       default:

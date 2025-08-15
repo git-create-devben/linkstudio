@@ -225,7 +225,15 @@ export const BackgroundSelector: React.FC<BackgroundSelectorProps> = ({
         </div>
       )}
 
-      {/* Background images temporarily removed - feature archived for future */}
+      {/* Image Backgrounds - Coming Soon */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-4">
+        <div className="text-center">
+          {/* <Image className="w-8 h-8 text-gray-400 mx-auto mb-2" /> */}
+          <h4 className="font-medium text-gray-700 mb-1">Background Images</h4>
+          <p className="text-sm text-gray-500">Coming Soon</p>
+          <p className="text-xs text-gray-400 mt-1">Upload custom background images for your profile</p>
+        </div>
+      </div>
 
       {!hasAdvancedCustomization && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">

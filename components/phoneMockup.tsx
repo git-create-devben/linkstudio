@@ -145,7 +145,7 @@ const [dimensions, setDimensions] = useState({
 
             {/* Content Area with Perfect Mobile Scrolling */}
             <div 
-              className="absolute inset-0 overflow-y-auto overflow-x-hidden"
+              className="absolute inset-0 h-screen overflow-y-auto overflow-x-hidden"
               style={{
                 paddingTop: '48px', // Space for status bar + dynamic island
                 paddingBottom: '16px', // Space for home indicator

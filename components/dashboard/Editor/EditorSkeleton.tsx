@@ -6,10 +6,10 @@ const EditorSkeleton = () => {
       {/* Sidebar Skeleton */}
       <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b border-gray-200">
+        {/* <div className="p-4 border-b border-gray-200">
           <Skeleton className="h-6 w-24 mb-2" />
           <Skeleton className="h-4 w-32" />
-        </div>
+        </div> */}
         
         {/* Navigation */}
         <div className="p-4 space-y-3">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { DesignType } from '@/types/editorTypes';
-import { curveShapes, curveColors } from '@/lib/themeSystem';
+import { curveShapes, curveColors, getTheme } from '@/lib/themeSystem';
 
 interface BackgroundLayerProps {
   type: 'gradient' | 'image' | 'pattern' | 'animated';
@@ -28,17 +28,18 @@ const getCurveStyle = (shapeId?: string, curveColor?: string, animated?: boolean
 };
 
 export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ type, design }) => {
+  const theme = getTheme(design.theme || 'dark');
+  
   const getBackgroundStyle = () => {
     switch (type) {
       case 'gradient':
         return {
-          background: design.customBackground || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          background: design.customBackground || theme.colors.background
         };
       
       case 'animated':
         return {
-          background: design.customBackground || 
-            'linear-gradient(135deg, #667eea 0%, #764ba2 20%, #f093fb 40%, #f5576c 60%, #4facfe 80%, #00f2fe 100%)'
+          background: design.customBackground || theme.colors.background
         };
       
       case 'image':
@@ -48,20 +49,17 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ type, design }
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         } : {
-          background: design.customBackground || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          background: design.customBackground || theme.colors.background
         };
       
       case 'pattern':
         return {
-          background: design.customBackground || 
-            `linear-gradient(135deg, #667eea 0%, #764ba2 100%),
-             radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
-             radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%)`
+          background: design.customBackground || theme.colors.background
         };
       
       default:
         return {
-          background: design.customBackground || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          background: design.customBackground || theme.colors.background
         };
     }
   };

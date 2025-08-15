@@ -221,6 +221,8 @@ export async function updateActionItem(id: string, config: object, actionType?: 
         type = "IMAGE_GALLERY";
       } else if (id.includes("calendar") || (config as any)?.calendarUrl) {
         type = "CALENDAR_BOOKING";
+      } else if (id.includes("service") || (config as any)?.serviceName || (config as any)?.bookingUrl) {
+        type = "SERVICE_BOOKING";
       } else if ((config as any)?.links) {
         type = "LINK_LIST";
       }
@@ -351,6 +353,18 @@ export async function syncTemplateActionItemsToDatabase(actionItems: ActionItemT
   revalidatePath(`/${profile.displayName}`);
   return syncedItems;
 }
+export async function reorderActionItems(newOrder: { id: string; order: number }[]) {
+  const profile = await getProfile();
+  // Only update items belonging to the profile
+  const ids = newOrder.map(o => o.id);
+  const items = await prisma.actionItem.findMany({ where: { id: { in: ids }, profileId: profile.id }, select: { id: true } });
+  const valid = new Set(items.map(i => i.id));
+  const updates = newOrder.filter(o => valid.has(o.id));
+  await prisma.$transaction(updates.map(u => prisma.actionItem.update({ where: { id: u.id }, data: { order: u.order } })));
+  revalidatePath(`/${profile.displayName}`);
+  return { success: true };
+}
+
 export async function convertTemporaryActionItems(actionItems: ActionItemType[]) {
   const profile = await getProfile();
   const conversions: { oldId: string; newId: string }[] = [];

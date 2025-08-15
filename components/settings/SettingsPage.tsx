@@ -11,19 +11,17 @@ import {
 } from 'lucide-react'
 import AccountSettings from './AccountSettings'
 import PaymentSettings from './PaymentSettings'
-import NotificationSettings from './NotificationSettings'
 import SecuritySettings from './SecuritySettings'
 import DangerZone from './DangerZone'
 
-type SettingsTab = 'account' | 'payment' | 'notifications' | 'security' | 'danger'
+type SettingsTab = 'account' | 'payment' | 'security' | 'danger'
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('account')
 
   const tabs = [
     { id: 'account' as SettingsTab, label: 'Account', icon: User },
-    { id: 'payment' as SettingsTab, label: 'Payment & Billing', icon: CreditCard },
-    { id: 'notifications' as SettingsTab, label: 'Notifications', icon: Bell },
+    { id: 'payment' as SettingsTab, label: 'Payment \u0026 Billing', icon: CreditCard },
     { id: 'security' as SettingsTab, label: 'Security', icon: Shield },
     { id: 'danger' as SettingsTab, label: 'Danger Zone', icon: Trash2 },
   ]
@@ -34,8 +32,6 @@ const SettingsPage = () => {
         return <AccountSettings />
       case 'payment':
         return <PaymentSettings />
-      case 'notifications':
-        return <NotificationSettings />
       case 'security':
         return <SecuritySettings />
       case 'danger':

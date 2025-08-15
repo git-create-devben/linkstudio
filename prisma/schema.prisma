@@ -74,14 +74,15 @@ model ActionItem {
 }
 
 model Content {
-  id              String  @id @default(uuid())
-  profileId       String  @unique
-  profilePicture  String?
-  profileName     String?
-  profileBio      String?
-  coverImage      String?
-  profileVerified Boolean @default(false)
-  profile         Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  id                  String  @id @default(uuid())
+  profileId           String  @unique
+  profilePicture      String?
+  profileName         String?
+  profileBio          String?
+  coverImage          String?
+  profileVerified     Boolean @default(false)
+  verifiedBadgeStyle  String? @default("music")
+  profile             Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@map("contents")
 }

@@ -1,14 +1,15 @@
-import { 
-  Link, 
-  MessageSquare, 
-  FileText, 
-  Image, 
+import {
+  Link,
+  MessageSquare,
+  FileText,
+  Image,
   Calendar,
   Music,
   Video,
   ShoppingBag,
   MapPin,
-  Phone
+  Phone,
+  Briefcase
 } from "lucide-react";
 
 export interface ActionTypeConfig {
@@ -28,7 +29,7 @@ export interface ActionConfigField {
   placeholder?: string;
   required?: boolean;
   options?: { value: string; label: string }[];
-  arrayItemType?: 'link' | 'image' | 'text';
+  arrayItemType?: 'link' | 'image' | 'text' | 'product';
 }
 
 export const actionTypes: ActionTypeConfig[] = [
@@ -256,25 +257,47 @@ export const actionTypes: ActionTypeConfig[] = [
   {
     id: 'PRODUCT_SHOWCASE',
     name: 'Product Showcase',
-    description: 'Display your products or services',
+    description: 'Professional product gallery with featured items and grid layout',
     icon: ShoppingBag,
     category: 'business',
     defaultConfig: {
       title: 'My Products',
-      products: []
+      featuredProducts: [],
+      products: [],
+      layout: 'featured-and-grid'
     },
     configFields: [
       {
         key: 'title',
-        label: 'Section Title',
+        label: 'Showcase Title',
         type: 'text',
-        placeholder: 'My Products'
+        placeholder: 'My Products',
+        required: false
+      },
+      {
+        key: 'featuredProducts',
+        label: 'Featured Products (Up to 2)',
+        type: 'array',
+        arrayItemType: 'product',
+        required: false
       },
       {
         key: 'products',
-        label: 'Products',
+        label: 'Regular Products',
         type: 'array',
-        arrayItemType: 'text'
+        arrayItemType: 'product',
+        required: false
+      },
+      {
+        key: 'layout',
+        label: 'Display Layout',
+        type: 'select',
+        options: [
+          { value: 'featured-and-grid', label: 'Featured + Grid (Recommended)' },
+          { value: 'grid', label: 'Grid Only' },
+          { value: 'single', label: 'Single Column' }
+        ],
+        required: false
       }
     ]
   },
@@ -340,6 +363,186 @@ export const actionTypes: ActionTypeConfig[] = [
         label: 'Description',
         type: 'text',
         placeholder: 'Available Monday-Friday, 9AM-5PM'
+      }
+    ]
+  },
+  {
+    id: 'TIP_JAR',
+    name: 'Tip Jar',
+    description: 'Add donation links (Ko-fi, BuyMeACoffee, PayPal)',
+    icon: ShoppingBag,
+    category: 'business',
+    defaultConfig: {
+      title: 'Support My Work',
+      links: []
+    },
+    configFields: [
+      { key: 'title', label: 'Section Title', type: 'text', placeholder: 'Support My Work' },
+      { key: 'links', label: 'Donation Links', type: 'array', arrayItemType: 'link' }
+    ]
+  },
+  {
+    id: 'NEWSLETTER_SIGNUP',
+    name: 'Newsletter Signup',
+    description: 'Collect emails or forward to your subscribe page',
+    icon: MessageSquare,
+    category: 'business',
+    defaultConfig: {
+      title: 'Join My Newsletter',
+      description: 'Get updates in your inbox',
+      provider: 'custom',
+      actionUrl: '',
+      placeholder: 'you@example.com',
+      buttonText: 'Subscribe'
+    },
+    configFields: [
+      { key: 'title', label: 'Title', type: 'text', placeholder: 'Join My Newsletter' },
+      { key: 'description', label: 'Description', type: 'text', placeholder: 'Get updates in your inbox' },
+      {
+        key: 'provider', label: 'Provider', type: 'select', options: [
+          { value: 'custom', label: 'Custom URL' },
+          { value: 'mailchimp', label: 'Mailchimp' },
+          { value: 'convertkit', label: 'ConvertKit' },
+          { value: 'beehiiv', label: 'Beehiiv' }
+        ]
+      },
+      { key: 'actionUrl', label: 'Subscribe URL', type: 'url', placeholder: 'https://your-newsletter/subscribe' },
+      { key: 'placeholder', label: 'Email Placeholder', type: 'text', placeholder: 'you@example.com' },
+      { key: 'buttonText', label: 'Button Text', type: 'text', placeholder: 'Subscribe' }
+    ]
+  },
+  {
+    id: 'COUNTDOWN_BANNER',
+    name: 'Countdown',
+    description: 'Countdown to a launch or event',
+    icon: Calendar,
+    category: 'business',
+    defaultConfig: {
+      title: 'Launching Soon',
+      targetDate: '',
+      url: ''
+    },
+    configFields: [
+      { key: 'title', label: 'Heading', type: 'text', placeholder: 'Launching Soon' },
+      { key: 'targetDate', label: 'Target DateTime (ISO)', type: 'text', placeholder: '2025-12-31T23:59:59Z' },
+      { key: 'url', label: 'CTA URL (optional)', type: 'url', placeholder: 'https://your-site.com' }
+    ]
+  },
+  {
+    id: 'WHATSAPP_CHAT',
+    name: 'WhatsApp Chat',
+    description: 'Open WhatsApp chat with a prefilled message',
+    icon: Phone,
+    category: 'contact',
+    defaultConfig: {
+      title: 'Chat on WhatsApp',
+      phoneNumber: '',
+      message: 'Hi! I came from your link in bio.'
+    },
+    configFields: [
+      { key: 'title', label: 'Button Text', type: 'text', placeholder: 'Chat on WhatsApp' },
+      { key: 'phoneNumber', label: 'Phone Number (international)', type: 'text', required: true, placeholder: '+15551234567' },
+      { key: 'message', label: 'Prefilled Message', type: 'text', placeholder: 'Hi! I came from your link in bio.' }
+    ]
+  },
+  {
+    id: 'SERVICE_BOOKING',
+    name: 'Service Booking',
+    description: 'Modern service cards with professional booking system',
+    icon: Briefcase,
+    category: 'business',
+    defaultConfig: {
+      serviceName: 'My Service',
+      serviceImage: '',
+      description: 'Professional service description',
+      bookingUrl: '',
+      schedule: '',
+      location: '',
+      coupon: '',
+      price: '',
+      duration: '',
+      showAdditionalDetails: true,
+      isCollapsible: true,
+      additionalDetailsExpanded: false
+    },
+    configFields: [
+      {
+        key: 'serviceName',
+        label: 'Service Name *',
+        type: 'text',
+        required: true,
+        placeholder: 'Personal Training Session'
+      },
+      {
+        key: 'bookingUrl',
+        label: 'Booking Link *',
+        type: 'url',
+        required: true,
+        placeholder: 'https://calendly.com/your-link'
+      },
+      {
+        key: 'description',
+        label: 'Service Description',
+        type: 'textarea',
+        placeholder: 'Brief description of what you offer...',
+        required: false
+      },
+      {
+        key: 'serviceImage',
+        label: 'Service Image URL',
+        type: 'url',
+        placeholder: 'https://example.com/service-image.jpg',
+        required: false
+      },
+      {
+        key: 'price',
+        label: 'Pricing',
+        type: 'text',
+        placeholder: '$50/hour or From $100',
+        required: false
+      },
+      {
+        key: 'duration',
+        label: 'Session Duration',
+        type: 'text',
+        placeholder: '1 hour or 30 minutes',
+        required: false
+      },
+      {
+        key: 'schedule',
+        label: 'Availability',
+        type: 'text',
+        placeholder: 'Mon-Fri 9AM-5PM',
+        required: false
+      },
+      {
+        key: 'location',
+        label: 'Location/Format',
+        type: 'text',
+        placeholder: 'Online, New York City, or Your Location',
+        required: false
+      },
+      {
+        key: 'coupon',
+        label: 'Special Offer (Optional)',
+        type: 'text',
+        placeholder: '20% off first session',
+        required: false
+      },
+      {
+        key: 'showAdditionalDetails',
+        label: 'Display Extra Details',
+        type: 'boolean'
+      },
+      {
+        key: 'isCollapsible',
+        label: 'Allow Collapsing Details',
+        type: 'boolean'
+      },
+      {
+        key: 'additionalDetailsExpanded',
+        label: 'Show Details Expanded by Default',
+        type: 'boolean'
       }
     ]
   }

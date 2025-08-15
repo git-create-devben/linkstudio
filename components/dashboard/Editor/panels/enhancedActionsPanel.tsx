@@ -407,6 +407,113 @@ const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
                                     </button>
                                 </div>
                             )}
+
+                            {field.type === 'array' && field.arrayItemType === 'product' && (
+                                <div className="space-y-3">
+                                    {((formState[field.key] as any[]) || []).map((product: any, index: number) => (
+                                        <div key={index} className="p-3 border border-gray-200 rounded-lg bg-white space-y-3">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                <input
+                                                    type="url"
+                                                    placeholder="Primary image URL"
+                                                    value={Array.isArray(product.image) ? product.image[0] || '' : (product.image || '')}
+                                                    onChange={(e) => {
+                                                        const arr = Array.isArray(product.image) ? [...product.image] : (product.image ? [product.image] : []);
+                                                        arr[0] = e.target.value;
+                                                        const updated = [...((formState[field.key] as any[]) || [])];
+                                                        updated[index] = { ...product, image: arr };
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Product name"
+                                                    value={product.name || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...((formState[field.key] as any[]) || [])];
+                                                        updated[index] = { ...product, name: e.target.value };
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Short description (optional)"
+                                                    value={product.description || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...((formState[field.key] as any[]) || [])];
+                                                        updated[index] = { ...product, description: e.target.value };
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="sm:col-span-2 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Price (e.g. $29.99)"
+                                                    value={product.price || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...((formState[field.key] as any[]) || [])];
+                                                        updated[index] = { ...product, price: e.target.value };
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="Discount % (optional)"
+                                                    value={product.discountPercent || ''}
+                                                    min={0}
+                                                    max={100}
+                                                    onChange={(e) => {
+                                                        const v = e.target.value === '' ? undefined : Number(e.target.value);
+                                                        const updated = [...((formState[field.key] as any[]) || [])];
+                                                        updated[index] = { ...product, discountPercent: v };
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                                <input
+                                                    type="url"
+                                                    placeholder="Buy URL"
+                                                    value={product.url || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...((formState[field.key] as any[]) || [])];
+                                                        updated[index] = { ...product, url: e.target.value };
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="sm:col-span-2 px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-xs text-gray-500">Image, name, price and buy URL are recommended. Description and discount are optional.</p>
+                                                <button
+                                                    onClick={() => {
+                                                        const updated = ((formState[field.key] as any[]) || []).filter((_: any, i: number) => i !== index);
+                                                        setFormState((prev: Record<string, any>) => ({ ...prev, [field.key]: updated }));
+                                                    }}
+                                                    className="p-1.5 text-red-500 hover:bg-red-50 rounded"
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => {
+                                            const current = (formState[field.key] as any[]) || [];
+                                            setFormState((prev: Record<string, any>) => ({
+                                                ...prev,
+                                                [field.key]: [...current, { image: '', name: '', description: '', price: '', discountPercent: 0, url: '' }]
+                                            }));
+                                        }}
+                                        className="w-full p-2 border border-dashed border-blue-300 rounded-lg text-blue-600 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 font-medium text-sm"
+                                    >
+                                        <Plus size={16} className="inline mr-1" />
+                                        Add Product
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
