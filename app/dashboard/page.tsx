@@ -1,4 +1,4 @@
-import StatsCard from "@/components/card/statsCard"
+import StatsCard from "@/components/card/StatsCard"
 import { Separator } from "@/components/ui/separator"
 import { getUser } from "@/actions/authActions"
 import { redirect } from "next/navigation"

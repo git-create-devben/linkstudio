@@ -1,5 +1,5 @@
 import ContentCard from '@/components/card/contentCard'
-import StatsCard from '@/components/card/statsCard'
+import StatsCard from '@/components/card/StatsCard'
 import { MoreHorizontal, Crown, Lock, TrendingUp } from 'lucide-react'
 import React from 'react'
 import { getUser } from '@/actions/authActions'
