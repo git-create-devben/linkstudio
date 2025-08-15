@@ -2,7 +2,7 @@
 import prisma from '@/lib/prismaClient';
 import { createClient } from '@/lib/supabase/server';
 import { AuthService } from './authService';
-import { DesignType, ContentType, ActionItemType } from '@/stores/slices/designSlice';
+import { DesignType, ContentType, ActionItemType } from '@/stores/useContentStore';
 
 export interface SaveAllData {
   design: DesignType;

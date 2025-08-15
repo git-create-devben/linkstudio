@@ -20,8 +20,8 @@ export const useActionItems = () => {
       const result = await updateActionItem(id, updates);
       
       // If this was a temporary ID that got converted to a real one
-      if (result.wasTemporary && result.originalId && result.id !== result.originalId) {
-        convertTemporaryId(result.originalId, result.id);
+      if ('isNewItem' in result && result.isNewItem && 'oldId' in result && 'newId' in result && result.newId !== result.oldId) {
+        convertTemporaryId(result.oldId, result.newId);
         toast.success("Action item saved successfully!");
       } else {
         toast.success("Action item updated successfully!");

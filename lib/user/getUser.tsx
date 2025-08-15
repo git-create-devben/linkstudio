@@ -1,7 +1,6 @@
 "use client"
 import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from 'react';
-import { prisma } from "../prismaClient";
 
 // export const getUser = async () => {
 //     const supabase = createClient()
