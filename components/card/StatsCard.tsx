@@ -85,7 +85,7 @@ export default function StatsCard() {
   ];
 
   return (
-    <div className="bg-white text-black rounded-lg shadow-sm p-4 md:p-6 flex flex-col gap-4 md:gap-6 w-full">
+    <div className="bg-white text-black rounded-lg shadow-sm p-3 md:p-6 flex flex-col gap-4 md:gap-6 w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
         <div className="flex items-center gap-2">
           <h2 className="text-base md:text-lg font-semibold">Lifetime Stats</h2>

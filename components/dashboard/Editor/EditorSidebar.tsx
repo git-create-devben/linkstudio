@@ -34,7 +34,8 @@ const EditorSidebar = () => {
   const renderPanelContent = () => {
     switch (activePanel) {
       case 'actions':
-        return <EnhancedActionsPanel onClose={() => setActivePanel(null)} />;
+        // Render nothing here, handled in main return as dialog
+        return null;
 
       case 'social':
         return <SocialLinksPanel onClose={() => setActivePanel(null)} />
@@ -92,7 +93,7 @@ const EditorSidebar = () => {
   };
 
   return (
-    <div className="absolut left-0 top-0 p-2 flex h-[calc(75vh-1rem)]">
+    <div className="absolut left-0 top-0 p-2 flex h-[calc(65vh-1rem)]">
       {/* Sidebar */}
       <div className="pl-2 w-25 h-[calc(50vh-1rem)] rounded-2xl bg-white border-r border-gray-200 flex flex-col py-2 overflow-y-scroll">
           {sidebarItems.map((item) => {
@@ -116,10 +117,32 @@ const EditorSidebar = () => {
           })}
         </div>
 
-      {/* Expandable Panel */}
-      {activePanel && (
-        <div className="w-80 h-100vh rounded-2xl ">
+      {/* Expandable Panel (for non-actions panels) */}
+      {activePanel && activePanel !== 'actions' && (
+        <div className="w-90 h-full overflow-y-auto rounded-2xl ">
           {renderPanelContent()}
+        </div>
+      )}
+
+      {/* Dialog/Popup for EnhancedActionsPanel */}
+      {activePanel === 'actions' && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setActivePanel(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl mx-2 sm:mx-auto bg-white rounded-2xl shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <EnhancedActionsPanel onClose={() => setActivePanel(null)} />
+            <button
+              onClick={() => setActivePanel(null)}
+              className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100 transition"
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
       )}
     </div>

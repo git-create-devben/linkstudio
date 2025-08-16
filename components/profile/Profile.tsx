@@ -13,6 +13,7 @@ import Image from 'next/image'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { getUser, logout } from '@/actions/authActions'
+import UpgradeButton from '../payment/UpgradeButton'
 
 const Profile = () => {
     const router = useRouter()
@@ -71,7 +72,7 @@ const Profile = () => {
                 </PopoverTrigger>
                 <PopoverContent className='bg-white w-full -ml-4 p-2'>
                     <div>
-                        <div className='flex gap-2 p-2 text-black items-center'>
+                        <div className='flex gap-2 md:p-2 px-5 text-black items-center'>
                             <div className='rounded-full bg-black w-12 h-12 overflow-hidden'>
                                 {user.profile?.profileImageUrl && (
                                     <Image
@@ -84,12 +85,17 @@ const Profile = () => {
                                     />
                                 )}
                             </div>
+
                             <div className='flex flex-col'>
                                 <h2>{user.profile?.displayName}</h2>
                                 <Link href={`${window.origin}/${user.username}`} className="text-blue-600 hover:underline">{link}/{user.username}</Link>
                             </div>
                         </div>
+                        <div className='p-5'>
+                            <UpgradeButton />
+                        </div>
                         <div className="border-t border-gray-200"></div>
+
                         <div className='bg-gray-200 rounded-lg mt-2 py-3'>
                             <div className='flex justify-between p-4 items-center'>
                                 <span className='text-black'>{user?.email}</span>

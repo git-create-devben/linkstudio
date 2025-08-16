@@ -184,17 +184,17 @@ const MultiButton: React.FC<MultiButtonProps> = ({
           <button
             onClick={handleSave}
             disabled={!isDirty || isDisabled || isPublishing || isSaving}
-            className={`inline-flex items-center px-4 py-2 text-sm font-medium transition-colors rounded-l-md ${!isDirty || isDisabled || isPublishing || isSaving
+            className={`inline-flex items-center md:px-4 px-2 py-2 md:text-sm text-xs font-medium transition-colors rounded-l-md ${!isDirty || isDisabled || isPublishing || isSaving
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-br from-blue-200 via-white to-purple-200 group-hover:bg-blue-600 transition-colors duration-300 text-black hover:bg-indigo-700"
               }`}
           >
-            {isSaving ? "Saving..." : "Save Changes"}
+            {isSaving ? "Saving..." : "Save"}
           </button>
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className={`inline-flex items-center px-2 py-2 -ml-px text-sm font-medium transition-colors rounded-r-md ${isDisabled || isPublishing || isSaving
+            className={`inline-flex items-center px-1 -ml-px text-sm font-medium transition-colors rounded-r-md ${isDisabled || isPublishing || isSaving
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-br from-blue-200 via-white to-purple-200 group-hover:bg-blue-600 transition-colors duration-300 text-black hover:bg-indigo-700"
               }`}

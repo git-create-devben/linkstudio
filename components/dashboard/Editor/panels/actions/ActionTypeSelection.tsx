@@ -142,7 +142,7 @@ const categoryStyle = categoryConfig[category as keyof typeof categoryConfig];
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid md:grid-cols-2 gap-2">
                     {categoryActions.map((actionType) => (
                       <ActionTypeCard
                         key={actionType.id}

@@ -21,7 +21,7 @@ export const DesignMainView: React.FC<DesignMainViewProps> = ({
   onUpgrade
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full max-h-full">
       <DesignPreview design={design} currentTheme={currentTheme} />
       
       <div className="grid grid-cols-1 gap-3">

@@ -61,7 +61,7 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                     />
                     <LogoApple />
                 </div>
-                <div className='flex gap-6'>
+                <div className='flex md:gap-6 gap-3'>
                     {isEditorPage ?
                         <>
                             <MultiButton username={user.username} />
@@ -69,7 +69,7 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                         </>
                         : isDashboardPage ?
                             <>
-                                <UpgradeButton />
+                               
                                 <Profile />
                             </ >
                             :

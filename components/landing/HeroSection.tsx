@@ -7,7 +7,7 @@ import { ROUTES, ANIMATION_DELAYS } from "@/lib/constants";
 export default function HeroSection() {
   return (
     <section id="hero" className="pt-24 sm:pt-32 lg:pt-40 text-center overflow-hidden py-16 sm:py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <AnimatedWrapper
           className="mb-8"
           variants={{ hidden: { opacity: 0, y: -10 }, visible: { opacity: 1, y: 0 } }}
@@ -23,7 +23,7 @@ export default function HeroSection() {
         </AnimatedWrapper>
 
         <AnimatedWrapper transitionDelay={ANIMATION_DELAYS.HERO_TITLE}>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 tracking-tight leading-tight">
+          <h1 className="text-4xl sm:text-4xl text-4xl lg:text-7xl font-bold text-gray-900 tracking-tight leading-tight">
             More Than a Link. <br />
             <span className="text-blue-600">It's Your Brand.</span>
           </h1>

@@ -11,13 +11,13 @@ const Dashboard =  async () => {
     redirect('/')
   }
   return (
-    <main className="p-6">
+    <main className="lg:p-6 p-2">
       <div>
-        <h1 className="text-black font-bold text-4xl mb-2">Welcome, {user.username || "dev ben"}</h1>
-        <p className="mb-10 text-lg font-medium text-gray-600">✨ Track your page performance and discover powerful tools to boost your online presence!</p>
+        <h1 className="text-black font-bold lg:text-4xl text-2xl mb-2">Welcome, {user.username || "dev ben"}</h1>
+        <p className="mb-10 lg:text-lg text-md font-medium text-gray-600">✨ Track your page performance and discover powerful tools to boost your online presence!</p>
       </div>
-      <span className=" text-black font-bold  text-lg">Performance Overview</span>
-      <Separator className="my-4" />
+      <span className=" text-black font-extrabold  text-lg">Performance Overview</span>
+      <Separator className="my-2" />
       <section>
         <StatsCard/>
       </section>
