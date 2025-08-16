@@ -274,7 +274,7 @@ export default function ContactPage() {
             <Button
               asChild
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 text-white text-base font-medium px-10 py-4 rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105"
+              className=" cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-base font-medium px-10 py-4 rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105"
             >
               <Link href="/auth">
                 Create Your Page <ArrowRight className="ml-2.5 w-5 h-5" />

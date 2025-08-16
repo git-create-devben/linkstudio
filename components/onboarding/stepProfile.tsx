@@ -21,7 +21,7 @@ const StepProfile = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { userId, loading } = getSupabaseId();
 
-  if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
+  if (loading) return <p className="flex items-center justify-center text-black">Loading...</p>;
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

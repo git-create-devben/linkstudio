@@ -16,7 +16,7 @@ const StepLinks = ({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const { userId, loading } = getSupabaseId ();
-  if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
+  if (loading) return <p className="flex items-center justify-center text-black">Loading...</p>;
 
 
   const saveLinksAndProceed = async () => {

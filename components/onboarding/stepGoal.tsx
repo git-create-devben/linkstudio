@@ -21,7 +21,7 @@ const GoalStep = ({
   const [error, setError] = useState('');
   const { userId, loading } = getSupabaseId();
 
-  if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
+  if (loading) return <p className="flex items-center justify-center text-black">Loading</p>;
   const handleGoalSelect = (goalId: string) => {
     selectGoal(goalId);
     updateFormData('goal', goalId);

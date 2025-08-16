@@ -66,7 +66,7 @@ const PlatformSelector: React.FC<PlatformSelectorProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+            className="cursor-pointer p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
           >
             <X size={20} className="text-gray-500" />
           </button>

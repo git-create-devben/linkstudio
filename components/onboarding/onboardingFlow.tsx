@@ -113,7 +113,7 @@ const OnboardingFlow = () => {
   if (loading) {
     return (
       <div className="relative p-6">
-        <p className="flex items-center justify-center text-black">Loading steps...</p>
+        <p className="flex items-center justify-center text-black">Loading...</p>
       </div>
     );
   }

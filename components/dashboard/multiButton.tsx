@@ -197,7 +197,7 @@ const MultiButton: React.FC<MultiButtonProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className={`inline-flex items-center px-1 -ml-px text-sm font-medium transition-colors rounded-r-md ${isDisabled || isPublishing || isSaving
+            className={` cursor-pointer inline-flex items-center px-1 -ml-px text-sm font-medium transition-colors rounded-r-md ${isDisabled || isPublishing || isSaving
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                 : "bg-gradient-to-br from-blue-200 via-white to-purple-200 group-hover:bg-blue-600 transition-colors duration-300 text-black hover:bg-indigo-700"
               }`}

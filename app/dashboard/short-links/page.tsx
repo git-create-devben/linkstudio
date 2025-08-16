@@ -27,7 +27,7 @@ const ShortLinksPage = () => {
       <AnimatedWrapper elementType="section" className="w-full max-w-4xl mx-auto text-center mb-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-left">Short Links</h1>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 w-full md:w-auto">
+          <Button size="lg" className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 w-full md:w-auto">
             + Create New Short Link
           </Button>
         </div>

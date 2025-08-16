@@ -30,7 +30,7 @@ export const IconPicker = ({ onSelectIcon, selectedIcon }: IconPickerProps) => {
             <Button
               key={icon.id}
               variant={selectedIcon === icon.id ? 'default' : 'ghost'}
-              className="w-12 h-12 p-0 text-2xl"
+              className="cursor-pointer w-12 h-12 p-0 text-2xl"
               onClick={() => onSelectIcon(icon.id)}
             >
               {icon.emoji}

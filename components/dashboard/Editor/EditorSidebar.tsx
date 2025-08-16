@@ -104,7 +104,7 @@ const EditorSidebar = () => {
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.id as ActionType)}
-                className={`flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
+                className={` cursor-pointer flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
                   }`}
               >
                 <Icon size={18} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
@@ -119,7 +119,7 @@ const EditorSidebar = () => {
 
       {/* Expandable Panel (for non-actions panels) */}
       {activePanel && activePanel !== 'actions' && (
-        <div className="w-90 h-full overflow-y-auto rounded-2xl ">
+        <div className="w-90 h-[calc(90vh-1rem)] overflow-y-auto rounded-2xl ">
           {renderPanelContent()}
         </div>
       )}

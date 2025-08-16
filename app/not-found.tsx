@@ -28,7 +28,7 @@ export default function NotFound() {
             <div className="flex items-center space-x-4">
               <Link
                 href="/auth"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                className=" cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
               >
                 Sign In
               </Link>

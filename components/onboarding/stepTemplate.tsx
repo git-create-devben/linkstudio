@@ -19,7 +19,7 @@ const TemplateStep = ({
   const { userId, loading } = getSupabaseId();
   const { clearLocalStorage, forceResetToTemplate } = useUserContentStore();
 
-  if (loading) return <p className="flex items-center justify-center text-black">Loading steps...</p>;
+  if (loading) return <p className="flex items-center justify-center text-black">Loading...</p>;
 
   const handleTemplateSelect = async (templateId: string) => {
     updateFormData('template', templateId);

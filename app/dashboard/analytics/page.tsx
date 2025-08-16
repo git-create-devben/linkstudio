@@ -54,7 +54,7 @@ const Analytics = async () => {
                     <h2 className='text-sm font-semibold'>Overview</h2>
                     <div className='flex items-center'>
                         <span className='text-sm text-black'>Last 7 days</span>
-                        <button className='ml-2 p-1 hover:bg-gray-100 rounded'>
+                        <button className='cursor-pointer ml-2 p-1 hover:bg-gray-100 rounded'>
                             <MoreHorizontal size={20} />
                         </button>
                     </div>

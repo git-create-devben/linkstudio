@@ -21,7 +21,7 @@ export interface Plan {
   icon:any
 }
 
-// Country to currency mapping for Paystack-supported countries
+// Country to currency mapping for display purposes
 export const getCurrencyForCountry = (countryCode: string | null) => {
   const currencyMap = {
     'NG': { code: 'NGN', symbol: '₦' }, // Nigeria
@@ -39,10 +39,29 @@ export const getCurrencyForCountry = (countryCode: string | null) => {
   return currencyMap[countryCode as keyof typeof currencyMap] || currencyMap['DEFAULT'];
 };
 
-// Convert USD prices to local currencies
+// Convert any currency amount to NGN for Paystack payment
+export const convertToNGN = (amount: number, fromCurrency: string): number => {
+  const exchangeRatesToNGN: Record<string, number> = {
+    'NGN': 1,       // Already NGN
+    'GHS': 133.33,  // 1 GHS = ~133 NGN
+    'ZAR': 88.89,   // 1 ZAR = ~89 NGN
+    'KES': 10.67,   // 1 KES = ~11 NGN
+    'EGP': 51.61,   // 1 EGP = ~52 NGN
+    'UGX': 0.43,    // 1 UGX = ~0.43 NGN
+    'TZS': 0.70,    // 1 TZS = ~0.70 NGN
+    'RWF': 1.60,    // 1 RWF = ~1.60 NGN
+    'XOF': 2.67,    // 1 XOF = ~2.67 NGN
+    'USD': 1600     // 1 USD = ~1600 NGN
+  };
+  
+  const rate = exchangeRatesToNGN[fromCurrency] || exchangeRatesToNGN['USD'];
+  return Math.round(amount * rate);
+};
+
+// Convert USD prices to local currencies with updated rates
 export const getLocalizedPrice = (usdPrice: number, currency: string): number => {
   const exchangeRates: Record<string, number> = {
-    'NGN': 1500,    // Nigeria Naira
+    'NGN': 1600,    // Nigeria Naira (updated rate)
     'GHS': 12,      // Ghana Cedis  
     'ZAR': 18,      // South African Rand
     'KES': 150,     // Kenyan Shilling

@@ -11,6 +11,7 @@ const PaymentPlansPaystackOnly = () => {
   const {
     selectedPlan,
     billingCycle,
+    loadingPlan,
     isLoading,
     customerEmail,
     plans,
@@ -62,7 +63,7 @@ const PaymentPlansPaystackOnly = () => {
               formattedPrice={formattedPrice}
               savings={savings}
               billingCycle={billingCycle}
-              isLoading={isLoading}
+              isLoading={loadingPlan === plan.id}
               customerEmail={customerEmail}
               pathname={pathname}
               onSelect={setSelectedPlan}

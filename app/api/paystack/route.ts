@@ -2,7 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, amount, planId, billingCycle } = await req.json();
+    const { 
+      email, 
+      amount, 
+      planId, 
+      billingCycle, 
+      currency = 'NGN',
+      originalAmount,
+      originalCurrency 
+    } = await req.json();
+
+    // Log payment details for debugging
+    console.log('Paystack Payment Request:', {
+      email,
+      amount,
+      planId,
+      billingCycle,
+      currency,
+      originalAmount,
+      originalCurrency
+    });
 
     const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
     if (!paystackSecretKey) {
@@ -20,12 +39,16 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         email,
-        amount: amount * 100, // Paystack expects amount in kobo
+        amount: amount * 100, // Paystack expects amount in kobo (NGN cents)
+        currency: 'NGN', // Always use NGN for Paystack
         reference,
         callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
         metadata: {
           planId,
           billingCycle,
+          originalAmount,
+          originalCurrency,
+          ngnAmount: amount,
         },
       }),
     });

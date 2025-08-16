@@ -78,7 +78,7 @@ export default function DebugTemplatePage() {
             <p className="text-sm text-gray-600 mb-4">
               This will clear all cached template data and force a fresh load from the database.
             </p>
-            <Button onClick={handleClearStorage} variant="outline">
+            <Button onClick={handleClearStorage} variant="outline" className="cursor-pointer">
               Clear LocalStorage & Reload
             </Button>
           </div>
@@ -105,7 +105,7 @@ export default function DebugTemplatePage() {
                 </select>
               </div>
               
-              <Button onClick={handleResetToTemplate} className="bg-green-600 hover:bg-green-700">
+              <Button onClick={handleResetToTemplate} className=" cursor-pointer bg-green-600 hover:bg-green-700">
                 Reset to {templates.find(t => t.id === selectedTemplate)?.name} Template
               </Button>
             </div>
@@ -122,7 +122,7 @@ export default function DebugTemplatePage() {
           </div>
 
           <div className="text-center">
-            <a href="/dashboard/editor" className="text-blue-600 hover:underline">
+            <a href="/dashboard/editor" className=" cursor-pointer text-blue-600 hover:underline">
               Go to Editor →
             </a>
           </div>

@@ -14,7 +14,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onAddLink }) => {
             </p>
             <button
                 onClick={onAddLink}
-                className=" px-4 py-2 rounded-full
+                className="cursor-pointer px-4 py-2 rounded-full
           border-blue-600 border hover:border-blue-700
           text-blue-600 hover:text-blue-700
           bg-white hover:bg-blue-50

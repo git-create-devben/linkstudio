@@ -28,7 +28,7 @@ const WebsitePage = () => {
                             </Button>
                         </a>
                         <a href="https://cal.com/yourusername" target="_blank" rel="noopener" className="w-full sm:w-auto">
-                            <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-blue-600 text-blue-100 font-semibold px-10 py-4 rounded-xl shadow-sm hover:bg-blue-50 transition-all">
+                            <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-blue-600 text-blue-100 font-semibold px-10 py-4 rounded-xl shadow-sm hover:bg-blue-50 hover:text-black transition-all">
                                 Book a Call
                             </Button>
                         </a>

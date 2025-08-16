@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { getUser } from '@/actions/authActions';
-import { generatePlans, formatPrice, calculateSavings, type Plan } from '@/lib/pricing';
+import { generatePlans, formatPrice, calculateSavings, convertToNGN, type Plan } from '@/lib/pricing';
 import { initiatePaystackPayment, handlePaymentError, type PaymentData } from '@/lib/payment';
 import { announceToScreenReader } from '@/lib/ui-utils';
 import { useGeolocation } from './useGeolocation';
@@ -9,7 +9,7 @@ import { useGeolocation } from './useGeolocation';
 export const usePaymentPlans = () => {
   const [selectedPlan, setSelectedPlan] = useState('pro');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [customerEmail, setCustomerEmail] = useState('');
   const [plans, setPlans] = useState<Plan[]>([]);
   
@@ -65,21 +65,27 @@ export const usePaymentPlans = () => {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingPlan(plan.id);
 
     try {
+      const localAmount = getCurrentPrice(plan);
+      const ngnAmount = convertToNGN(localAmount, currency || 'USD');
+      
       const paymentData: PaymentData = {
         email: customerEmail,
-        amount: getCurrentPrice(plan),
+        amount: ngnAmount,
         planId: plan.id,
         billingCycle: billingCycle,
+        currency: 'NGN', // Always use NGN for Paystack
+        originalAmount: localAmount,
+        originalCurrency: currency || 'USD',
       };
 
       await initiatePaystackPayment(paymentData);
     } catch (error) {
       handlePaymentError(error);
     } finally {
-      setIsLoading(false);
+      setLoadingPlan(null);
     }
   };
 
@@ -87,7 +93,8 @@ export const usePaymentPlans = () => {
     // State
     selectedPlan,
     billingCycle,
-    isLoading: isLoading || geoLoading,
+    loadingPlan,
+    isLoading: geoLoading,
     customerEmail,
     plans,
     country,
