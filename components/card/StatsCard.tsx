@@ -54,11 +54,11 @@ export default function StatsCard() {
       label: "Views",
       value: planLoading
         ? <StatSkeleton />
-        : hasAccess("starter")
+        : hasAccess("pro")
           ? (loading ? <StatSkeleton /> : data?.pageViews?.toLocaleString() ?? 0)
           : "••••",
-      locked: !planLoading && !hasAccess("starter"),
-      tooltip: !planLoading && !hasAccess("starter") ? "Upgrade to Starter to see page views" : undefined,
+      locked: !planLoading && !hasAccess("pro"),
+      tooltip: !planLoading && !hasAccess("pro") ? "Upgrade to Starter to see page views" : undefined,
     },
     {
       icon: Percent,

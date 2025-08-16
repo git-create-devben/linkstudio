@@ -145,8 +145,8 @@ export function FeatureGate({
   
   // Check if user has access to this feature
   const hasAccess = user?.isActive && 
-    ['starter', 'pro', 'premium'].includes(userPlan) && 
-    ['starter', 'pro', 'premium'].indexOf(userPlan) >= ['starter', 'pro', 'premium'].indexOf(requiredPlan);
+    [ 'pro', 'premium'].includes(userPlan) && 
+    ['pro', 'premium'].indexOf(userPlan) >= ['pro', 'premium'].indexOf(requiredPlan);
 
   if (hasAccess) {
     return <>{children}</>;

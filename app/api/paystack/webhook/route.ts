@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const amountPaid = data.amount / 100;
     const reference = data.reference;
 
-    const plan = data.metadata?.planId || 'starter';
+    const plan = data.metadata?.planId || 'pro';
     const billingCycle = data.metadata?.billingCycle || 'monthly';
     console.log("Email from Paystack:", customerEmail);
     console.log("Paystack metadata:", data.metadata);

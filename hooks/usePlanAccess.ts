@@ -9,7 +9,7 @@ interface BillingType {
   subscriptionId: string;
 }
 
-const PLAN_ORDER: PlanType[] = ["free", "starter", "pro", "premium"];
+const PLAN_ORDER: PlanType[] = ["free", "pro", "premium"];
 
 export function usePlanAccess() {
   const [subscription, setSubscription] = useState<BillingType>({

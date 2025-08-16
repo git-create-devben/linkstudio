@@ -1,5 +1,5 @@
 // lib/planUtils.ts
-export type PlanType = 'free' | 'starter' | 'pro' | 'premium';
+export type PlanType = 'free' | 'pro' | 'premium';
 
 export interface PlanLimits {
   maxActions: number;
@@ -39,24 +39,24 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
     customDevelopment: false,
     slaGuarantee: false,
   },
-  starter: {
-    maxActions: 8,
-    analytics: true, // Basic analytics
-    customDomain: false, // Removed - too complex for solo dev
-    templates: ['minimal', 'professional', 'creative'], // 3 templates
-    socialLinks: 10,
-    emailCapture: false, // Removed - focus on core features
-    whatsappIntegration: false,
-    removeBranding: false,
-    customCSS: false,
-    advancedCustomization: false,
-    verifiedBadge: true, // ✅ Already in schema
-    prioritySupport: false, // Removed - solo dev can't provide this
-    miniShop: false,
-    customFavicon: false,
-    customDevelopment: false,
-    slaGuarantee: false,
-  },
+  // starter: {
+  //   maxActions: 8,
+  //   analytics: true, // Basic analytics
+  //   customDomain: false, // Removed - too complex for solo dev
+  //   templates: ['minimal', 'professional', 'creative'], // 3 templates
+  //   socialLinks: 10,
+  //   emailCapture: false, // Removed - focus on core features
+  //   whatsappIntegration: false,
+  //   removeBranding: false,
+  //   customCSS: false,
+  //   advancedCustomization: false,
+  //   verifiedBadge: true, // ✅ Already in schema
+  //   prioritySupport: false, // Removed - solo dev can't provide this
+  //   miniShop: false,
+  //   customFavicon: false,
+  //   customDevelopment: false,
+  //   slaGuarantee: false,
+  // },
   pro: {
     maxActions: -1, // Unlimited
     analytics: true, // Enhanced analytics
@@ -106,12 +106,21 @@ export interface UserWithPlan {
 }
 
 export function getUserPlan(user: UserWithPlan | null): PlanType {
-  if (!user || !user.plan || !user.isActive) {
+  if (!user) {
+    console.error('getUserPlan called with null user');
     return 'free';
   }
-  
+  if (!user.plan) {
+    console.warn('getUserPlan: user has no plan, defaulting to free', { userId: user.id, email: user.email });
+    return 'free';
+  }
   const plan = user.plan.toLowerCase() as PlanType;
-  return PLAN_LIMITS[plan] ? plan : 'free';
+  if (!PLAN_LIMITS[plan]) {
+    console.warn('getUserPlan: invalid plan type, defaulting to free', { plan: user.plan, userId: user.id });
+    return 'free';
+  }
+  console.log('getUserPlan: user plan determined', { plan, userId: user.id, email: user.email });
+  return plan;
 }
 
 export function getPlanLimits(plan: PlanType): PlanLimits {
@@ -142,7 +151,6 @@ export function canUserAccessFeature(user: UserWithPlan | null, feature: keyof P
 export function getPlanDisplayName(plan: PlanType): string {
   const names = {
     free: 'Free',
-    starter: 'Starter',
     pro: 'Pro',
     premium: 'Premium'
   };
@@ -179,7 +187,7 @@ export function getUpgradeMessage(feature: keyof PlanLimits): string {
 
 // Get the minimum plan required for a feature
 export function getMinimumPlanForFeature(feature: keyof PlanLimits): PlanType {
-  const plans: PlanType[] = ['free', 'starter', 'pro', 'premium'];
+  const plans: PlanType[] = ['free', 'pro', 'premium'];
   
   for (const plan of plans) {
     if (PLAN_LIMITS[plan][feature]) {
@@ -189,3 +197,4 @@ export function getMinimumPlanForFeature(feature: keyof PlanLimits): PlanType {
   
   return 'premium'; // Default to premium if not found
 }
+

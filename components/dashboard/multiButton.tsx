@@ -10,7 +10,7 @@ import { canUserAccessFeature, getUserPlan } from "@/lib/planUtils";
 import { curveShapes } from "@/lib/themeSystem";
 
 interface MultiButtonProps {
-  username: string;
+  username: string | null;
   onPublish?: () => void;
   isPublishing?: boolean;
   isDisabled?: boolean;
@@ -32,12 +32,15 @@ const MultiButton: React.FC<MultiButtonProps> = ({
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [paidFeatures, setPaidFeatures] = useState<string[]>([]);
+  console.log("🚀 ~ MultiButton ~ paidFeatures:", paidFeatures)
   const [linkCopied, setLinkCopied] = useState(false);
 
   // Determine if current edits require upgrade and what features
   const checkPaidFeatures = () => {
     const features: string[] = [];
+    console.log("🚀 ~ checkPaidFeatures ~ features:", features)
     const userPlan = getUserPlan(user);
+    console.log("🚀 ~ checkPaidFeatures ~ userPlan:", userPlan)
 
     // Get user's current plan capabilities
     const hasAdvanced = canUserAccessFeature(user, 'advancedCustomization');
@@ -47,7 +50,7 @@ const MultiButton: React.FC<MultiButtonProps> = ({
 
     // Check action limits first (most common issue)
     const actionCount = actionItems?.length || 0;
-    const maxActions = userPlan === 'free' ? 2 : userPlan === 'starter' ? 8 : -1;
+    const maxActions = userPlan === 'free' ? 2 : userPlan === 'pro' ? 8 : -1;
     if (maxActions !== -1 && actionCount > maxActions) {
       features.push(`${actionCount} actions (limit: ${maxActions})`);
     }
