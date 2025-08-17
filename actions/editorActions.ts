@@ -358,7 +358,7 @@ export async function reorderActionItems(newOrder: { id: string; order: number }
   // Only update items belonging to the profile
   const ids = newOrder.map(o => o.id);
   const items = await prisma.actionItem.findMany({ where: { id: { in: ids }, profileId: profile.id }, select: { id: true } });
-  const valid = new Set(items.map(i => i.id));
+  const valid = new Set(items.map((i: { id: any; }) => i.id));
   const updates = newOrder.filter(o => valid.has(o.id));
   await prisma.$transaction(updates.map(u => prisma.actionItem.update({ where: { id: u.id }, data: { order: u.order } })));
   revalidatePath(`/${profile.displayName}`);

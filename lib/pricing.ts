@@ -18,7 +18,7 @@ export interface Plan {
   popular: boolean;
   color: 'gray' | 'blue' | 'purple' | 'gold';
   ariaLabel: string;
-  icon:any
+  icon: any
 }
 
 // Country to currency mapping for display purposes
@@ -35,12 +35,17 @@ export const getCurrencyForCountry = (countryCode: string | null) => {
     'CI': { code: 'XOF', symbol: 'CFA' }, // Ivory Coast
     'DEFAULT': { code: 'USD', symbol: '$' }
   };
-  
+
   return currencyMap[countryCode as keyof typeof currencyMap] || currencyMap['DEFAULT'];
 };
 
 // Convert any currency amount to NGN for Paystack payment
 export const convertToNGN = (amount: number, fromCurrency: string): number => {
+  // Special pricing for Nigeria
+  if (fromCurrency === 'NGN') {
+    return amount; // Already in NGN
+  }
+
   const exchangeRatesToNGN: Record<string, number> = {
     'NGN': 1,       // Already NGN
     'GHS': 133.33,  // 1 GHS = ~133 NGN
@@ -53,15 +58,25 @@ export const convertToNGN = (amount: number, fromCurrency: string): number => {
     'XOF': 2.67,    // 1 XOF = ~2.67 NGN
     'USD': 1600     // 1 USD = ~1600 NGN
   };
-  
+
   const rate = exchangeRatesToNGN[fromCurrency] || exchangeRatesToNGN['USD'];
   return Math.round(amount * rate);
 };
 
 // Convert USD prices to local currencies with updated rates
 export const getLocalizedPrice = (usdPrice: number, currency: string): number => {
+  // Special pricing for Nigeria
+  if (currency === 'NGN') {
+    const ngnPricing: Record<number, number> = {
+      5.00: 3000,   // Pro monthly: $5 = ₦3000
+      50.00: 30000, // Pro yearly: $50 = ₦30000
+      15.00: 6000,  // Premium monthly: $15 = ₦6000
+      150.00: 60000 // Premium yearly: $150 = ₦60000
+    };
+    return ngnPricing[usdPrice] || Math.round(usdPrice * 600); // Fallback rate
+  }
+
   const exchangeRates: Record<string, number> = {
-    'NGN': 1600,    // Nigeria Naira (updated rate)
     'GHS': 12,      // Ghana Cedis  
     'ZAR': 18,      // South African Rand
     'KES': 150,     // Kenyan Shilling
@@ -72,7 +87,7 @@ export const getLocalizedPrice = (usdPrice: number, currency: string): number =>
     'XOF': 600,     // West African CFA Franc
     'USD': 1        // Default USD
   };
-  
+
   const rate = exchangeRates[currency] || exchangeRates['USD'];
   return Math.round(usdPrice * rate);
 };
@@ -80,15 +95,15 @@ export const getLocalizedPrice = (usdPrice: number, currency: string): number =>
 // Base pricing structure
 export const getBasePricing = (): Record<string, PricingTier> => {
   return {
-    pro: { monthly: 9.99, yearly: 99.99 },
-    premium: { monthly: 19.99, yearly: 199.99 }
+    pro: { monthly: 5.00, yearly: 50.00 },
+    premium: { monthly: 15.00, yearly: 150.00 }
   };
 };
 
 // Generate plans with localized pricing
 export const generatePlans = (currency: string): Plan[] => {
   const basePricing = getBasePricing();
-  
+
   return [
     {
       id: 'free',
@@ -109,7 +124,7 @@ export const generatePlans = (currency: string): Plan[] => {
       buttonText: 'Get Started',
       popular: false,
       color: 'gray',
-      icon:"",
+      icon: "",
       ariaLabel: 'Free plan - Perfect for getting started',
     },
     {
@@ -133,7 +148,7 @@ export const generatePlans = (currency: string): Plan[] => {
       buttonText: 'Start Pro Plan',
       popular: true,
       color: 'purple',
-      icon:"",
+      icon: "",
       ariaLabel: 'Pro plan - Best for creators and growing brands, most popular option',
     },
     {
@@ -157,7 +172,7 @@ export const generatePlans = (currency: string): Plan[] => {
       buttonText: 'Start Premium Plan',
       popular: false,
       color: 'gold',
-      icon:"",
+      icon: "",
       ariaLabel: 'Premium plan - For business owners and enterprises',
     },
   ];
@@ -166,7 +181,7 @@ export const generatePlans = (currency: string): Plan[] => {
 // Format price with currency symbol
 export const formatPrice = (price: number, countryCode: string | null): string => {
   if (price === 0) return 'Free';
-  
+
   const currency = getCurrencyForCountry(countryCode);
   return `${currency.symbol}${price.toLocaleString()}`;
 };

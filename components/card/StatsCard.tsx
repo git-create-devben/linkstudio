@@ -77,7 +77,7 @@ export default function StatsCard() {
       value: planLoading
         ? <StatSkeleton />
         : isPlan("premium")
-          ? "47"
+          ? "0"
           : "••••",
       locked: !planLoading && !isPlan("premium"),
       tooltip: !planLoading && !isPlan("premium") ? "Upgrade to Premium to see subscribers" : undefined,

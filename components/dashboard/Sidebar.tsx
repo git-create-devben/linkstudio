@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import UpgradeButton from "../payment/UpgradeButton";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 const menuItems = [
   { icon: <Home className="w-5 h-5" />, label: "Home", link: "/dashboard" },
@@ -30,6 +31,13 @@ export default function Sidebar({
 }) {
   const pathname = usePathname();
 
+  // Click outside to close sidebar
+  const sidebarRef = useClickOutside<HTMLElement>(() => {
+    if (isVisible && onClose) {
+      onClose();
+    }
+  }, isVisible);
+
   const handleLinkClick = () => {
     // Auto-close sidebar when clicking any link
     if (onClose) {
@@ -39,6 +47,7 @@ export default function Sidebar({
 
   return (
     <aside 
+      ref={sidebarRef}
       className={cn(
         "fixed left-0 top-14 z-50 w-64 h-[calc(100vh-3.5rem)] bg-white border-r border-y-2 border-t-white/80 px-4 py-6 flex flex-col justify-between overflow-y-auto bg-gradient-to-br from-blue-50 via-white to-purple-50 shadow-2xl",
         "transition-all duration-300 ease-in-out transform",

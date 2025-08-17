@@ -294,29 +294,83 @@ export async function saveUserProfile(
 }
 
 const uploadImage = async (file: File): Promise<string> => {
-  const supabase = await createClient();
-  // const fileExt = file.name.split('.').pop();
-  // const fileName = `${Math.random()}.${fileExt}`;
-  const { data: { user } } = await supabase.auth.getUser()
-  // const filePath = `${fileName}`;
+  try {
+    const supabase = await createClient();
+    
+    // Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      throw new Error('User authentication failed');
+    }
 
-  const filePath = `profilepicture/${user?.id}/${Date.now()}-${file.name}`;
-  const { error: uploadError } = await supabase.storage.from('profilepicture').upload(filePath, file);
-  if (uploadError) throw new Error(uploadError.message);
+    // Validate file
+    if (!file || file.size === 0) {
+      throw new Error('Invalid file provided');
+    }
 
-  if (uploadError) {
-    console.error('Upload error:', uploadError);
-    throw new Error('Failed to upload image, please try again');
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('File size too large. Maximum 5MB allowed.');
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Only image files are allowed');
+    }
+
+    // Generate unique file path
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `profilepicture/${user.id}/${fileName}`;
+
+    // Upload file with retry logic
+    let uploadAttempts = 0;
+    const maxAttempts = 3;
+    let uploadError: any = null;
+
+    while (uploadAttempts < maxAttempts) {
+      const { error } = await supabase.storage
+        .from('profilepicture')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (!error) {
+        uploadError = null;
+        break;
+      }
+
+      uploadError = error;
+      uploadAttempts++;
+      
+      if (uploadAttempts < maxAttempts) {
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, 1000 * uploadAttempts));
+      }
+    }
+
+    if (uploadError) {
+      console.error('Upload error after retries:', uploadError);
+      throw new Error(`Upload failed: ${uploadError.message}`);
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('profilepicture')
+      .getPublicUrl(filePath);
+
+    if (!publicUrl) {
+      throw new Error('Failed to generate public URL');
+    }
+
+    console.log('Image uploaded successfully:', publicUrl);
+    return publicUrl;
+
+  } catch (error) {
+    console.error('Image upload error:', error);
+    throw error instanceof Error ? error : new Error('Unknown upload error');
   }
-
-  const { data: { publicUrl } } = supabase.storage.from('profilepicture').getPublicUrl(filePath);
-  console.log("publick url", publicUrl)
-
-  if (!publicUrl) {
-    throw new Error('Public URL generation failed');
-  }
-
-  return publicUrl;
 };
 
 export async function updateOnboardingStatus(userId: string, currentStep: number, isComplete: boolean = false) {
