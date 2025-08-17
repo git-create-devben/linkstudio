@@ -22,12 +22,12 @@ const WebsitePage = () => {
                         I design and build beautiful, modern, fully custom websites for creators and brands who want to stand out. If you're ready for something truly unique, reach out—I'd love to work with you.
                     </p>
                     <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center w-full">
-                        <a href="mailto:hello@yourdomain.com" className="w-full sm:w-auto">
+                        <a href="mailto:benlad636@gmail.com" className="w-full sm:w-auto">
                             <Button size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold px-10 py-4 rounded-xl shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105">
                                 <span className="flex items-center justify-center"><ArrowRight className="mr-2.5 w-5 h-5" /> Contact Me</span>
                             </Button>
                         </a>
-                        <a href="https://cal.com/yourusername" target="_blank" rel="noopener" className="w-full sm:w-auto">
+                        <a href="https://cal.com/devben.tech" target="_blank" rel="noopener" className="w-full sm:w-auto">
                             <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-blue-600 text-blue-100 font-semibold px-10 py-4 rounded-xl shadow-sm hover:bg-blue-50 hover:text-black transition-all">
                                 Book a Call
                             </Button>
@@ -58,16 +58,16 @@ const WebsitePage = () => {
 
             {/* FINAL CTA */}
             <AnimatedWrapper elementType="section" className="w-full max-w-4xl mx-auto text-center mt-20 z-10">
-                <Glass className="p-4 flex flex-col items-center">
+                <Glass className="px-4 py-6 flex flex-col items-center">
                     <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Ready to get started?</h2>
                     <p className="text-lg text-gray-700 mb-8">Drop me a message or book a call. Let's make something beautiful together.</p>
                     <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                        <a href="mailto:hello@yourdomain.com" className="w-full sm:w-auto">
+                        <a href="mailto:benlad636@gmail.com" className="w-full sm:w-auto">
                             <Button size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold px-10 py-4 rounded-xl shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105">
                                 <span className="flex items-center justify-center"><ArrowRight className="mr-2.5 w-5 h-5" /> Contact Me</span>
                             </Button>
                         </a>
-                        <a href="https://cal.com/yourusername" target="_blank" rel="noopener" className="w-full sm:w-auto">
+                        <a href="https://cal.com/devben.tech" target="_blank" rel="noopener" className="w-full sm:w-auto">
                             <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-blue-600 text-blue-700 font-semibold px-10 py-4 rounded-xl shadow-sm hover:bg-blue-50 transition-all">
                                 Book a Call
                             </Button>
