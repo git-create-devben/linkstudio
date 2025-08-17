@@ -58,12 +58,12 @@ export default function DashboardLayout({
         <main className="flex-1 overflow-hidden relative">
           {/* Backdrop for both mobile and desktop */}
           <div
-            className={cn(
-              "fixed inset-0 bg-black/20 z-40 transition-all duration-300 ease-in-out",
-              isVisible
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            )}
+            // className={cn(
+            //   "fixed inset-0 bg-black/20 z-40 transition-all duration-300 ease-in-out",
+            //   isVisible
+            //     ? "opacity-100 pointer-events-auto"
+            //     : "opacity-0 pointer-events-none"
+            // )}
             onClick={toggleSidebar}
           />
 
