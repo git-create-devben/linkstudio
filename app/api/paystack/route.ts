@@ -13,15 +13,7 @@ export async function POST(req: NextRequest) {
     } = await req.json();
 
     // Log payment details for debugging
-    console.log('Paystack Payment Request:', {
-      email,
-      amount,
-      planId,
-      billingCycle,
-      currency,
-      originalAmount,
-      originalCurrency
-    });
+   
 
     const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
     if (!paystackSecretKey) {
