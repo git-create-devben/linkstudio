@@ -3,7 +3,7 @@
   "user": {
     "integrations": [
       {
-        "business_name": "LinkStudio",
+        "business_name": "MyLinks",
         "business_type": "starter",
         "short_name": null,
         "id": 1484929,
@@ -114,7 +114,7 @@
     "show_mfa_feature": true
   },
   "selected_integration": {
-    "business_name": "LinkStudio",
+    "business_name": "MyLinks",
     "description": "Design a single, stunning destination that brings together all your passions,\nprojects, and platforms. Effortlessly. Elegantly. Uniquely you.",
     "rc_number": null,
     "phone": "9138915087",

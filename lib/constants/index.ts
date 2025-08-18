@@ -1,6 +1,6 @@
 // Application-wide constants
 export const APP_CONFIG = {
-  name: "LinkStudio",
+  name: "MyLinks",
   tagline: "Your Signature Space Online.",
   description: "Design a single, stunning destination that brings together all your passions, projects, and platforms. Effortlessly. Elegantly.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",

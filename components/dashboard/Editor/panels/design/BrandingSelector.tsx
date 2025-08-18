@@ -32,7 +32,7 @@ export const BrandingSelector: React.FC<BrandingSelectorProps> = ({
         </h4>
         
         <div className="space-y-3">
-          {/* Option 1: Show LinkStudio Branding */}
+          {/* Option 1: Show MyLinks Branding */}
           <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
             <input
               type="radio"
@@ -42,8 +42,8 @@ export const BrandingSelector: React.FC<BrandingSelectorProps> = ({
               className="w-4 h-4 text-blue-600"
             />
             <div className="flex-1">
-              <div className="font-medium text-sm text-gray-900">Show LinkStudio Branding</div>
-              <div className="text-xs text-gray-500">Display "Create your own bio with LinkStudio" at the bottom</div>
+              <div className="font-medium text-sm text-gray-900">Show MyLinks Branding</div>
+              <div className="text-xs text-gray-500">Display "Create your own bio with MyLinks" at the bottom</div>
             </div>
           </label>
 
@@ -87,7 +87,7 @@ export const BrandingSelector: React.FC<BrandingSelectorProps> = ({
               ? "✅ No footer will be shown on your page" 
               : design.customFooter
                 ? `✅ Footer will show: "${design.customFooter}"`
-                : "✅ Footer will show: \"Create your own bio with LinkStudio\""
+                : "✅ Footer will show: \"Create your own bio with MyLinks\""
             }
             {!hasRemoveBranding && design.removeBranding && (
               <div className="text-amber-600 text-xs mt-1 flex items-center gap-1">

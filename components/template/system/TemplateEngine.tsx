@@ -108,14 +108,14 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
                 )
               ) : (
                 <a
-                  href="https://linkstudio.com"
+                  href="https://mylinks.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={textStyles.primaryText}
                   className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium group"
                 >
                   <span>Create your own bio with</span>
-                  <span className="font-semibold text-blue-500 group-hover:text-blue-600">LinkStudio</span>
+                  <span className="font-semibold text-blue-500 group-hover:text-blue-600">MyLinks</span>
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>

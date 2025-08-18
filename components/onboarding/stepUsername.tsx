@@ -57,13 +57,13 @@ const StepUsername = ({
 
   return (
     <div className="text-center max-w-md mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose your LinkStudio username</h2>
+      <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose your MyLinks username</h2>
       <p className="text-gray-600 mb-8">
         for <span className="font-medium">user@privaterelay.appleid.com</span>. You can always change it later.
       </p>
       <div className="bg-gray-50 rounded-2xl p-4 mb-4">
         <div className="flex items-center text-gray-700">
-          <span className="text-lg">linkstudio.com/</span>
+          <span className="text-lg">mylinks.com/</span>
           <input
             type="text"
             placeholder="username"

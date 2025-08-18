@@ -33,7 +33,7 @@ export default function OverviewSection() {
               Beyond the Bio. Beyond Compare.
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
-              LinkStudio isn't just a link tool. It's your personal stage, meticulously engineered for beauty,
+              MyLinks isn't just a link tool. It's your personal stage, meticulously engineered for beauty,
               simplicity, and profound connection.
             </p>
           </AnimatedWrapper>
@@ -55,7 +55,7 @@ export default function OverviewSection() {
           <FeatureItem
             icon={Layers}
             title="Evolve Without Limits"
-            description="LinkStudio grows with you, offering the sophisticated tools you need to shine, today and tomorrow."
+            description="MyLinks grows with you, offering the sophisticated tools you need to shine, today and tomorrow."
             iconBgClass="bg-purple-500"
           />
         </div>

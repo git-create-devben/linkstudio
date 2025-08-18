@@ -40,7 +40,7 @@ const StepLinks = ({
   return (
     <div className="text-center max-w-md mx-auto">
       <h2 className="text-3xl font-bold text-gray-900 mb-4">Add your links</h2>
-      <p className="text-gray-600 mb-8">Complete the fields below to add your content to your new LinkStudio.</p>
+      <p className="text-gray-600 mb-8">Complete the fields below to add your content to your new MyLinks.</p>
 
       <div className="space-y-4 mb-8">
         <h3 className="text-left font-semibold text-gray-900">Additional links</h3>

@@ -170,7 +170,7 @@ export function getUpgradeMessage(feature: keyof PlanLimits): string {
     socialLinks: 'Upgrade to add more social links',
     emailCapture: 'Upgrade to capture visitor emails',
     whatsappIntegration: 'Upgrade for WhatsApp catalog integration',
-    removeBranding: 'Upgrade to remove LinkStudio branding',
+    removeBranding: 'Upgrade to remove MyLinks branding',
     customCSS: 'Upgrade for custom CSS & HTML',
     advancedCustomization: 'Upgrade for advanced customization',
     verifiedBadge: 'Upgrade to get a verified badge',

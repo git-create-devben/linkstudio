@@ -1,6 +1,6 @@
-# LinkStudio Codebase Modularization
+# MyLinks Codebase Modularization
 
-This document outlines the modular restructuring of the LinkStudio codebase for better maintainability, scalability, and developer experience.
+This document outlines the modular restructuring of the MyLinks codebase for better maintainability, scalability, and developer experience.
 
 ## 🏗️ New Structure Overview
 
@@ -178,4 +178,4 @@ import { formatDate } from '@/lib/utils';
 - Reusable and composable
 - Proper TypeScript types
 
-This modular structure makes LinkStudio more maintainable, scalable, and developer-friendly while preserving all existing functionality.
+This modular structure makes MyLinks more maintainable, scalable, and developer-friendly while preserving all existing functionality.

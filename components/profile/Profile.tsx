@@ -17,7 +17,7 @@ import UpgradeButton from '../payment/UpgradeButton'
 
 const Profile = () => {
     const router = useRouter()
-    const link = "linkstudio"
+    const link = "mylinks"
     const language = "english"
 
     const [user, setUser] = useState<UserProps | null>(null)

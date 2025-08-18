@@ -93,7 +93,7 @@ export const DesignMainView: React.FC<DesignMainViewProps> = ({
         <DesignOptionCard
           icon={<IconBrandBing className="w-5 h-5 text-yellow-600" />}
           title="Branding"
-          description="Remove LinkStudio branding"
+          description="Remove MyLinks branding"
           onEdit={() => onNavigate('branding')}
           isLocked={!hasAdvancedCustomization}
           onUpgrade={onUpgrade}

@@ -1,4 +1,4 @@
-// Theme System for LinkStudio
+// Theme System for MyLinks
 export type ThemeMode = 'light' | 'dark' | 'glassmorphic';
 
 export interface BannerConfig {

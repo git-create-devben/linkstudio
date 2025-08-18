@@ -54,7 +54,7 @@ const GoalStep = ({
   return (
     <div className="text-center max-w-md mx-auto">
       <h2 className="text-3xl font-bold text-gray-900 mb-4">
-        Which best describes your goal for using LinkStudio?
+        Which best describes your goal for using MyLinks?
       </h2>
       <p className="text-gray-600 mb-8">This helps us personalize your experience.</p>
 

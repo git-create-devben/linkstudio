@@ -48,12 +48,12 @@ const OnboardingComplete = ({completeOnboarding}:{completeOnboarding:() => Promi
                 </div>
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">You're all set!</h1>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                    Your LinkStudio profile is ready. You can now start sharing your personalized link with your audience.
+                    Your MyLinks profile is ready. You can now start sharing your personalized link with your audience.
                 </p>
             </div>
 
             <div className="bg-gray-50 rounded-2xl p-4 mb-6">
-                <p className="text-sm text-gray-600 mb-2">Your LinkStudio URL:</p>
+                <p className="text-sm text-gray-600 mb-2">Your MyLinks URL:</p>
                 <p className="font-mono text-lg font-semibold text-blue-600">
                     {window.origin}/{user?.username}
                 </p>

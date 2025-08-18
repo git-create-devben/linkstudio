@@ -14,7 +14,7 @@ export default function CTASection() {
           </h2>
           <p className="mt-6 max-w-xl mx-auto text-lg text-gray-600 leading-relaxed">
             Join a new era of creators shaping their online presence with beauty, intent, and unparalleled ease.
-            LinkStudio is free to start.
+            MyLinks is free to start.
           </p>
           <div className="mt-10">
             <Button
@@ -23,7 +23,7 @@ export default function CTASection() {
               className="bg-blue-600 hover:bg-blue-700 text-white text-base font-medium px-10 py-4 rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105"
             >
               <Link href={ROUTES.AUTH}>
-                Claim Your LinkStudio <ArrowRight className="ml-2.5 w-5 h-5" />
+                Claim Your MyLinks <ArrowRight className="ml-2.5 w-5 h-5" />
               </Link>
             </Button>
           </div>

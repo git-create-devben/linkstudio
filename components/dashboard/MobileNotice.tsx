@@ -45,7 +45,7 @@ const MobileNotice = () => {
           </h3>
           <p className="text-sm text-amber-700 mb-3">
             For the best editing experience with full design customization options, 
-            we recommend using LinkStudio on a desktop or laptop computer.
+            we recommend using MyLinks on a desktop or laptop computer.
           </p>
           <div className="flex items-center gap-2">
             <Button 
