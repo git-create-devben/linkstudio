@@ -91,16 +91,13 @@ const PublicTemplateInitializer = ({ username }: PublicTemplateInitializerProps)
             userData.socialLinks = [];
           }
         } catch (socialError) {
-          console.log("Could not fetch social links for public profile:", socialError);
           userData.socialLinks = [];
         }
 
-        console.log("Public profile user data:", userData);
 
         // Merge user data with template defaults
         const mergedData = mergeUserDataWithDefaults(selectedTemplateId, userData);
         
-        console.log("Merged data with template defaults:", mergedData);
 
         // Set the template data
         setTemplateData({

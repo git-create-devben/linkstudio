@@ -44,7 +44,6 @@ export async function handleOAuthCallback(supabaseUser: any) {
     });
 
     if (existingUser) {
-      console.log('✅ Existing user found:', existingUser.email);
       
       // Optional: Update supabaseId if it's missing
       if (!existingUser.supabaseId) {
@@ -58,7 +57,6 @@ export async function handleOAuthCallback(supabaseUser: any) {
     }
 
     // If user does not exist, create them
-    console.log('✨ Creating new user from OAuth:', supabaseUser.email);
     const newUser = await prisma.user.create({
       data: {
         email: supabaseUser.email!,
@@ -78,7 +76,6 @@ export async function handleOAuthCallback(supabaseUser: any) {
     return { user: newUser, isNew: true };
 
   } catch (error: any) {
-    console.error('❌ Error handling OAuth callback:', error);
     // If it's a unique constraint violation, it means the user was created
     // in a race condition. Try to find them again.
     if (error.code === 'P2002') {
@@ -145,7 +142,6 @@ export async function signup(formData: FormData) {
         },
       });
     }
-    console.log("user data", user)
     if (error) {
       console.error('Supabase signup error:', JSON.stringify(error))
       return { error: error.message }

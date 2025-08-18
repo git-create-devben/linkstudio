@@ -119,7 +119,6 @@ export function getUserPlan(user: UserWithPlan | null): PlanType {
     console.warn('getUserPlan: invalid plan type, defaulting to free', { plan: user.plan, userId: user.id });
     return 'free';
   }
-  console.log('getUserPlan: user plan determined', { plan, userId: user.id, email: user.email });
   return plan;
 }
 

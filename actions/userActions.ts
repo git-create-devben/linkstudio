@@ -3,7 +3,6 @@ import prisma from "@/lib/prismaClient";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "./authActions";
 import { redirect } from "next/navigation";
-console.log("userActions")
 export async function getUserId(supabaseId: string) {
   const user = await prisma.user.findUnique({ where: { supabaseId } });
   if (!user) throw new Error("No user found for supabaseId");
@@ -123,8 +122,6 @@ export async function getFullUserProfile() {
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
 
-  console.log("🚀 Supabase user:", user)
-  console.log("🔥 Supabase error:", error)
 
   if (error || !user) {
     throw new Error("No authenticated Supabase user found");
@@ -167,7 +164,6 @@ export async function getUserSubscription() {
       plan: true,
     },
   });
-  console.log("🚀 ~ getUserSubscription ~ subscription:", subscription)
 
   if (!subscription) return { error: 'No subscription found', data: null };
 

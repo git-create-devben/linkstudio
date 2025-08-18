@@ -98,7 +98,6 @@ export async function saveAll(data: {
     Object.entries(validDesignFields).filter(([_, value]) => value !== undefined)
   );
 
-  console.log("Filtered design data for Prisma:", filteredDesignData);
 
   // 1. Save Design - upsert to handle missing records
   await prisma.design.upsert({
@@ -145,7 +144,6 @@ export async function saveAll(data: {
   }
 
   // 4. Save Template - verify profile exists first
-  console.log("Updating profile with ID:", profile.id, "templateId:", data.templateId);
   
   const existingProfile = await prisma.profile.findUnique({
     where: { id: profile.id },
@@ -210,7 +208,6 @@ export async function updateActionItem(id: string, config: object, actionType?: 
   if (!itemToUpdate) {
     if (isTemporaryId) {
       // This is a template default item that doesn't exist in DB yet - create it
-      console.log(`Creating new action item for temporary ID: ${id}`);
 
       // Determine the action type based on the ID or config
       let type: string = actionType || "LINK_LIST";
@@ -474,7 +471,6 @@ export async function uploadCoverImage(formData: FormData) {
   if (uploadError) throw new Error(uploadError.message);
 
   const { data: { publicUrl } } = supabase.storage.from('covers').getPublicUrl(filePath);
-  console.log("public url", publicUrl);
 
   await prisma.content.update({
     where: { profileId: user.profile?.id },
@@ -498,7 +494,6 @@ export async function uploadProfilePicture(formData: FormData) {
   if (uploadError) throw new Error(uploadError.message);
 
   const { data: { publicUrl } } = supabase.storage.from('profilepicture').getPublicUrl(filePath);
-  console.log("public url", publicUrl);
 
   await prisma.content.update({
     where: { profileId: user.profile?.id },

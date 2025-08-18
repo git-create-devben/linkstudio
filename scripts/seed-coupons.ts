@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function seedCoupons() {
-  console.log('🎫 Seeding coupons...');
 
   const coupons = [
     // Launch coupons
@@ -67,13 +66,10 @@ async function seedCoupons() {
           currentUses: 0,
         },
       });
-      console.log(`✅ Created/Updated coupon: ${coupon.code} (${coupon.type})`);
     } catch (error) {
       console.error(`❌ Failed to create coupon ${coupon.code}:`, error);
     }
   }
-
-  console.log('🎉 Coupon seeding completed!');
 }
 
 seedCoupons()

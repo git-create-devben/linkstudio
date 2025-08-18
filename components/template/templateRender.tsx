@@ -19,9 +19,7 @@ type TemplateRendererProps = {
 };
 
 const TemplateRenderer = ({ templateId }: TemplateRendererProps) => {
-  console.log("templateId", templateId)
   const {socialLinks,  actionItems, design, content} = useUserContentStore();
-  console.log("socialLinks", socialLinks)
 
   const templateProps = useMemo<TemplateProps>(
     () => ({

@@ -30,15 +30,8 @@ const DesignPanel: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const hasAdvancedCustomization = canUserAccessFeature(user, 'advancedCustomization');
   
   // Debug: Log user access
-  console.log('DesignPanel - User:', user);
-  console.log('DesignPanel - User plan:', user?.plan);
-  console.log('DesignPanel - User isActive:', user?.isActive);
-  console.log('DesignPanel - hasAdvancedCustomization:', hasAdvancedCustomization);
-  console.log('DesignPanel - hasRemoveBranding:', canUserAccessFeature(user, 'removeBranding'));
 
   const handleDesignChange = (update: Partial<typeof design>) => {
-    console.log('DesignPanel - handleDesignChange called with:', update);
-    console.log('DesignPanel - hasAdvancedCustomization:', hasAdvancedCustomization);
     setDesign(update);
   };
 

@@ -17,7 +17,6 @@ export const updateActionItemSafely = async (
       const { updateActionItemWithNewId } = useUserContentStore.getState();
       updateActionItemWithNewId((result as any).oldId, (result as any).newId, config);
       
-      console.log(`Converted temporary ID ${(result as any).oldId} to real ID ${(result as any).newId}`);
       
       return {
         ...result,

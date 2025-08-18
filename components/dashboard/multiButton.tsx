@@ -32,15 +32,12 @@ const MultiButton: React.FC<MultiButtonProps> = ({
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [paidFeatures, setPaidFeatures] = useState<string[]>([]);
-  console.log("🚀 ~ MultiButton ~ paidFeatures:", paidFeatures)
   const [linkCopied, setLinkCopied] = useState(false);
 
   // Determine if current edits require upgrade and what features
   const checkPaidFeatures = () => {
     const features: string[] = [];
-    console.log("🚀 ~ checkPaidFeatures ~ features:", features)
     const userPlan = getUserPlan(user);
-    console.log("🚀 ~ checkPaidFeatures ~ userPlan:", userPlan)
 
     // Get user's current plan capabilities
     const hasAdvanced = canUserAccessFeature(user, 'advancedCustomization');

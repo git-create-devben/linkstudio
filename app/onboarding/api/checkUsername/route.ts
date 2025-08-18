@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { username, userId } = body;
-    console.log("user Id from api:", userId);
 
     if (!username) {
       return NextResponse.json({ message: 'Username is required' }, { status: 400 });

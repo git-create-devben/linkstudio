@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
   
   if (user && !token_hash && !type) {
     // User is already authenticated (likely OAuth), redirect to onboarding
-    console.log('Already authenticated user redirected to onboarding')
     return NextResponse.redirect(redirectTo)
   }
 

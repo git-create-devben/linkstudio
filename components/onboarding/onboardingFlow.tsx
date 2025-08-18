@@ -64,7 +64,6 @@ const OnboardingFlow = () => {
         // If user is starting fresh onboarding (step 0 or 1), clear localStorage
         // to ensure no old template data interferes with new selections
         if (result.onboardingStep <= 1) {
-          console.log('Clearing localStorage for fresh onboarding');
           clearLocalStorage();
         }
 

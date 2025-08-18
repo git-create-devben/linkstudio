@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  console.log('🚀 [CALLBACK_ROUTE] - Route handler initiated.');
 
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
@@ -23,15 +22,12 @@ export async function GET(request: Request) {
   }
 
   if (data.user) {
-    console.log('✅ [CALLBACK_ROUTE] - Session successfully exchanged. User found:', data.user.email);
     
     try {
-      console.log('🔄 [CALLBACK_ROUTE] - Calling handleOAuthCallback to process user in DB...');
       const { isNew } = await handleOAuthCallback(data.user);
 
       const redirectTo = isNew ? '/onboarding' : '/dashboard';
       
-      console.log(`✅ [CALLBACK_ROUTE] - User processed. Redirecting ${isNew ? 'new' : 'existing'} user to: ${origin}${redirectTo}`);
       return NextResponse.redirect(`${origin}${redirectTo}`);
 
     } catch (dbError) {

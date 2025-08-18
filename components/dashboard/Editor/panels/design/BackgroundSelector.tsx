@@ -20,9 +20,6 @@ export const BackgroundSelector: React.FC<BackgroundSelectorProps> = ({
   onUpgrade
 }) => {
   // Debug: Log the current design to see what we're working with
-  console.log('BackgroundSelector - Current design:', design);
-  console.log('BackgroundSelector - customBackground:', design.customBackground);
-  console.log('BackgroundSelector - hasAdvancedCustomization:', hasAdvancedCustomization);
 
   // Detect current background type from design
   const detectBackgroundType = (): 'gradient' | 'solid' | 'image' => {

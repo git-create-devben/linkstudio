@@ -29,8 +29,6 @@ export async function POST(req: NextRequest) {
 
     const plan = data.metadata?.planId || 'pro';
     const billingCycle = data.metadata?.billingCycle || 'monthly';
-    console.log("Email from Paystack:", customerEmail);
-    console.log("Paystack metadata:", data.metadata);
     // Optional: Store Paystack reference/transactionId if needed
     try {
       const updatedUser = await prisma.user.update({
@@ -44,7 +42,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      console.log(`✅ [Paystack] Payment success for ${updatedUser.email}, ₦${amountPaid}`);
     } catch (err) {
       console.error('🔥 Error updating user after payment:', err);
       return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });

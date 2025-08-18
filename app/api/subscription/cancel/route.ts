@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
     } else if (dbUser.payment_gateway === 'paystack') {
       // Cancel Paystack subscription
       // You would implement Paystack cancellation here
-      console.log('Paystack cancellation not implemented yet');
     }
 
     // Update user in database

@@ -113,12 +113,10 @@ const TemplateInitializer = () => {
           userData.socialLinks = socialLinksData;
         }
 
-        console.log("User data to merge:", userData);
 
         // Merge user data with template defaults
         const mergedData = mergeUserDataWithDefaults(selectedTemplateId, userData);
         
-        console.log("Merged data with template defaults:", mergedData);
 
         // Initialize the store with the merged data
         const initData = {
@@ -126,13 +124,8 @@ const TemplateInitializer = () => {
           ...mergedData,
         };
 
-        console.log("Final initialization data:", initData);
         
         // Always use the database template ID as the source of truth
-        console.log("Database template ID:", selectedTemplateId);
-        console.log("Initializing store with database data");
-        console.log("initData.templateId:", initData.templateId);
-        console.log("Full initData:", initData);
         
         // Clear localStorage first to prevent conflicts with persisted data
         const { clearLocalStorage } = useUserContentStore.getState();
@@ -151,7 +144,6 @@ const TemplateInitializer = () => {
               const { updateActionItemWithNewId } = useUserContentStore.getState();
               syncedItems.forEach(({ oldId, newId }) => {
                 if (oldId !== newId) {
-                  console.log(`Synced action item: ${oldId} -> ${newId}`);
                   updateActionItemWithNewId(oldId, newId);
                 }
               });
@@ -186,12 +178,9 @@ const TemplateInitializer = () => {
   // }
 
   // Track templateId changes
-  useEffect(() => {
-    console.log("TemplateInitializer - templateId changed to:", templateId);
-  }, [templateId]);
+
 
   // Render the template once initialized
-  console.log("TemplateInitializer - Current Template ID:", templateId);
   return <TemplateRenderer templateId={templateId} />;
 };
 

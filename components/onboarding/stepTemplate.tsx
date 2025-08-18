@@ -37,7 +37,6 @@ const TemplateStep = ({
       const result = await saveUserTemplate(userId, templateId);
 
       if (result.success) {
-        console.log('Template saved successfully:', templateId);
         nextStep(); // Proceed to the next step if the template is saved successfully
       } else {
         setError(result.message || 'Failed to save template');

@@ -277,8 +277,6 @@ export const useUserContentStore = create<UserContentStore>()(
         }));
       },
       resetStoreWithTemplate: (data: StoreUpdateData) => {
-        console.log("resetStoreWithTemplate called with:", data);
-        console.log("data.templateId:", data.templateId);
         
         // Create complete default objects
         const defaultDesign: DesignType = {
@@ -303,7 +301,6 @@ export const useUserContentStore = create<UserContentStore>()(
 
         // Completely replace store data with new template data
         const newTemplateId = data.templateId || "minimal";
-        console.log("Setting templateId to:", newTemplateId);
         
         set({
           loading: false,
@@ -329,7 +326,6 @@ export const useUserContentStore = create<UserContentStore>()(
           socialLinks: data.socialLinks || [],
         });
         
-        console.log("Store updated. New templateId:", get().templateId);
       },
       clearLocalStorage: () => {
         // Clear the persisted localStorage data
@@ -338,18 +334,15 @@ export const useUserContentStore = create<UserContentStore>()(
         }
       },
       forceResetToTemplate: (templateId: string) => {
-        console.log('Force resetting to template:', templateId);
 
         // Clear localStorage and reset to template defaults
         if (typeof window !== 'undefined') {
           localStorage.removeItem('user-content-storage');
-          console.log('Cleared localStorage');
         }
 
         // Import and apply template defaults
         import('@/components/template/templateDefault').then(({ getTemplateDefaults }) => {
           const templateDefaults = getTemplateDefaults(templateId);
-          console.log('Applying template defaults for:', templateId, templateDefaults);
 
           set({
             loading: false,
@@ -364,7 +357,6 @@ export const useUserContentStore = create<UserContentStore>()(
             socialLinks: templateDefaults.socialLinks,
           });
 
-          console.log('Store reset complete for template:', templateId);
         });
       },
       saveAllChanges: async () => {
