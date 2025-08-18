@@ -121,7 +121,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
   };
 
   const getVerifiedBadgeComponent = () => {
-    const badgeStyle = content.verifiedBadgeStyle || 'music'; // Default to music style
+    const badgeStyle = content.verifiedBadgeStyle || 'simple'; // Default to music style
 
     switch (badgeStyle) {
       case 'simple':

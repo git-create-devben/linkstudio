@@ -7,6 +7,7 @@ import { TemplateConfig, StyleVariant } from './types';
 import { ActionsSection } from './sections/ActionsSection';
 import { SocialLinksSection } from './sections/SocialLinksSection';
 import { TemplateLayout } from './TemplateLayout';
+import { getTheme } from '@/lib/themeSystem';
 
 interface TemplateEngineProps extends TemplateProps {
   config: TemplateConfig;
@@ -22,6 +23,7 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
   config,
   customStyles = {}
 }) => {
+  const theme = getTheme(design.theme || 'dark');
   // Use design overrides if available
   const effectiveConfig = {
     ...config,
@@ -34,8 +36,27 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
     effects: design.effects || config.effects
   };
 
+  const getTextStyles = () => {
+    return {
+      primaryText: {
+        color: design.textPrimaryColor || theme.colors.textPrimary,
+        textAlign: design.textAlignment || 'center' as const,
+        fontFamily: design.font || 'Inter, system-ui, sans-serif',
+        ...customStyles
+      },
+      secondaryText: {
+        color: design.textSecondaryColor || theme.colors.textSecondary,
+        textAlign: design.textAlignment || 'center' as const,
+        fontFamily: design.font || 'Inter, system-ui, sans-serif',
+        ...customStyles
+      }
+    };
+  };
+
+  const textStyles = getTextStyles();
+
   return (
-    <TemplateLayout layout={effectiveConfig.layout} spacing={effectiveConfig.spacing}>
+    <TemplateLayout layout={effectiveConfig.layout} spacing={effectiveConfig.spacing} background={config.background} type={config.background} design={design}>
       <BackgroundLayer type={config.background} design={design} />
 
       {effectiveConfig.effects && effectiveConfig.effects.length > 0 && (
@@ -74,6 +95,7 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
                     href={design.customFooterUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    style={textStyles.primaryText}
                     className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium"
                   >
                     <span>{design.customFooter}</span>
@@ -82,13 +104,14 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
                     </svg>
                   </a>
                 ) : (
-                  <span className="text-xs text-gray-400 font-medium">{design.customFooter}</span>
+                  <span className="text-xs text-gray-400 font-medium" style={textStyles.primaryText}>{design.customFooter}</span>
                 )
               ) : (
                 <a
                   href="https://linkstudio.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  style={textStyles.primaryText}
                   className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium group"
                 >
                   <span>Create your own bio with</span>

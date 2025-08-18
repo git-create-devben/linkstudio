@@ -11,7 +11,7 @@ const PreviewPage = async (props: { params: Promise<{ username: string }> }) => 
     redirect("/")
   }
 
-  return <PreviewClient username={params.username} />;
+  return <PreviewClient username={params.username} profileId={profile.profile.id} />;
 };
 
 export default PreviewPage;

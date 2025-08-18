@@ -7,12 +7,13 @@ import { useEffect } from "react";
 
 interface Props {
   username: string;
+  profileId: string;
 }
 
-const PreviewClient = ({ username }: Props) => {
+const PreviewClient = ({ username, profileId }: Props) => {
   useEffect(() => {
     if (username) {
-      incrementPageView(username);
+      incrementPageView(profileId);
     }
   }, [username]);
 
