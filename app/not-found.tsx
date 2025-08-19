@@ -1,14 +1,17 @@
+"use client"
 import type React from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import LogoApple from "@/components/logo-apple"
-import AnimatedWrapper from "@/components/animated-wrapper"
+import dynamic from "next/dynamic"
 import {
   ArrowRight,
   Home,
   Search,
   AlertCircle,
 } from "lucide-react"
+
+const AnimatedWrapper = dynamic(() => import("@/components/animated-wrapper"), { ssr: false })
 
 export default function NotFound() {
   return (

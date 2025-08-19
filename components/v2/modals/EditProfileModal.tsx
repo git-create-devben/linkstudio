@@ -13,7 +13,7 @@ interface EditProfileModalProps {
 }
 
 export function EditProfileModal({ isOpen, onClose }: EditProfileModalProps) {
-  const { content, updateContent } = useUserContentStore()
+  const { content, setContent } = useUserContentStore()
   const [formState, setFormState] = useState({
     profileName: '',
     profileBio: '',
@@ -40,7 +40,7 @@ export function EditProfileModal({ isOpen, onClose }: EditProfileModalProps) {
   const handleSubmit = async () => {
     setIsSubmitting(true)
     try {
-      updateContent(formState)
+      setContent(formState)
       toast.success("Profile updated successfully!")
       onClose()
     } catch (error) {

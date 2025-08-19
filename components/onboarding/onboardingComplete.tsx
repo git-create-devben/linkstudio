@@ -28,7 +28,7 @@ const OnboardingComplete = ({completeOnboarding}:{completeOnboarding:() => Promi
         try {
             await completeOnboarding();
             setTimeout(() => {
-                router.push("/dashboard");
+                router.push("/dashboard/v2/editor");
             }, 2000);
         } catch (error) {
             console.error("Error completing onboarding:", error);

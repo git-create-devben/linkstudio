@@ -10,7 +10,7 @@ export const ROUTES = {
   HOME: "/",
   AUTH: "/auth",
   DASHBOARD: "/dashboard",
-  EDITOR: "/dashboard/editor",
+  EDITOR: "/dashboard/v2/editor",
   TEMPLATE: "/dashboard/template",
   ANALYTICS: "/dashboard/analytics",
   PRICING: "/payment",

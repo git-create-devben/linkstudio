@@ -54,7 +54,7 @@ export default function DashboardLayout({
   return (
     <UserProvider user={user}>
       <div className="h-screen flex flex-col overflow-hidden">
-        <Header isVisible={isVisible} onToggle={toggleSidebar} />
+        <Header onToggle={toggleSidebar} />
         <main className="flex-1 overflow-hidden relative">
           {/* Backdrop for both mobile and desktop */}
           <div

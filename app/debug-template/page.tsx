@@ -122,7 +122,7 @@ export default function DebugTemplatePage() {
           </div>
 
           <div className="text-center">
-            <a href="/dashboard/editor" className=" cursor-pointer text-blue-600 hover:underline">
+            <a href="/dashboard/v2/editor" className=" cursor-pointer text-blue-600 hover:underline">
               Go to Editor →
             </a>
           </div>

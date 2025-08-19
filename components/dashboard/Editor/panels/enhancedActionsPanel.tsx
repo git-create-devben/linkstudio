@@ -563,7 +563,7 @@ const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
             onClose={onClose}
             onAddNew={() => setCurrentView('select-type')}
             onEditAction={handleEditClick}
-            onDeleteAction={setDeleteCandidateId}
+            onDeleteAction={(action) => setDeleteCandidateId(action.id)}
         />
     );
 

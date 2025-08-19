@@ -57,7 +57,7 @@ const OnboardingFlow = () => {
         const result = await fetchOnboardingStatus(userId);
 
         if (result.onboardingCompleted === true) {
-          router.push('/dashboard/editor');
+          router.push('/dashboard/v2/editor');
           return;
         }
 
