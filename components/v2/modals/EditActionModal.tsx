@@ -89,7 +89,7 @@ export function EditActionModal({ isOpen, onClose, action }: EditActionModalProp
         </div>
 
         {/* Form */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">          {
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 text-black">          {
           actionType.configFields.map((field) => (
             <div key={field.key} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
               <label className="block text-sm font-semibold mb-2 text-gray-900">

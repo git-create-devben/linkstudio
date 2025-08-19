@@ -7,11 +7,10 @@ import Profile from '../profile/Profile'
 import MultiButton from './multiButton'
 import { useUser } from '@/context/userContext'
 
-const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle: () => void }) => {
+const Header = ({ onToggle }: { onToggle: () => void }) => {
     const pathname = usePathname()
-    const isEditorPage = pathname === '/dashboard/editor' || '/dashboard/v2/editor'
+    const isEditorPage = pathname === '/dashboard/editor' || pathname === '/dashboard/v2/editor'
     const isDashboardPage = pathname === '/dashboard'
-    const isOtherPage = pathname.startsWith('/dashboard') && pathname !== '/dashboard' && pathname !== '/dashboard/editor'
 
     const user = useUser()
 
@@ -29,19 +28,14 @@ const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle:
                     <LogoApple />
                 </div>
                 <div className='flex md:gap-6 gap-3'>
-                    {isEditorPage ?
+                    {isEditorPage ? (
                         <>
                             <MultiButton username={user?.username} />
                             <UpgradeButton />
                         </>
-                        : isDashboardPage ?
-                            <>
-                               
-                                <Profile />
-                            </ >
-                            :
-                            <Profile />
-                    }
+                    ) : (
+                        <Profile />
+                    )}
                 </div>
             </nav>
         </header>

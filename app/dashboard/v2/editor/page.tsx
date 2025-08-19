@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { ProfileHeader } from "@/components/v2/Editor/ProfileHeader";
 import { PageManagement } from "@/components/v2/Editor/PageManagement";
 import { MobilePreview } from "@/components/v2/Editor/MobilePreview";
@@ -21,7 +22,9 @@ import MainView from "@/components/dashboard/Editor/panels/actions/MainView";
 import { getAllCategories } from "@/lib/actions/actionTypes";
 
 export default function Dashboard() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState("actions")
+  const [isMobile, setIsMobile] = useState(false)
   const [showAddActionModal, setShowAddActionModal] = useState(false)
   const [showEditActionModal, setShowEditActionModal] = useState(false)
   const [showDeleteActionModal, setShowDeleteActionModal] = useState(false)
@@ -37,6 +40,40 @@ export default function Dashboard() {
   const [editingActionId, setEditingActionId] = useState<string | null>(null);
   const categories = getAllCategories();
   const { removeActionItem, socialLinks } = useUserContentStore()
+
+  // Mobile detection - only redirect on actual mobile devices, not tablets
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint for actual mobile
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Redirect to v1 on mobile devices only
+  useEffect(() => {
+    if (isMobile) {
+      router.push('/dashboard/editor')
+    }
+  }, [isMobile, router])
+
+  const handleSwitchToV1 = () => {
+    router.push('/dashboard/editor')
+  }
+
+  // Show loading or redirect on mobile
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to mobile editor...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleEditAction = (action: ActionItemType) => {
     setEditingAction(action)
@@ -116,18 +153,18 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex gap-6 p-6 relative min-h-screen">
+      <div className="flex flex-col xl:flex-row gap-6 p-4 xl:p-6 relative min-h-screen">
         {/* Left Column - Main Content */}
         <div className="flex-1 rounded-2xl overflow-hidden max-h-[calc(100vh-5rem)] overflow-y-auto">
-          <ProfileHeader />
+          <ProfileHeader onSwitchToV1={handleSwitchToV1} />
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-          <div className="p-6">
+          <div className="p-4 xl:p-6">
             {renderTabContent()}
           </div>
         </div>
 
         {/* Right Column - Preview */}
-        <div className="w-[400px]">
+        <div className="w-full xl:w-[400px] xl:max-w-[400px]">
           <div className="sticky top-6">
             <MobilePreview />
           </div>
