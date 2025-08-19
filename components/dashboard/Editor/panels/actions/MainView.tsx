@@ -12,7 +12,7 @@ interface MainViewProps {
   onClose: () => void;
   onAddNew: () => void;
   onEditAction: (action: ActionItemType) => void;
-  onDeleteAction: (id: string) => void;
+  onDeleteAction: (action: ActionItemType) => void;
 }
 
 const MainView: React.FC<MainViewProps> = ({

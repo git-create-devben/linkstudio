@@ -1,12 +1,16 @@
 "use client"
 
+import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Share2, ArrowRight, Edit } from "lucide-react"
 import { useUserContentStore } from "@/stores/useContentStore"
+import { EditProfileModal } from "@/components/v2/modals/EditProfileModal"
+import ContentPanel from "@/components/dashboard/Editor/panels/contentPanel"
 
 export function ProfileHeader() {
     const { content } = useUserContentStore()
+    const [showEditProfileModal, setShowEditProfileModal] = useState(false)
 
     // Generate username from profile name (simple slug)
     const username = content.profileName.toLowerCase().replace(/\s+/g, '')
@@ -49,7 +53,12 @@ export function ProfileHeader() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <h1 className="text-2xl font-bold">{content.profileName}</h1>
-                                <Button size="sm" variant="ghost" className="p-1">
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="p-1"
+                                    onClick={() => setShowEditProfileModal(true)}
+                                >
                                     <Edit className="w-3 h-3" />
                                 </Button>
                             </div>
@@ -79,6 +88,20 @@ export function ProfileHeader() {
                     </div>
                 </div>
             </div>
+
+            {/* <EditProfileModal
+                isOpen={showEditProfileModal}
+                onClose={() => setShowEditProfileModal(false)}
+            /> */}
+
+            {
+                showEditProfileModal && (
+                    <div className="p-8">
+                        <ContentPanel onClose={() => setShowEditProfileModal(false)} />
+
+                    </div>
+                )
+            }
         </div>
     )
 }

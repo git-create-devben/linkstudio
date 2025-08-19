@@ -8,7 +8,7 @@ import { ActionItemType } from "@/stores/useContentStore"
 interface BlockListProps {
   onAddAction: () => void
   onEditAction: (action: ActionItemType) => void
-  onDeleteAction: (actionId: string) => void
+  onDeleteAction: (action: ActionItemType) => void
 }
 
 export function BlockList({ onAddAction, onEditAction, onDeleteAction }: BlockListProps) {

@@ -96,26 +96,26 @@ const EditorSidebar = () => {
     <div className="absolut left-0 top-0 p-2 flex h-[calc(65vh-1rem)]">
       {/* Sidebar */}
       <div className="pl-2 w-25 h-[calc(50vh-1rem)] rounded-2xl bg-white border-r border-gray-200 flex flex-col py-2 overflow-y-scroll">
-          {sidebarItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activePanel === item.id;
+        {sidebarItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activePanel === item.id;
 
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleItemClick(item.id as ActionType)}
-                className={` cursor-pointer flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
-                  }`}
-              >
-                <Icon size={18} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
-                <span className={`text-xs text-center leading-tight font-medium ${isActive ? 'text-blue-500 font-medium' : 'text-gray-600'
-                  }`}>
-                  {item.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+          return (
+            <button
+              key={item.id}
+              onClick={() => handleItemClick(item.id as ActionType)}
+              className={` cursor-pointer flex flex-col items-center gap-2 py-4 px-2 hover:bg-gray-50 rounded-l-md transition-colors ${isActive ? 'bg-gray-100 border-r-2 border-blue-500' : ''
+                }`}
+            >
+              <Icon size={18} className={isActive ? 'text-blue-500' : 'text-gray-600'} />
+              <span className={`text-xs text-center leading-tight font-medium ${isActive ? 'text-blue-500 font-medium' : 'text-gray-600'
+                }`}>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* Expandable Panel (for non-actions panels) */}
       {activePanel && activePanel !== 'actions' && (

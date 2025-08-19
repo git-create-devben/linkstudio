@@ -13,10 +13,10 @@ import { deleteActionItem } from "@/actions/editorActions";
 import { toast } from "sonner";
 import { AddActionModal } from "@/components/v2/modals/AddActionModal";
 import { EditActionModal } from "@/components/v2/modals/EditActionModal";
+import { DeleteActionModal } from "@/components/v2/modals/DeleteActionModal";
 import { AddSocialLinkModal } from "@/components/v2/modals/AddSocialLinkModal";
 import { EditSocialLinkModal } from "@/components/v2/modals/EditSocialLinkModal";
 import { SocialLink } from "@/types/editorTypes";
-import { Main } from "next/document";
 import MainView from "@/components/dashboard/Editor/panels/actions/MainView";
 import { getAllCategories } from "@/lib/actions/actionTypes";
 
@@ -24,14 +24,17 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("actions")
   const [showAddActionModal, setShowAddActionModal] = useState(false)
   const [showEditActionModal, setShowEditActionModal] = useState(false)
+  const [showDeleteActionModal, setShowDeleteActionModal] = useState(false)
   const [showAddSocialModal, setShowAddSocialModal] = useState(false)
   const [showEditSocialModal, setShowEditSocialModal] = useState(false)
   const [editingAction, setEditingAction] = useState<ActionItemType | null>(null)
+  const [deletingAction, setDeletingAction] = useState<ActionItemType | null>(null)
   const [editingSocialLink, setEditingSocialLink] = useState<SocialLink | null>(null)
+  const [isDeletingAction, setIsDeletingAction] = useState(false)
   const [selectedActionType, setSelectedActionType] = useState<string | null>(null);
   const [formState, setFormState] = useState<Record<string, any>>({});
   const [currentView, setCurrentView] = useState('');
-    const [editingActionId, setEditingActionId] = useState<string | null>(null);
+  const [editingActionId, setEditingActionId] = useState<string | null>(null);
   const categories = getAllCategories();
   const { removeActionItem, socialLinks } = useUserContentStore()
 
@@ -41,22 +44,28 @@ export default function Dashboard() {
     setShowEditActionModal(true)
     setSelectedActionType(action.type);
     setFormState(action.config);
-     setCurrentView('config');
+    setCurrentView('config');
   }
-  // const handleEditClick = (action: ActionItemType) => {
-  //   setEditingActionId(action);
-  //   setSelectedActionType(action.type);
-  //   setFormState(action.config);
-  //   setCurrentView('configure');
-  // };
 
-  const handleDeleteAction = async (actionId: string) => {
+  const handleDeleteAction = (action: ActionItemType) => {
+    setDeletingAction(action)
+    setShowDeleteActionModal(true)
+  }
+
+  const confirmDeleteAction = async () => {
+    if (!deletingAction) return
+
+    setIsDeletingAction(true)
     try {
-      await deleteActionItem(actionId)
-      removeActionItem(actionId)
+      await deleteActionItem(deletingAction.id)
+      removeActionItem(deletingAction.id)
       toast.success('Action deleted successfully')
+      setShowDeleteActionModal(false)
+      setDeletingAction(null)
     } catch (error) {
       toast.error('Failed to delete action')
+    } finally {
+      setIsDeletingAction(false)
     }
   }
 
@@ -129,17 +138,28 @@ export default function Dashboard() {
       <AddActionModal
         isOpen={showAddActionModal}
         onClose={() => setShowAddActionModal(false)}
-         currentView={currentView}
+        currentView={currentView}
       />
 
-      {/* <EditActionModal 
+      <EditActionModal 
         isOpen={showEditActionModal} 
         onClose={() => {
           setShowEditActionModal(false)
           setEditingAction(null)
         }}
         action={editingAction}
-      /> */}
+      />
+
+      <DeleteActionModal
+        isOpen={showDeleteActionModal}
+        onClose={() => {
+          setShowDeleteActionModal(false)
+          setDeletingAction(null)
+        }}
+        onConfirm={confirmDeleteAction}
+        action={deletingAction}
+        isDeleting={isDeletingAction}
+      />
 
       <AddSocialLinkModal
         isOpen={showAddSocialModal}

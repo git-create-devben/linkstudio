@@ -97,7 +97,7 @@ export function EditSocialLinkModal({ isOpen, onClose, socialLink }: EditSocialL
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
               placeholder={platform.placeholder}
-              className="w-full"
+              className="w-full text-black"
               autoFocus
               disabled={isSubmitting}
             />

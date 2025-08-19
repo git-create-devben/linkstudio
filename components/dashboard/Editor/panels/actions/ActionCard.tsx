@@ -7,7 +7,7 @@ import { getActionTypeById } from '@/lib/actions/actionTypes';
 interface ActionCardProps {
   action: ActionItemType;
   onEdit: (action: ActionItemType) => void;
-  onDelete: (id: string) => void;
+  onDelete: (action: ActionItemType) => void;
 }
 
 const ActionCard: React.FC<ActionCardProps> = ({ action, onEdit, onDelete }) => {
@@ -84,7 +84,7 @@ const ActionCard: React.FC<ActionCardProps> = ({ action, onEdit, onDelete }) => 
                 <Edit size={12} />
               </button>
               <button 
-                onClick={() => onDelete(action.id)} 
+                onClick={() => onDelete(action)} 
                 className="p-1.5 text-red-600 hover:bg-red-100 rounded-md transition-all duration-200"
                 title="Delete action"
               >

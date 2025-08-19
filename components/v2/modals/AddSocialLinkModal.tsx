@@ -93,7 +93,7 @@ export function AddSocialLinkModal({ isOpen, onClose }: AddSocialLinkModalProps)
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6">
               <div className="mb-6">
-                <label className="block text-sm font-semibold text-gray-800 mb-3">
+                <label className="block text-sm font-semibold text-black mb-3">
                   {selectedPlatform.name} Username
                 </label>
                 <Input
@@ -101,7 +101,7 @@ export function AddSocialLinkModal({ isOpen, onClose }: AddSocialLinkModalProps)
                   value={handle}
                   onChange={(e) => setHandle(e.target.value)}
                   placeholder={selectedPlatform.placeholder}
-                  className="w-full"
+                  className="w-full text-black"
                   autoFocus
                   disabled={isSubmitting}
                 />
@@ -150,7 +150,7 @@ export function AddSocialLinkModal({ isOpen, onClose }: AddSocialLinkModalProps)
             </div>
 
             {/* Search */}
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-6 border-b border-gray-200 text-black">
               <Input
                 type="text"
                 placeholder="Search platforms..."
@@ -162,7 +162,7 @@ export function AddSocialLinkModal({ isOpen, onClose }: AddSocialLinkModalProps)
             
             {/* Platform Grid */}
             <div className="p-6 overflow-y-auto max-h-[50vh]">
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {filteredPlatforms.map((platform) => (
                   <button
                     key={platform.id}

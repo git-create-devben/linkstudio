@@ -531,7 +531,7 @@ export function AddActionModal({ isOpen, onClose, currentView}: AddActionModalPr
         ) : (
           <>
             {/* Action Type Selection */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto min-h-0">
               <ActionTypeSelection
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
