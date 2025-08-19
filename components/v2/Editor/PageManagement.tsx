@@ -1,21 +1,31 @@
-import { cn } from "@/lib/utils"
-import { Settings } from "lucide-react"
-import { Button } from "@/components/ui/button"
+"use client"
 
-const pages = [
-  { id: "home", name: "Home", active: true },
-  { id: "videos", name: "Videos", active: false },
-  { id: "long-name", name: "Page that has very long name", active: false },
-]
+import { cn } from "@/lib/utils"
+import { Settings, Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useUserContentStore } from "@/stores/useContentStore"
 
 export function PageManagement() {
+  const { content } = useUserContentStore()
+
+  // For now, we'll show the main page. In the future, this could support multiple pages
+  const pages = [
+    { id: "main", name: content.profileName || "Main Page", active: true },
+  ]
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900">Your Pages</h2>
-        <Button variant="ghost" size="sm">
-          <Settings className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm">
+            <Plus className="w-4 h-4 mr-1" />
+            Add Page
+          </Button>
+          <Button variant="ghost" size="sm">
+            <Settings className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
