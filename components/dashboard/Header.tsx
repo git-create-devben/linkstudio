@@ -9,7 +9,7 @@ import { useUser } from '@/context/userContext'
 
 const Header = ({ isVisible = false, onToggle }: { isVisible: boolean; onToggle: () => void }) => {
     const pathname = usePathname()
-    const isEditorPage = pathname === '/dashboard/editor'
+    const isEditorPage = pathname === '/dashboard/editor' || '/dashboard/v2/editor'
     const isDashboardPage = pathname === '/dashboard'
     const isOtherPage = pathname.startsWith('/dashboard') && pathname !== '/dashboard' && pathname !== '/dashboard/editor'
 

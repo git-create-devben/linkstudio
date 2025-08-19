@@ -21,19 +21,19 @@ export function ProfileHeader() {
                     {/* Left Side - Profile Info */}
                     <div className="flex items-center gap-4">
                         <div className="relative">
-                            <Avatar className="w-40 h-40 -mt-14 border-4 border-white shadow-lg">
+                            <Avatar className="w-30 h-30 -mt-14 border-4 border-white shadow-lg">
                                 <AvatarImage src={content.profilePicture} alt={content.profileName} />
                                 <AvatarFallback className="text-2xl">
                                     {content.profileName.split(' ').map(n => n[0]).join('').toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
-                            <Button 
+                            {/* <Button 
                                 size="sm" 
                                 variant="outline" 
                                 className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0 bg-white"
                             >
                                 <Edit className="w-3 h-3" />
-                            </Button>
+                            </Button> */}
                         </div>
 
                         <div className="space-y-2">

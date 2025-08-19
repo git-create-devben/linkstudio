@@ -1,17 +1,20 @@
-"use client";
-import React, { useState } from 'react';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import { ActionItemType, useUserContentStore } from '@/stores/useContentStore';
-import { createActionItem, deleteActionItem } from '@/actions/editorActions';
-import { updateActionItemSafely, getActionTypeFromId } from '@/lib/actionItemHelpers';
-import { toast } from 'sonner';
-import { IconPicker } from '../IconPicker';
-import { useUser } from '@/context/userContext';
-import { canUserAddAction, getUserPlan, getPlanDisplayName, getUpgradeMessage, getMinimumPlanForFeature } from '@/lib/planUtils';
-import { useRouter } from 'next/navigation';
-import { getActionTypeById, getAllCategories } from '@/lib/actions/actionTypes';
-import MainView from './actions/MainView';
-import ActionTypeSelection from './actions/ActionTypeSelection';
+"use client"
+
+import { useState } from "react"
+import { X, ArrowLeft, Plus, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useUserContentStore } from "@/stores/useContentStore"
+import { createActionItem } from "@/actions/editorActions"
+import { toast } from "sonner"
+import { getActionTypeById } from "@/lib/actions/actionTypes"
+import ActionTypeSelection from "@/components/dashboard/Editor/panels/actions/ActionTypeSelection"
+import { IconPicker } from "@/components/dashboard/Editor/IconPicker"
+
+interface AddActionModalProps {
+  isOpen: boolean
+  onClose: () => void
+  currentView: string;
+}
 
 interface CategoryConfig {
     color: string;
@@ -26,104 +29,65 @@ interface CategoryConfigs {
     media: CategoryConfig;
     business: CategoryConfig;
 }
-
 interface LinkItem {
     title: string;
     url: string;
     icon: string;
 }
-
 interface ImageItem {
     url: string;
     caption: string;
 }
 
-const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
-    const [currentView, setCurrentView] = useState('main');
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [selectedActionType, setSelectedActionType] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [deleteCandidateId, setDeleteCandidateId] = useState<string | null>(null);
-    const [editingActionId, setEditingActionId] = useState<string | null>(null);
-    const [formState, setFormState] = useState<Record<string, any>>({});
-    const [searchQuery, setSearchQuery] = useState('');
-    const [hoveredAction, setHoveredAction] = useState<string | null>(null);
+export function AddActionModal({ isOpen, onClose, currentView}: AddActionModalProps) {
+  const [selectedActionType, setSelectedActionType] = useState<string | null>(null)
+  const [formState, setFormState] = useState<Record<string, any>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [hoveredAction, setHoveredAction] = useState<string | null>(null)
+   const [editingActionId, setEditingActionId] = useState<string | null>(null);
+  const { actionItems, addActionItem, convertTemporaryId } = useUserContentStore()
 
-    const { actionItems, addActionItem, removeActionItem, updateActionItem: updateStoreAction, convertTemporaryId } = useUserContentStore();
-    const user = useUser();
-    const router = useRouter();
+  const handleActionTypeSelect = (actionTypeId: string) => {
+    const actionType = getActionTypeById(actionTypeId)
+    if (!actionType) return
 
-    const canAddAction = canUserAddAction(user, actionItems.length);
-    const userPlan = getUserPlan(user);
-    const categories = getAllCategories();
+    setSelectedActionType(actionTypeId)
+    setFormState(actionType.defaultConfig || {})
+  }
 
-    const handleActionTypeSelect = (actionTypeId: string) => {
-        const actionType = getActionTypeById(actionTypeId);
-        if (!actionType) return;
+  const handleSubmit = async () => {
+    if (!selectedActionType) return
 
-        setSelectedActionType(actionTypeId);
-        setFormState(actionType.defaultConfig);
-        setCurrentView('configure');
-    };
+    setIsSubmitting(true)
+    try {
+      const tempId = `temp_${Date.now()}`
+      const payload = {
+        id: tempId,
+        type: selectedActionType as any,
+        config: formState,
+        order: actionItems.length
+      }
+      
+      addActionItem(payload as any)
+      const newActionFromDb = await createActionItem(payload)
+      convertTemporaryId(tempId, newActionFromDb.id)
+      
+      toast.success("Action added successfully!")
+      onClose()
+      setSelectedActionType(null)
+      setFormState({})
+    } catch (error) {
+      toast.error("Failed to add action")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
-    const handleEditClick = (action: ActionItemType) => {
-        setEditingActionId(action.id);
-        setSelectedActionType(action.type);
-        setFormState(action.config);
-        setCurrentView('configure');
-    };
-
-    const handleSubmit = async () => {
-        if (!selectedActionType) return;
-
-        setIsSubmitting(true);
-        try {
-            if (editingActionId) {
-                const actionType = getActionTypeFromId(editingActionId, formState);
-                const result = await updateActionItemSafely(editingActionId, formState, actionType);
-
-                // If ID was converted, use the new ID
-                const finalId = (result as any).newId || editingActionId;
-                updateStoreAction(finalId, formState);
-
-                toast.success("Action updated successfully!");
-            } else {
-                const tempId = `temp_${Date.now()}`;
-                const payload = {
-                    id: tempId,
-                    type: selectedActionType as any,
-                    config: formState,
-                    order: actionItems.length
-                };
-                addActionItem(payload as ActionItemType);
-                const newActionFromDb = await createActionItem(payload);
-                convertTemporaryId(tempId, newActionFromDb.id);
-                toast.success("Action added successfully!");
-            }
-            setCurrentView('main');
-            setEditingActionId(null);
-            setSelectedActionType(null);
-        } catch (error) {
-            toast.error("Failed to save action.");
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleDeleteAction = async () => {
-        if (!deleteCandidateId) return;
-        setIsSubmitting(true);
-        try {
-            await deleteActionItem(deleteCandidateId);
-            removeActionItem(deleteCandidateId);
-            toast.success("Action deleted.");
-        } catch (error) {
-            toast.error("Failed to delete action.");
-        } finally {
-            setIsSubmitting(false);
-            setDeleteCandidateId(null);
-        }
-    };
+  const handleBack = () => {
+    setSelectedActionType(null)
+    setFormState({})
+  }
 
     const renderConfigurationForm = () => {
         const actionType = getActionTypeById(selectedActionType!);
@@ -145,7 +109,7 @@ const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
                 <div className="flex items-center gap-3 p-4 bg-white border-b border-gray-200">
                     <button
                         onClick={() => {
-                            setCurrentView('main');
+                            // setCurrentView('main');
                             setEditingActionId(null);
                             setSelectedActionType(null);
                         }}
@@ -522,8 +486,8 @@ const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
                     <div className="flex gap-3">
                         <button
                             onClick={() => {
-                                setCurrentView('main');
-                                setEditingActionId(null);
+                                // setCurrentView('main');
+                                // setEditingActionId(null);
                                 setSelectedActionType(null);
                             }}
                             className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors text-sm"
@@ -556,68 +520,30 @@ const EnhancedActionsPanel = ({ onClose }: { onClose: () => void }) => {
         );
     };
 
-    const renderMainView = () => (
-        <MainView
-            actionItems={actionItems}
-            categories={categories}
-            onClose={onClose}
-            onAddNew={() => setCurrentView('select-type')}
-            onEditAction={handleEditClick}
-            onDeleteAction={setDeleteCandidateId}
-        />
-    );
 
-    const renderActionTypeSelection = () => (
-        <ActionTypeSelection
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            hoveredAction={hoveredAction}
-            onHoverAction={setHoveredAction}
-            onSelectAction={handleActionTypeSelect}
-            onBack={() => setCurrentView('main')}
-        />
-    );
+  if (!isOpen) return null
 
-    return (
-        <div className="flex flex-col bg-white">
-            <div className="flex-1 overflow-y-auto min-h-0">
-                {currentView === 'main' && renderMainView()}
-                {currentView === 'select-type' && renderActionTypeSelection()}
-                {currentView === 'configure' && renderConfigurationForm()}
-
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        {selectedActionType && currentView === 'config' ? (
+          renderConfigurationForm()
+        ) : (
+          <>
+            {/* Action Type Selection */}
+            <div className="flex-1 overflow-hidden">
+              <ActionTypeSelection
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                hoveredAction={hoveredAction}
+                onHoverAction={setHoveredAction}
+                onSelectAction={handleActionTypeSelect}
+                onBack={onClose}
+              />
             </div>
-
-            {deleteCandidateId && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm m-4 border border-gray-200">
-                        <div className="text-center mb-4">
-                            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 flex items-center justify-center">
-                                <Trash2 size={20} className="text-red-600" />
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Action</h3>
-                            <p className="text-sm text-gray-600">Are you sure? This cannot be undone.</p>
-                        </div>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setDeleteCandidateId(null)}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors text-sm"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleDeleteAction}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:bg-red-400 font-medium transition-colors text-sm"
-                            >
-                                {isSubmitting ? 'Deleting...' : 'Delete'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default EnhancedActionsPanel;
+          </>
+        )}
+      </div>
+    </div>
+  )
+}

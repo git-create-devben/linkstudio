@@ -6,49 +6,100 @@ import { PageManagement } from "@/components/v2/Editor/PageManagement";
 import { MobilePreview } from "@/components/v2/Editor/MobilePreview";
 import { TabNavigation } from "@/components/v2/Editor/TabNavigations";
 import { BlockList } from "@/components/v2/Editor/BlockList";
-import EnhancedActionsPanel from "@/components/dashboard/Editor/panels/enhancedActionsPanel";
-import SocialLinksPanel from "@/components/dashboard/Editor/panels/socialLink";
+import { SocialLinksMainView } from "@/components/v2/Editor/SocialLinksMainView";
 import DesignPanel from "@/components/dashboard/Editor/panels/designPanel";
+import { useUserContentStore, ActionItemType } from "@/stores/useContentStore";
+import { deleteActionItem } from "@/actions/editorActions";
+import { toast } from "sonner";
+import { AddActionModal } from "@/components/v2/modals/AddActionModal";
+import { EditActionModal } from "@/components/v2/modals/EditActionModal";
+import { AddSocialLinkModal } from "@/components/v2/modals/AddSocialLinkModal";
+import { EditSocialLinkModal } from "@/components/v2/modals/EditSocialLinkModal";
+import { SocialLink } from "@/types/editorTypes";
+import { Main } from "next/document";
+import MainView from "@/components/dashboard/Editor/panels/actions/MainView";
+import { getAllCategories } from "@/lib/actions/actionTypes";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("actions")
-  const [showActionsPanel, setShowActionsPanel] = useState(false)
-  const [showSocialPanel, setShowSocialPanel] = useState(false)
+  const [showAddActionModal, setShowAddActionModal] = useState(false)
+  const [showEditActionModal, setShowEditActionModal] = useState(false)
+  const [showAddSocialModal, setShowAddSocialModal] = useState(false)
+  const [showEditSocialModal, setShowEditSocialModal] = useState(false)
+  const [editingAction, setEditingAction] = useState<ActionItemType | null>(null)
+  const [editingSocialLink, setEditingSocialLink] = useState<SocialLink | null>(null)
+  const [selectedActionType, setSelectedActionType] = useState<string | null>(null);
+  const [formState, setFormState] = useState<Record<string, any>>({});
+  const [currentView, setCurrentView] = useState('');
+    const [editingActionId, setEditingActionId] = useState<string | null>(null);
+  const categories = getAllCategories();
+  const { removeActionItem, socialLinks } = useUserContentStore()
+
+  const handleEditAction = (action: ActionItemType) => {
+    setEditingAction(action)
+    setEditingActionId(action.id);
+    setShowEditActionModal(true)
+    setSelectedActionType(action.type);
+    setFormState(action.config);
+     setCurrentView('config');
+  }
+  // const handleEditClick = (action: ActionItemType) => {
+  //   setEditingActionId(action);
+  //   setSelectedActionType(action.type);
+  //   setFormState(action.config);
+  //   setCurrentView('configure');
+  // };
+
+  const handleDeleteAction = async (actionId: string) => {
+    try {
+      await deleteActionItem(actionId)
+      removeActionItem(actionId)
+      toast.success('Action deleted successfully')
+    } catch (error) {
+      toast.error('Failed to delete action')
+    }
+  }
+
+  const handleEditSocialLink = (linkId: string) => {
+    const link = socialLinks.find(l => l.id === linkId)
+    if (link) {
+      setEditingSocialLink(link)
+      setShowEditSocialModal(true)
+    }
+  }
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "actions":
         return (
           <div className="space-y-6">
-            <PageManagement />
-            <BlockList onAddAction={() => setShowActionsPanel(true)} />
+            <MainView
+              actionItems={useUserContentStore.getState().actionItems}
+              categories={categories}
+              onClose={() => setActiveTab("actions")}
+              onAddNew={() => setShowAddActionModal(true)}
+              onEditAction={handleEditAction}
+              onDeleteAction={handleDeleteAction}
+            />
           </div>
         )
       case "social":
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Social Links</h2>
-              <button
-                onClick={() => setShowSocialPanel(true)}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-              >
-                Add Social Link
-              </button>
-            </div>
-            <div className="text-center py-8 text-gray-500">
-              <p>Manage your social media links</p>
-              <p className="text-sm text-gray-400 mt-1">Click "Add Social Link" to get started</p>
-            </div>
-          </div>
+          <SocialLinksMainView
+            onAddSocialLink={() => setShowAddSocialModal(true)}
+            onEditSocialLink={handleEditSocialLink}
+          />
         )
       case "design":
-        return <DesignPanel onClose={() => {}} />
+        return <DesignPanel onClose={() => { }} />
       default:
         return (
           <div className="space-y-6">
-            <PageManagement />
-            <BlockList onAddAction={() => setShowActionsPanel(true)} />
+            <BlockList
+              onAddAction={() => setShowAddActionModal(true)}
+              onEditAction={handleEditAction}
+              onDeleteAction={handleDeleteAction}
+            />
           </div>
         )
     }
@@ -56,11 +107,10 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <ProfileHeader />
-
-      <div className="flex gap-6 p-6">
+      <div className="flex gap-6 p-6 relative min-h-screen">
         {/* Left Column - Main Content */}
-        <div className="flex-1 bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="flex-1 rounded-2xl overflow-hidden max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <ProfileHeader />
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
           <div className="p-6">
             {renderTabContent()}
@@ -68,28 +118,43 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column - Preview */}
-        <div className="w-100">
-          <MobilePreview />
+        <div className="w-[400px]">
+          <div className="sticky top-6">
+            <MobilePreview />
+          </div>
         </div>
       </div>
 
-      {/* Actions Panel Modal */}
-      {showActionsPanel && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
-            <EnhancedActionsPanel onClose={() => setShowActionsPanel(false)} />
-          </div>
-        </div>
-      )}
+      {/* V2 Modals */}
+      <AddActionModal
+        isOpen={showAddActionModal}
+        onClose={() => setShowAddActionModal(false)}
+         currentView={currentView}
+      />
 
-      {/* Social Links Panel Modal */}
-      {showSocialPanel && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden">
-            <SocialLinksPanel onClose={() => setShowSocialPanel(false)} />
-          </div>
-        </div>
-      )}
+      {/* <EditActionModal 
+        isOpen={showEditActionModal} 
+        onClose={() => {
+          setShowEditActionModal(false)
+          setEditingAction(null)
+        }}
+        action={editingAction}
+      /> */}
+
+      <AddSocialLinkModal
+        isOpen={showAddSocialModal}
+        onClose={() => setShowAddSocialModal(false)}
+       
+      />
+
+      <EditSocialLinkModal
+        isOpen={showEditSocialModal}
+        onClose={() => {
+          setShowEditSocialModal(false)
+          setEditingSocialLink(null)
+        }}
+        socialLink={editingSocialLink}
+      />
     </div>
   )
 }
