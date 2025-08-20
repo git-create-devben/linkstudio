@@ -83,7 +83,7 @@ export function ShareModal({ isOpen, onClose, shareUrl, profileName, profileBio 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+       <div className="fixed inset-0 h-[70vh] w-full flex items-center justify-center bg-blac z-1000 text-black">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
         {/* Header */}
         <div className="flex items-center gap-3 p-6 border-b border-gray-200">
@@ -117,7 +117,7 @@ export function ShareModal({ isOpen, onClose, shareUrl, profileName, profileBio 
                 onClick={handleCopyLink}
                 size="sm"
                 variant="outline"
-                className="flex-shrink-0"
+                className="flex-shrink-0 text-white  cursor-pointer"
               >
                 {copied ? (
                   <>
@@ -138,7 +138,7 @@ export function ShareModal({ isOpen, onClose, shareUrl, profileName, profileBio 
           <div>
             <Button
               onClick={handleNativeShare}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white  cursor-pointer"
             >
               <Share2 className="w-4 h-4 mr-2" />
               Share Link
@@ -157,7 +157,7 @@ export function ShareModal({ isOpen, onClose, shareUrl, profileName, profileBio 
                   onClick={() => {
                     window.open(option.url, '_blank', 'width=600,height=400')
                   }}
-                  className={`${option.color} text-white p-3 rounded-lg transition-colors flex flex-col items-center gap-1 hover:scale-105 transform transition-transform`}
+                  className={`${option.color}  cursor-pointer text-white p-3 rounded-lg transition-colors flex flex-col items-center gap-1 hover:scale-105 transform transition-transform`}
                 >
                   <option.icon size={20} />
                   <span className="text-xs font-medium">{option.name}</span>

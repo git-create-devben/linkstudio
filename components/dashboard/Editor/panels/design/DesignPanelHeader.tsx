@@ -7,7 +7,7 @@ interface DesignPanelHeaderProps {
 
 export const DesignPanelHeader: React.FC<DesignPanelHeaderProps> = ({ onClose }) => {
   return (
-    <header className="flex items-center justify-between p-4 border-b border-slate-200 bg-white/50 backdrop-blur-sm">
+    <header className="flex items-center justify-between p-4 border-b border-slate-200 bg-white/50">
       <div className="flex items-center gap-2">
         <Palette className="w-5 h-5 text-blue-600" />
         <h2 className="text-lg font-bold">Design Studio</h2>

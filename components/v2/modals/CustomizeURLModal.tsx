@@ -201,13 +201,13 @@ export function CustomizeURLModal({ isOpen, onClose, currentUsername }: Customiz
         {/* Footer */}
         <div className="p-6 border-t border-gray-200 bg-gray-50">
           <div className="flex justify-end gap-3">
-            <Button variant="outline" className="text-white" onClick={onClose}>
+            <Button variant="outline" className="text-white  cursor-pointer" onClick={onClose}>
               Cancel
             </Button>
             <Button 
               onClick={handleSubmit}
               disabled={!isValidUsername || !isAvailable || isSubmitting || username === currentUsername}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-purple-600 hover:bg-purple-700 text-white  cursor-pointer"
             >
               {isSubmitting ? (
                 "Updating..."

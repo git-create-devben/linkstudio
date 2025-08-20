@@ -57,14 +57,22 @@ export function ProfileHeader({ onSwitchToV1 }: ProfileHeaderProps) {
 
                     {/* Left Side - Profile Info */}
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                        <div className="relative -mt-16 sm:-mt-20">
+                        <div className="relative -mt-16 sm:-mt-20 flex flex-col items-center justify-center gap-5">
                             <Avatar className="w-32 h-32 sm:w-40 sm:h-40 border-4 border-white shadow-lg">
                                 <AvatarImage src={content.profilePicture} alt={content.profileName} />
                                 <AvatarFallback className="text-xl sm:text-2xl">
                                     {content.profileName.split(' ').map(n => n[0]).join('').toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
-
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                className="bg-blue-400 p-4 rounded-full shadow-lg hover:bg-blue-500 transition-colors"
+                                onClick={() => setShowEditProfileModal(true)}
+                            >
+                                <Edit className="w-3 h-3" />
+                                <span>Edit Profile</span>
+                            </Button>
                         </div>
                         <div className="space-y-2 text-center sm:text-left">
                             <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
@@ -100,7 +108,7 @@ export function ProfileHeader({ onSwitchToV1 }: ProfileHeaderProps) {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 text-xs w-full lg:w-auto text-center"
+                                className="  cursor-pointer text-purple-600 hover:text-purple-700 hover:bg-purple-50 text-xs w-full lg:w-auto text-center"
                                 onClick={() => setShowCustomizeURLModal(true)}
                             >
                                 Customize URL <ArrowRight className="w-3 h-3 ml-1" />
@@ -116,7 +124,7 @@ export function ProfileHeader({ onSwitchToV1 }: ProfileHeaderProps) {
 
                         <div className="flex item-center gap-2 w-full lg:w-auto">
                             <Button
-                                className="bg-purple-600 hover:bg-purple-700 text-white px-4 flex-1 lg:flex-initial"
+                                className="  cursor-pointer bg-purple-600 hover:bg-purple-700 text-white px-4 flex-1 lg:flex-initial"
                                 onClick={handleShare}
                             >
                                 <Share2 className="w-4 h-4 mr-2" />
@@ -127,8 +135,8 @@ export function ProfileHeader({ onSwitchToV1 }: ProfileHeaderProps) {
                                     variant="outline"
                                     size="sm"
                                     onClick={onSwitchToV1}
-                                    className="px-3 text-white"
-                                    title="Switch to V1 Editor"
+                                    className="px-3 text-white  cursor-pointer"
+                                    title="Switch to V1 Editor "
                                 >
                                     <Monitor className="w-4 h-4" />
                                 </Button>

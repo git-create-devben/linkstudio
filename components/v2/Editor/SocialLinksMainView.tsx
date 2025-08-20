@@ -46,7 +46,7 @@ export function SocialLinksMainView({ onAddSocialLink, onEditSocialLink }: Socia
     const isDeleting = deletingId === link.id
 
     return (
-      <div className="group bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-lg transition-all duration-200 hover:border-gray-300">
+      <div className="group bg-white  rounded-2xl border border-gray-200 p-4 hover:shadow-lg transition-all duration-200 hover:border-gray-300">
         <div className="flex items-center gap-4">
           <div 
             className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm"
@@ -113,8 +113,8 @@ export function SocialLinksMainView({ onAddSocialLink, onEditSocialLink }: Socia
   return (
     <div className="flex flex-col bg-gradient-to-br from-white to-gray-50/50 text-black">
       {/* Header */}
-      <header className="flex items-center justify-between p-6 border-b border-gray-100 bg-white/80 backdrop-blur-sm flex-shrink-0">
-        <div className="flex items-center gap-3">
+      <header className="flex items-center justify-between p-6 border-b border-gray-100 bg-whit flex-shrink-0">
+        <div className="flex items-center gap-3 ">
           <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-sm">
             <Users className="w-5 h-5 text-white" />
           </div>

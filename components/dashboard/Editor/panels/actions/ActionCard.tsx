@@ -75,17 +75,17 @@ const ActionCard: React.FC<ActionCardProps> = ({ action, onEdit, onDelete }) => 
                 )}
               </div>
             </div>
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-2">
+            <div className="flex gap-1 transition-opacity duration-200 ml-2">
               <button 
                 onClick={() => onEdit(action)} 
-                className="p-1.5 text-blue-600 hover:bg-blue-100 rounded-md transition-all duration-200"
+                className="p-1.5 bg-green-100 text-green-800 rounded-md transition-all duration-200"
                 title="Edit action"
               >
                 <Edit size={12} />
               </button>
               <button 
                 onClick={() => onDelete(action)} 
-                className="p-1.5 text-red-600 hover:bg-red-100 rounded-md transition-all duration-200"
+                className="p-1.5 text-red-600 bg-red-200 hover:bg-red-100 rounded-md"
                 title="Delete action"
               >
                 <Trash2 size={12} />

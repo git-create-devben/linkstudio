@@ -87,39 +87,39 @@ export const TemplateEngine: React.FC<TemplateEngineProps> = ({
 
         {/* Branding Footer */}
         {!design.removeBranding && (
-          <div className="text-center py-4 mt-8 border-t border-gray-200/50">
-            <div className="max-w-sm mx-auto">
+          <div className="pointer-events-none fixed inset-x-0 bottom-4 flex justify-center z-30">
+            <div className="pointer-events-auto bg-white/80 dark:bg-black/60 backdrop-blur-md rounded-full px-4 py-1 shadow border border-gray-200/40 flex items-center gap-1.5 text-xs text-black hover:text-gray-600 transition-colors duration-200 font-medium">
               {design.customFooter ? (
-                design.customFooterUrl ? (
-                  <a
-                    href={design.customFooterUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={textStyles.primaryText}
-                    className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium"
-                  >
-                    <span>{design.customFooter}</span>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                ) : (
-                  <span className="text-xs text-gray-400 font-medium" style={textStyles.primaryText}>{design.customFooter}</span>
-                )
+          design.customFooterUrl ? (
+            <a
+              href={design.customFooterUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={textStyles.primaryText}
+              className="inline-flex items-center gap-1.5 text-xs font-medium"
+            >
+              <span>{design.customFooter}</span>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ) : (
+            <span className="text-xs font-medium" style={textStyles.primaryText}>{design.customFooter}</span>
+          )
               ) : (
-                <a
-                  href="https://mylinks.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={textStyles.primaryText}
-                  className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors duration-200 font-medium group"
-                >
-                  <span>Create your own bio with</span>
-                  <span className="font-semibold text-blue-500 group-hover:text-blue-600">MyLinks</span>
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
+          <a
+            href={typeof window !== "undefined" ? window.origin : "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={textStyles.primaryText}
+            className="inline-flex items-center gap-1.5 text-xs font-medium group"
+          >
+            <span className='text-black'>Create your own bio with</span>
+            <span className="font-semibold text-blue-500 group-hover:text-blue-600">MyLinks</span>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
               )}
             </div>
           </div>
