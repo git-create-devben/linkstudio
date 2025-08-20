@@ -11,9 +11,9 @@ import ActionTypeSelection from "@/components/dashboard/Editor/panels/actions/Ac
 import { IconPicker } from "@/components/dashboard/Editor/IconPicker"
 
 interface AddActionModalProps {
-  isOpen: boolean
-  onClose: () => void
-  currentView: string;
+    isOpen: boolean
+    onClose: () => void
+    currentView: string;
 }
 
 interface CategoryConfig {
@@ -39,55 +39,55 @@ interface ImageItem {
     caption: string;
 }
 
-export function AddActionModal({ isOpen, onClose, currentView}: AddActionModalProps) {
-  const [selectedActionType, setSelectedActionType] = useState<string | null>(null)
-  const [formState, setFormState] = useState<Record<string, any>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [hoveredAction, setHoveredAction] = useState<string | null>(null)
-   const [editingActionId, setEditingActionId] = useState<string | null>(null);
-  const { actionItems, addActionItem, convertTemporaryId } = useUserContentStore()
+export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalProps) {
+    const [selectedActionType, setSelectedActionType] = useState<string | null>(null)
+    const [formState, setFormState] = useState<Record<string, any>>({})
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [hoveredAction, setHoveredAction] = useState<string | null>(null)
+    const [editingActionId, setEditingActionId] = useState<string | null>(null);
+    const { actionItems, addActionItem, convertTemporaryId } = useUserContentStore()
 
-  const handleActionTypeSelect = (actionTypeId: string) => {
-    const actionType = getActionTypeById(actionTypeId)
-    if (!actionType) return
+    const handleActionTypeSelect = (actionTypeId: string) => {
+        const actionType = getActionTypeById(actionTypeId)
+        if (!actionType) return
 
-    setSelectedActionType(actionTypeId)
-    setFormState(actionType.defaultConfig || {})
-  }
-
-  const handleSubmit = async () => {
-    if (!selectedActionType) return
-
-    setIsSubmitting(true)
-    try {
-      const tempId = `temp_${Date.now()}`
-      const payload = {
-        id: tempId,
-        type: selectedActionType as any,
-        config: formState,
-        order: actionItems.length
-      }
-      
-      addActionItem(payload as any)
-      const newActionFromDb = await createActionItem(payload)
-      convertTemporaryId(tempId, newActionFromDb.id)
-      
-      toast.success("Action added successfully!")
-      onClose()
-      setSelectedActionType(null)
-      setFormState({})
-    } catch (error) {
-      toast.error("Failed to add action")
-    } finally {
-      setIsSubmitting(false)
+        setSelectedActionType(actionTypeId)
+        setFormState(actionType.defaultConfig || {})
     }
-  }
 
-  const handleBack = () => {
-    setSelectedActionType(null)
-    setFormState({})
-  }
+    const handleSubmit = async () => {
+        if (!selectedActionType) return
+
+        setIsSubmitting(true)
+        try {
+            const tempId = `temp_${Date.now()}`
+            const payload = {
+                id: tempId,
+                type: selectedActionType as any,
+                config: formState,
+                order: actionItems.length
+            }
+
+            addActionItem(payload as any)
+            const newActionFromDb = await createActionItem(payload)
+            convertTemporaryId(tempId, newActionFromDb.id)
+
+            toast.success("Action added successfully!")
+            onClose()
+            setSelectedActionType(null)
+            setFormState({})
+        } catch (error) {
+            toast.error("Failed to add action")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    const handleBack = () => {
+        setSelectedActionType(null)
+        setFormState({})
+    }
 
     const renderConfigurationForm = () => {
         const actionType = getActionTypeById(selectedActionType!);
@@ -521,29 +521,29 @@ export function AddActionModal({ isOpen, onClose, currentView}: AddActionModalPr
     };
 
 
-  if (!isOpen) return null
+    if (!isOpen) return null
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
-        {selectedActionType && currentView === 'config' ? (
-          renderConfigurationForm()
-        ) : (
-          <>
-            {/* Action Type Selection */}
-            <div className="flex-1 overflow-y-auto min-h-0">
-              <ActionTypeSelection
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                hoveredAction={hoveredAction}
-                onHoverAction={setHoveredAction}
-                onSelectAction={handleActionTypeSelect}
-                onBack={onClose}
-              />
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+                {selectedActionType ? (
+                    renderConfigurationForm()
+                ) : (
+                    <>
+                        {/* Action Type Selection */}
+                        <div className="flex-1 overflow-y-auto min-h-0">
+                            <ActionTypeSelection
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                hoveredAction={hoveredAction}
+                                onHoverAction={setHoveredAction}
+                                onSelectAction={handleActionTypeSelect}
+                                onBack={onClose}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
-          </>
-        )}
-      </div>
-    </div>
-  )
+        </div>
+    )
 }
