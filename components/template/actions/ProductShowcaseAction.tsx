@@ -1,11 +1,11 @@
 "use client";
 import { ActionItemType } from "@/stores/useContentStore";
-import { Theme, getButtonStyle } from "@/lib/themeSystem";
+import { Theme } from "@/lib/themeSystem";
 import { useUserContentStore } from "@/stores/useContentStore";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Star, ExternalLink, X, Percent, Eye } from "lucide-react";
+import { ShoppingCart, Star, ExternalLink, X, Percent, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ProductShowcaseActionProps {
   action: ActionItemType;
@@ -24,14 +24,33 @@ interface ProductShowcaseActionProps {
 
 const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) => {
   const { design } = useUserContentStore();
-  const buttonStyle = getButtonStyle(design, theme);
   const [openProduct, setOpenProduct] = useState<any | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const featured: any[] = action.config.featuredProducts || [];
   const products: any[] = action.config.products || [];
-  const layout: 'featured-and-grid' | 'grid' | 'single' = action.config.layout || 'featured-and-grid';
+  const layout: 'carousel' | 'grid' | 'single' = action.config.layout || 'carousel';
 
   const allProducts = [...featured, ...products];
+  const hasMultipleProducts = allProducts.length > 1;
+
+  // Carousel navigation functions
+  const nextSlide = () => {
+    if (layout === 'carousel' && hasMultipleProducts) {
+      setCurrentSlide((prev) => (prev + 1) % allProducts.length);
+    }
+  };
+
+  const prevSlide = () => {
+    if (layout === 'carousel' && hasMultipleProducts) {
+      setCurrentSlide((prev) => (prev - 1 + allProducts.length) % allProducts.length);
+    }
+  };
+
+
+
+
 
   const priceWithDiscount = (price: string | number, discount?: number) => {
     const p = typeof price === 'string' ? parseFloat(price.replace(/[^0-9.]/g, '')) : Number(price);
@@ -55,17 +74,17 @@ const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) =>
     ) : null
   );
 
-  const ProductCard = ({ product, index, isFeatured = false }: { product: any; index: number; isFeatured?: boolean }) => {
+  const ProductCard = ({ product, index, isFeatured = false, isCarousel = false }: { product: any; index: number; isFeatured?: boolean; isCarousel?: boolean }) => {
     const priceInfo = priceWithDiscount(product.price, product.discountPercent);
     const imageSrc = Array.isArray(product.image) ? product.image[0] : product.image;
-    
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
         className={`group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-xl ${
-          isFeatured ? 'col-span-full sm:col-span-1' : ''
+          isCarousel ? 'w-full max-w-sm mx-auto' : (isFeatured ? 'col-span-full sm:col-span-1' : '')
         }`}
         style={{
           background: 'rgba(255,255,255,0.03)',
@@ -74,7 +93,9 @@ const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) =>
       >
         {/* Product Image */}
         {imageSrc && (
-          <div className={`relative overflow-hidden ${isFeatured ? 'h-48' : 'h-40'}`}>
+          <div className={`relative overflow-hidden ${
+            isCarousel ? 'h-64 sm:h-72' : (isFeatured ? 'h-48' : 'h-40')
+          }`}>
             <Image
               src={imageSrc}
               alt={product.name || `Product ${index + 1}`}
@@ -125,7 +146,7 @@ const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) =>
             >
               {product.name || `Product ${index + 1}`}
             </h3>
-            
+
             {product.description && (
               <p
                 className="text-sm opacity-80 line-clamp-2"
@@ -143,8 +164,8 @@ const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) =>
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-2">
               {priceInfo.original && (
-                <span 
-                  className="text-sm line-through opacity-60" 
+                <span
+                  className="text-sm line-through opacity-60"
                   style={{ color: design.textSecondaryColor || theme.colors.textSecondary }}
                 >
                   {priceInfo.original}
@@ -284,108 +305,88 @@ const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) =>
     );
   };
 
+  const renderCarousel = () => (
+    <div className="relative">
+      {/* Carousel Container */}
+      <div className="overflow-hidden rounded-2xl">
+        <div
+          ref={carouselRef}
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {allProducts.map((product, index) => (
+            <div key={`carousel-${index}`} className="w-full flex-shrink-0 px-4">
+              <ProductCard
+                product={product}
+                index={index}
+                isFeatured={index < featured.length}
+                isCarousel={true}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      {hasMultipleProducts && (
+        <>
+          <button
+            onClick={prevSlide}
+            className="absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/70 text-white rounded-full transition-all duration-300 hover:scale-110 z-10"
+            aria-label="Previous product"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/70 text-white rounded-full transition-all duration-300 hover:scale-110 z-10"
+            aria-label="Next product"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </>
+      )}
+
+
+    </div>
+  );
+
+  const renderGrid = () => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {allProducts.map((product, index) => (
+        <ProductCard
+          key={`grid-${index}`}
+          product={product}
+          index={index}
+          isFeatured={index < featured.length}
+        />
+      ))}
+    </div>
+  );
+
+  const renderSingleColumn = () => (
+    <div className="space-y-6 max-w-md mx-auto">
+      {allProducts.map((product, index) => (
+        <ProductCard
+          key={`single-${index}`}
+          product={product}
+          index={index}
+          isFeatured={index < featured.length}
+        />
+      ))}
+    </div>
+  );
+
   return (
     <div className="w-full space-y-6">
       <Title />
 
-      <div
-        className="p-6 rounded-2xl backdrop-blur-sm border transition-all duration-300"
-        style={{
-          background: theme.colors.cardBackground,
-          border: `1px solid ${theme.colors.border}`,
-          boxShadow: `0 8px 32px ${theme.colors.shadow}`
-        }}
-      >
+      <div>
         {allProducts.length > 0 ? (
-          <div className="space-y-8">
-            {/* Smart Grid Layout Based on Product Count */}
-            {(() => {
-              const totalProducts = allProducts.length;
-              
-              // Single product - full width
-              if (totalProducts === 1) {
-                return (
-                  <div className="max-w-md mx-auto">
-                    <ProductCard 
-                      key="single-product" 
-                      product={allProducts[0]} 
-                      index={0} 
-                      isFeatured={true} 
-                    />
-                  </div>
-                );
-              }
-              
-              // 2-3 products - 2 columns
-              if (totalProducts <= 3) {
-                return (
-                  <div>
-                    {featured.length > 0 && (
-                      <h3 
-                        className="text-lg font-semibold mb-4 flex items-center gap-2"
-                        style={{ color: design.textPrimaryColor || theme.colors.textPrimary }}
-                      >
-                        <Star size={18} className="text-yellow-500" />
-                        Featured Products
-                      </h3>
-                    )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                      {allProducts.map((product, i) => (
-                        <ProductCard 
-                          key={`product-${i}`} 
-                          product={product} 
-                          index={i} 
-                          isFeatured={i < featured.length} 
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-              
-              // 4+ products - separate featured and regular sections
-              return (
-                <div className="space-y-8">
-                  {/* Featured Products */}
-                  {featured.length > 0 && (
-                    <div>
-                      <h3 
-                        className="text-lg font-semibold mb-6 flex items-center gap-2"
-                        style={{ color: design.textPrimaryColor || theme.colors.textPrimary }}
-                      >
-                        <Star size={18} className="text-yellow-500" />
-                        Featured Products
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                        {featured.slice(0, 2).map((product, i) => (
-                          <ProductCard key={`featured-${i}`} product={product} index={i} isFeatured={true} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Regular Products */}
-                  {products.length > 0 && (
-                    <div>
-                      {featured.length > 0 && (
-                        <h3 
-                          className="text-lg font-semibold mb-6 flex items-center gap-2"
-                          style={{ color: design.textPrimaryColor || theme.colors.textPrimary }}
-                        >
-                          <ShoppingCart size={18} />
-                          All Products
-                        </h3>
-                      )}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {products.map((product, i) => (
-                          <ProductCard key={`product-${i}`} product={product} index={i + featured.length} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
+          <div>
+            {layout === 'carousel' && renderCarousel()}
+            {layout === 'grid' && renderGrid()}
+            {layout === 'single' && renderSingleColumn()}
           </div>
         ) : (
           <div className="text-center py-16 opacity-60">

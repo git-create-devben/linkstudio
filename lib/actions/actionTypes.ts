@@ -213,13 +213,13 @@ export const actionTypes: ActionTypeConfig[] = [
         key: 'spotifyUrl',
         label: 'Spotify Embed URL',
         type: 'url',
-        placeholder: 'https://open.spotify.com/embed/...'
+        placeholder: 'https://open.spotify.com/embed/...' 
       },
       {
         key: 'soundcloudUrl',
         label: 'SoundCloud Embed URL',
         type: 'url',
-        placeholder: 'https://soundcloud.com/...'
+        placeholder: 'https://soundcloud.com/...' 
       }
     ]
   },
@@ -250,7 +250,7 @@ export const actionTypes: ActionTypeConfig[] = [
         key: 'vimeoUrl',
         label: 'Vimeo Video URL',
         type: 'url',
-        placeholder: 'https://vimeo.com/...'
+        placeholder: 'https://vimeo.com/...' 
       }
     ]
   },
@@ -264,7 +264,7 @@ export const actionTypes: ActionTypeConfig[] = [
       title: 'My Products',
       featuredProducts: [],
       products: [],
-      layout: 'featured-and-grid'
+      layout: 'carousel'
     },
     configFields: [
       {
@@ -293,8 +293,8 @@ export const actionTypes: ActionTypeConfig[] = [
         label: 'Display Layout',
         type: 'select',
         options: [
-          { value: 'featured-and-grid', label: 'Featured + Grid (Recommended)' },
-          { value: 'grid', label: 'Grid Only' },
+          { value: 'carousel', label: 'Carousel (Recommended)' },
+          { value: 'grid', label: 'Grid Layout' },
           { value: 'single', label: 'Single Column' }
         ],
         required: false
@@ -484,7 +484,7 @@ export const actionTypes: ActionTypeConfig[] = [
         key: 'description',
         label: 'Service Description',
         type: 'textarea',
-        placeholder: 'Brief description of what you offer...',
+        placeholder: 'Brief description of what you offer...', 
         required: false
       },
       {
@@ -545,7 +545,49 @@ export const actionTypes: ActionTypeConfig[] = [
         type: 'boolean'
       }
     ]
-  }
+  },
+  {
+    id: 'COMMUNITY_POST',
+    name: 'Community Post',
+    description: 'Share a rich post with your audience',
+    icon: FileText,
+    category: 'content',
+    defaultConfig: {
+      title: 'My Latest Post',
+      content: 'This is a sample post. Share your thoughts, updates, or stories here.',
+      imageUrl: '',
+      likes: 0,
+      comments: 0,
+    },
+    configFields: [
+      { key: 'title', label: 'Post Title', type: 'text', placeholder: 'Post Title', required: true },
+      { key: 'content', label: 'Content', type: 'textarea', placeholder: 'Share something interesting...', required: true },
+      { key: 'imageUrl', label: 'Image URL (Optional)', type: 'url', placeholder: 'https://example.com/image.png' },
+    ],
+  },
+  {
+    id: 'EVENT_CARD',
+    name: 'Event Card',
+    description: 'Promote an upcoming event',
+    icon: Calendar,
+    category: 'business',
+    defaultConfig: {
+      title: 'My Upcoming Event',
+      description: 'Join us for an exciting event. Learn more and register below.',
+      date: '2025-12-31T19:00:00',
+      location: 'Online',
+      url: 'https://example.com/register',
+      buttonText: 'Register Now',
+    },
+    configFields: [
+      { key: 'title', label: 'Event Title', type: 'text', placeholder: 'Event Title', required: true },
+      { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Event details...' },
+      { key: 'date', label: 'Event Date & Time', type: 'text', placeholder: 'e.g., January 1, 2024 at 7:00 PM' },
+      { key: 'location', label: 'Location', type: 'text', placeholder: 'e.g., Online or City, State' },
+      { key: 'url', label: 'Registration URL', type: 'url', placeholder: 'https://example.com/register', required: true },
+      { key: 'buttonText', label: 'Button Text', type: 'text', placeholder: 'Register Now' },
+    ],
+  },
 ];
 
 export const getActionTypeById = (id: string): ActionTypeConfig | undefined => {

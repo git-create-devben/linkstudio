@@ -18,6 +18,7 @@ import TipJarAction from '../../actions/TipJarAction';
 import NewsletterSignupAction from '../../actions/NewsletterSignupAction';
 import CountdownBannerAction from '../../actions/CountdownBannerAction';
 import WhatsAppChatAction from '../../actions/WhatsAppChatAction';
+import ServiceBookingAction from '../../actions/ServiceBookingAction';
 
 interface ActionsSectionProps {
   actions: ActionItemType[];
@@ -179,6 +180,12 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
         return (
           <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
             <WhatsAppChatAction {...actionProps} />
+          </div>
+        );
+      case "SERVICE_BOOKING":
+        return (
+          <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
+            <ServiceBookingAction {...actionProps} />
           </div>
         );
       default:

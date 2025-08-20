@@ -110,7 +110,10 @@ const ActionCard: React.FC<ActionCardProps> = ({ action, onEdit, onDelete }) => 
               {actionType?.id === 'IMAGE_GALLERY' && action.config.images && (
                 <span><strong>Images:</strong> {action.config.images.length} items</span>
               )}
-              {!action.config.title && (
+              {actionType?.id === 'SERVICE_BOOKING' && action.config.serviceName && (
+                <span><strong>Service:</strong> {action.config.serviceName}</span>
+              )}
+              {!action.config.title && !action.config.serviceName && (
                 <span className="text-orange-600 font-medium">⚠️ Needs setup</span>
               )}
             </div>
