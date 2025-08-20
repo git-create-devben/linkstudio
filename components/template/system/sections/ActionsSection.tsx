@@ -19,6 +19,8 @@ import NewsletterSignupAction from '../../actions/NewsletterSignupAction';
 import CountdownBannerAction from '../../actions/CountdownBannerAction';
 import WhatsAppChatAction from '../../actions/WhatsAppChatAction';
 import ServiceBookingAction from '../../actions/ServiceBookingAction';
+import CommunityPostAction from '../../actions/CommunityPostAction';
+import EventCardAction from '../../actions/EventCardAction';
 
 interface ActionsSectionProps {
   actions: ActionItemType[];
@@ -186,6 +188,26 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
         return (
           <div key={action.id} style={{ animationDelay }} className={wrapperClass}>
             <ServiceBookingAction {...actionProps} />
+          </div>
+        );
+      case "COMMUNITY_POST":
+        return (
+          <div
+            key={action.id}
+            style={{ animationDelay }}
+            className={wrapperClass}
+          >
+            <CommunityPostAction {...actionProps} />
+          </div>
+        );
+      case "EVENT_CARD":
+        return (
+          <div
+            key={action.id}
+            style={{ animationDelay }}
+            className={wrapperClass}
+          >
+            <EventCardAction {...actionProps} />
           </div>
         );
       default:
