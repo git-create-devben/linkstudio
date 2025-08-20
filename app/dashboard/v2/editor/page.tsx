@@ -80,7 +80,7 @@ export default function Dashboard() {
     setShowEditActionModal(true)
     setSelectedActionType(action.type);
     setFormState(action.config);
-    setCurrentView('config');
+    // setCurrentView('config');
   }
 
   const handleDeleteAction = (action: ActionItemType) => {

@@ -556,13 +556,13 @@ export const actionTypes: ActionTypeConfig[] = [
       title: 'My Latest Post',
       content: 'This is a sample post. Share your thoughts, updates, or stories here.',
       imageUrl: '',
-      likes: 0,
-      comments: 0,
+      publishedDate: new Date().toISOString(),
     },
     configFields: [
       { key: 'title', label: 'Post Title', type: 'text', placeholder: 'Post Title', required: true },
       { key: 'content', label: 'Content', type: 'textarea', placeholder: 'Share something interesting...', required: true },
       { key: 'imageUrl', label: 'Image URL (Optional)', type: 'url', placeholder: 'https://example.com/image.png' },
+      { key: 'publishedDate', label: 'Published Date (Optional)', type: 'text', placeholder: '2024-01-15' },
     ],
   },
   {

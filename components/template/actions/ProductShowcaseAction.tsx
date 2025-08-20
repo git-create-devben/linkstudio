@@ -30,10 +30,16 @@ const ProductShowcaseAction = ({ action, theme }: ProductShowcaseActionProps) =>
 
   const featured: any[] = action.config.featuredProducts || [];
   const products: any[] = action.config.products || [];
-  const layout: 'carousel' | 'grid' | 'single' = action.config.layout || 'carousel';
-
   const allProducts = [...featured, ...products];
   const hasMultipleProducts = allProducts.length > 1;
+
+  // Smart default: single for 1 product, carousel for 2+, but respect user's choice
+  const getDefaultLayout = () => {
+    if (action.config.layout) return action.config.layout; // User has chosen a layout
+    return hasMultipleProducts ? 'carousel' : 'single'; // Smart default
+  };
+
+  const layout: 'carousel' | 'grid' | 'single' = getDefaultLayout();
 
   // Carousel navigation functions
   const nextSlide = () => {
