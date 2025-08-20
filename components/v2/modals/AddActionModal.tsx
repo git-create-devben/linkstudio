@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { X, ArrowLeft, Plus, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
+import { ArrowLeft, Plus, Trash2 } from "lucide-react"
 import { useUserContentStore } from "@/stores/useContentStore"
 import { createActionItem } from "@/actions/editorActions"
 import { toast } from "sonner"
@@ -13,7 +12,6 @@ import { IconPicker } from "@/components/dashboard/Editor/IconPicker"
 interface AddActionModalProps {
     isOpen: boolean
     onClose: () => void
-    currentView: string;
 }
 
 interface CategoryConfig {
@@ -39,7 +37,7 @@ interface ImageItem {
     caption: string;
 }
 
-export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalProps) {
+export function AddActionModal({ isOpen, onClose }: AddActionModalProps) {
     const [selectedActionType, setSelectedActionType] = useState<string | null>(null)
     const [formState, setFormState] = useState<Record<string, any>>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -47,6 +45,26 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
     const [hoveredAction, setHoveredAction] = useState<string | null>(null)
     const [editingActionId, setEditingActionId] = useState<string | null>(null);
     const { actionItems, addActionItem, convertTemporaryId } = useUserContentStore()
+
+    // Handle Escape key to close modal
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose()
+            }
+        }
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown)
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden'
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+            document.body.style.overflow = 'unset'
+        }
+    }, [isOpen, onClose])
 
     const handleActionTypeSelect = (actionTypeId: string) => {
         const actionType = getActionTypeById(actionTypeId)
@@ -84,10 +102,7 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
         }
     }
 
-    const handleBack = () => {
-        setSelectedActionType(null)
-        setFormState({})
-    }
+
 
     const renderConfigurationForm = () => {
         const actionType = getActionTypeById(selectedActionType!);
@@ -104,9 +119,9 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
         const categoryStyle = categoryConfig[actionType.category];
 
         return (
-            <div className="flex flex-col h-full text-gray-900 bg-gray-50">
+            <div className="flex flex-col h-full text-gray-900 bg-gray-50 max-h-[90vh]">
                 {/* Compact Header */}
-                <div className="flex items-center gap-3 p-4 bg-white border-b border-gray-200">
+                <div className="flex items-center gap-3 p-4 bg-white border-b border-gray-200 flex-shrink-0">
                     <button
                         onClick={() => {
                             // setCurrentView('main');
@@ -130,7 +145,7 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
                     {actionType.configFields.map((field) => (
                         <div key={field.key} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                             <label className="block text-sm font-semibold mb-2 text-gray-900">
@@ -373,7 +388,7 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
                             )}
 
                             {field.type === 'array' && field.arrayItemType === 'product' && (
-                                <div className="space-y-3">
+                                <div className="space-y-3 max-h-96 overflow-y-auto">
                                     {((formState[field.key] as any[]) || []).map((product: any, index: number) => (
                                         <div key={index} className="p-3 border border-gray-200 rounded-lg bg-white space-y-3">
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -482,7 +497,7 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
                     ))}
                 </div>
 
-                <div className="p-4 border-t border-gray-200 bg-white">
+                <div className="p-4 border-t border-gray-200 bg-white flex-shrink-0">
                     <div className="flex gap-3">
                         <button
                             onClick={() => {
@@ -524,14 +539,25 @@ export function AddActionModal({ isOpen, onClose, currentView }: AddActionModalP
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen"
+            onClick={(e) => {
+                // Close modal when clicking the backdrop
+                if (e.target === e.currentTarget) {
+                    onClose()
+                }
+            }}
+        >
+            <div
+                className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col"
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+            >
                 {selectedActionType ? (
                     renderConfigurationForm()
                 ) : (
                     <>
                         {/* Action Type Selection */}
-                        <div className="flex-1 overflow-y-auto min-h-0">
+                        <div className="flex-1 overflow-hidden min-h-0">
                             <ActionTypeSelection
                                 searchQuery={searchQuery}
                                 onSearchChange={setSearchQuery}

@@ -36,7 +36,6 @@ export default function Dashboard() {
   const [isDeletingAction, setIsDeletingAction] = useState(false)
   const [selectedActionType, setSelectedActionType] = useState<string | null>(null);
   const [formState, setFormState] = useState<Record<string, any>>({});
-  const [currentView, setCurrentView] = useState('');
   const [editingActionId, setEditingActionId] = useState<string | null>(null);
   const categories = getAllCategories();
   const { removeActionItem, socialLinks } = useUserContentStore()
@@ -175,7 +174,6 @@ export default function Dashboard() {
       <AddActionModal
         isOpen={showAddActionModal}
         onClose={() => setShowAddActionModal(false)}
-        currentView={currentView}
       />
 
       <EditActionModal 
